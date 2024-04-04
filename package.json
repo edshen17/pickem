@@ -5,7 +5,7 @@
   "scripts": {
     "build": "nuxi build",
     "dev:pwa": "VITE_PLUGIN_PWA=true nuxi dev",
-    "dev": "nuxi dev",
+    "dev": "nuxi dev --host 127.0.0.1",
     "generate": "nuxi generate",
     "prepare": "nuxi prepare",
     "start": "node .output/server/index.mjs",
@@ -13,12 +13,18 @@
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit"
   },
+  "dependencies": {
+    "@mikro-orm/core": "^6.1.12",
+    "@mikro-orm/postgresql": "^6.1.12",
+    "@mikro-orm/reflection": "^6.1.12"
+  },
   "devDependencies": {
     "@antfu/eslint-config": "^2.11.4",
     "@iconify-json/carbon": "^1.1.31",
     "@iconify-json/twemoji": "^1.1.15",
     "@nuxt/eslint": "^0.3.0-beta.6",
     "@nuxtjs/color-mode": "^3.3.3",
+    "@nuxtjs/supabase": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
     "@unocss/eslint-config": "^0.58.7",
     "@unocss/nuxt": "^0.58.7",

@@ -1,3 +1,4 @@
+import process from 'node:process'
 import { pwa } from './config/pwa'
 import { appDescription } from './constants/index'
 
@@ -9,7 +10,15 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
     '@nuxt/eslint',
+    '@nuxtjs/supabase',
   ],
+  runtimeConfig: {
+    dbName: process.env.DB_NAME,
+    dbUser: process.env.DB_USER,
+    dbPassword: process.env.DB_PASSWORD,
+    dbHost: process.env.DB_HOST,
+    dbPort: process.env.DB_PORT,
+  },
 
   experimental: {
     // when using generate, payload js assets included in sw precache manifest
