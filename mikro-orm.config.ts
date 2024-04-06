@@ -1,10 +1,11 @@
 import type { Options } from '@mikro-orm/core'
 import { PostgreSqlDriver } from '@mikro-orm/postgresql'
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection'
-import config from './runtime'
+import { config } from '~/runtime'
 
-const mikroOrmConfig: Options = {
+export const mikroOrmConfig: Options = {
   metadataProvider: TsMorphMetadataProvider,
+  entities: ['./dist/entities'],
   entitiesTs: ['./entities'],
   dbName: config.dbName,
   user: config.dbUser,
@@ -13,5 +14,3 @@ const mikroOrmConfig: Options = {
   port: config.dbPort,
   driver: PostgreSqlDriver,
 }
-
-export default mikroOrmConfig
