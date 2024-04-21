@@ -12,8 +12,7 @@ function resetError() {
 
 <template>
   <div class="dark:u-dark-text">
-    <Navbar />
-    <main class="u-flex-grow u-relative">
+    <main class="u-relative u-flex-grow">
       <PopupAlert v-show="error" @popup-close="resetError">
         {{ error?.message }}
       </PopupAlert>

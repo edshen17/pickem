@@ -21,7 +21,8 @@ export default defineNuxtConfig({
   },
 
   supabase: {
-    redirectOptions: { login: '/login', callback: '/confirm', exclude: ['/', '/hi/*'] },
+    redirect: false,
+    redirectOptions: { login: '/log-in', callback: '/dashboard', exclude: ['/', '/log-in', '/sign-up'] },
   },
 
   experimental: {
@@ -48,8 +49,7 @@ export default defineNuxtConfig({
     },
     prerender: {
       crawlLinks: false,
-      routes: ['/'],
-      ignore: ['/hi'],
+      routes: ['/', '/log-in'],
     },
   },
 
