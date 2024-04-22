@@ -1,0 +1,61 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400&display=swap');
+
+html,
+body,
+#app {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+html.dark {
+  background: #121212;
+  color-scheme: dark;
+}
+
+#nprogress {
+  pointer-events: none;
+}
+
+#nprogress .bar {
+  background: rgb(13,148,136);
+  opacity: 0.75;
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+}
+
+.btn-hover-gradient:hover {
+  background-image: linear-gradient(rgb(0 0 0/10%) 0 0);
+}
+
+.font-sans {
+  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
+}
+
+select {
+  @apply u-w-full u-rounded u-shadow-sm dark:focus:u-ring-gray-400
+}
+
+input, select, .form-border {
+  @apply u-block u-border-2 u-border-gray-300 disabled:u-border-gray-200 u-rounded-md u-border-solid disabled:u-bg-gray-50 disabled:u-text-gray-500 disabled:u-shadow-none disabled:u-cursor-not-allowed u-w-full u-py-2 u-px-3 dark:u-bg-dark dark:u-text-white dark:u-border-gray-500 dark:u-text-gray-300
+}
+
+.time-hover {
+  @apply hover:u-bg-gray-100 dark:hover:u-bg-gray-700 u-p-1 u-rounded-sm
+}
+
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}

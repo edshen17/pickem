@@ -7,22 +7,12 @@ const showDropdownMenu = ref(false)
 const routerLinks = computed(() => {
   return [
     {
-      title: 'test',
-      path: '/apply',
-      isShowing: true,
-    },
-    {
-      title: 'test',
-      path: '/teachers',
-      isShowing: true,
-    },
-    {
-      title: 'Log in',
+      title: 'Log In',
       path: '/log-in',
       isShowing: true,
     },
     {
-      title: 'Sign up',
+      title: 'Sign Up',
       path: '/sign-up',
       isShowing: true,
     },
@@ -95,14 +85,6 @@ onUnmounted(() => {
                   <p class="u-text-lg">
                     test
                   </p>
-                  <div class="u-mt-3 u-flex u-flex-wrap u-items-center u-gap-x-4">
-                    <p class="u-capitalize">
-                      role
-                    </p>
-                    <p class="u-text-lg">
-                      ฅ^•ﻌ•^ฅ
-                    </p>
-                  </div>
                 </div>
               </div>
               <hr class="u-mx-auto u-border-gray-400">
@@ -125,16 +107,8 @@ onUnmounted(() => {
           <img src="" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2">
           <div class="u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
             <p class="u-text-lg">
-              test
+              Name here
             </p>
-            <div class="u-mt-3 u-flex u-flex-wrap u-items-center u-gap-x-4">
-              <p class="u-capitalize">
-                role
-              </p>
-              <p class="u-text-lg">
-                ฅ^•ﻌ•^ฅ
-              </p>
-            </div>
           </div>
         </div>
         <hr class="u-mx-auto u-border-gray-400">

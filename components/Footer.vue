@@ -24,11 +24,6 @@ const iconData = computed(() => {
       name: 'Youtube',
     },
     {
-      link: 'https://line.me/R/ti/p/%40743ilrvx',
-      class: 'i-fa-brands:line',
-      name: 'LINE',
-    },
-    {
       link: 'https://discord.com/invite/zHpyvN2TVA',
       class: 'i-fa-brands:discord',
       name: 'Discord',
@@ -57,21 +52,21 @@ const usefulLinkData = computed(() => {
 
 <template>
   <div class="u-border-t-2 u-border-gray-200 dark:u-border-transparent">
-    <footer class="u-relative u-pt-6 lg:u-pt-5 u-pb-6 u-mx-auto u-w-11/12">
+    <footer class="u-relative u-mx-auto u-w-11/12 u-pb-6 u-pt-6 lg:u-pt-5">
       <div
-        class="u-bottom-auto u-top-0 u-left-0 u-right-0 u-w-full u-absolute u-pointer-events-none u-overflow-hidden"
+        class="u-pointer-events-none u-absolute u-bottom-auto u-left-0 u-right-0 u-top-0 u-w-full u-overflow-hidden"
         style="height: 80px"
       />
-      <div class="u-container u-mx-auto u-px-4 u-pt-4">
+      <div class="u-mx-auto u-px-4 u-pt-4 u-container">
         <div class="u-grid u-grid-cols-12">
           <div class="u-col-span-12 lg:u-col-span-6">
-            <h4 class="u-text-xl u-font-semibold dark:u-dark-title">
-              questions
+            <h4 class="u-text-xl dark:u-dark-title u-font-semibold">
+              Questions?
             </h4>
-            <h5 class="u-my-2">
-              question text
+            <h5 class="u-my-2 u-text-base">
+              Find us on any of these platforms! We usually respond in 1-2 business days.
             </h5>
-            <div class="u-flex u-justify-start u-flex-wrap u-gap-x-8 -u-mx-1">
+            <div class="u-flex u-flex-wrap u-justify-start u-gap-x-8 -u-mx-1">
               <div v-for="icon in iconData" :key="icon.name">
                 <a :href="icon.link" :title="icon.name" target="_blank">
                   <div class="u-my-3 u-text-lg md:u-text-xl" :class="icon.class" />
@@ -79,8 +74,8 @@ const usefulLinkData = computed(() => {
               </div>
             </div>
           </div>
-          <div class="u-col-span-12 lg:u-col-span-3 u-my-2">
-            <span class="u-block u-uppercase u-font-semibold dark:u-dark-title">Useful links</span>
+          <div class="u-col-span-12 u-my-2 lg:u-col-span-3">
+            <span class="u-block dark:u-dark-title u-font-semibold u-uppercase">Useful links</span>
             <ul v-for="usefulLink in usefulLinkData" :key="usefulLink.title">
               <li class="u-my-2">
                 <router-link :to="usefulLink.link" class="u-nav-link">
@@ -89,15 +84,15 @@ const usefulLinkData = computed(() => {
               </li>
             </ul>
           </div>
-          <div class="u-col-span-12 lg:u-col-span-3 u-my-2 lg:u-mt-0">
-            <div class="u-flex u-mt-0 u-mt-4 u-justify-end u-w-full">
+          <div class="u-col-span-12 u-my-2 lg:u-col-span-3 lg:u-mt-0">
+            <div class="u-mt-0 u-mt-4 u-w-full u-flex u-justify-end">
               <DarkToggle />
             </div>
           </div>
         </div>
-        <div class="u-flex u-flex-wrap u-items-center lg:u-justify-between u-justify-center u-mt-20">
-          <div class="u-w-full lg:u-w-4/12 u-px-4 u-mx-auto u-text-center">
-            <div class="u-text-sm u-text-gray-600 dark:u-dark-title u-font-semibold u-py-1">
+        <div class="u-mt-20 u-flex u-flex-wrap u-items-center u-justify-center lg:u-justify-between">
+          <div class="u-mx-auto u-w-full u-px-4 u-text-center lg:u-w-4/12">
+            <div class="u-py-1 u-text-sm dark:u-dark-title u-text-gray-600 u-font-semibold">
               Copyright © {{ currentYear }}.
             </div>
           </div>

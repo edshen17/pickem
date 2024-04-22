@@ -24,6 +24,12 @@ export default defineConfig({
     presetAttributify(),
     presetIcons({
       scale: 1.2,
+      warn: true,
+      collections: {
+        carbon: () => import('@iconify-json/carbon/icons.json').then(i => i.default),
+        fab: () => import('@iconify-json/fa-brands/icons.json').then(i => i.default),
+        fas: () => import('@iconify-json/fa6-solid/icons.json').then(i => i.default),
+      },
     }),
     presetTypography(),
     presetWebFonts({
@@ -34,8 +40,15 @@ export default defineConfig({
       },
     }),
   ],
+  theme: {
+    colors: {
+      dark: '#121212',
+      inherit: 'inherit',
+    },
+  },
   transformers: [
     transformerDirectives(),
     transformerVariantGroup(),
   ],
+  safelist: 'prose prose-sm m-auto text-left'.split(' '),
 })

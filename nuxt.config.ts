@@ -11,6 +11,7 @@ export default defineNuxtConfig({
     '@vite-pwa/nuxt',
     '@nuxt/eslint',
     '@nuxtjs/supabase',
+    'nuxt-quasar-ui',
   ],
   runtimeConfig: {
     dbName: process.env.DB_NAME,

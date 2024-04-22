@@ -1,7 +1,24 @@
+<script setup lang="ts">
+const error = ref<Error | null>(null)
+
+onErrorCaptured((e) => {
+  error.value = e
+})
+
+function resetError() {
+  error.value = null
+}
+</script>
+
 <template>
-  <main class="px-10 py-20 text-center">
+  <div class="dark:u-dark-text">
     <Navbar />
-    <slot />
+    <main class="u-relative u-flex-grow">
+      <PopupAlert v-show="error" @popup-close="resetError">
+        {{ error?.message }}
+      </PopupAlert>
+      <RouterView />
+    </main>
     <Footer />
-  </main>
+  </div>
 </template>
