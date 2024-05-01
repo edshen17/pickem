@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const route = useRoute()
+const router = useRouter()
 const isLoggedIn = false
 const showMobileMenu = ref(false)
 const showDropdownMenu = ref(false)
@@ -65,7 +65,7 @@ onUnmounted(() => {
       <div v-for="routerLink in routerLinks" :key="routerLink.title">
         <RouterLink
           v-if="routerLink.isShowing" :to="routerLink.path"
-          :class="`u-py-3 lg:u-mt-0 lg:u-ml-2 u-block sm:u-py-0 u-rounded u-px-3 lg:u-px-4 u-nav-link ${routerLink.path === route.path ? 'u-text-black dark:u-text-gray-300' : ''}`"
+          :class="`u-py-3 lg:u-mt-0 lg:u-ml-2 u-block sm:u-py-0 u-rounded u-px-3 lg:u-px-4 u-nav-link ${routerLink.path === router.currentRoute.value.path ? 'u-text-black dark:u-text-gray-300' : ''}`"
         >
           {{ routerLink.title }}
         </RouterLink>

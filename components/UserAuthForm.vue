@@ -4,9 +4,8 @@ import NProgress from 'nprogress'
 import { ErrorMessage, useForm } from 'vee-validate'
 import { type UserSchema, getUserSchema } from '~/schemas/user'
 
-const route = useRoute()
 const router = useRouter()
-const isSignupPage = computed(() => route.path === '/sign-up').value
+const isSignupPage = computed(() => router.currentRoute.value.path === '/sign-up').value
 const showPassword = ref(false)
 function togglePasswordView() {
   showPassword.value = !showPassword.value
@@ -36,12 +35,16 @@ async function _authorizeUser(): Promise<void> {
 <template>
   <div class="u-min-h-screen">
     <div class="u-flex u-flex-wrap u-justify-center">
-      <p>logo here</p>
+      <img
+        src="../assets/img/paddles.png"
+        class="u-mt-3 u-h-28 u-w-full u-object-contain md:u-mt-10 2xl:u-h-44 md:u-h-36"
+      >
     </div>
     <div class="u-flex u-flex-wrap u-justify-center">
       <div class="u-mb-28 u-w-11/12 u-rounded-lg u-px-6 u-pt-10 2xl:u-w-3/12 md:u-w-6/12 xl:u-w-4/12">
         <form class="q-gutter-y-lg u-mb-0">
-          <TextInput v-if="isSignupPage" name="name" type="name" placeholder="userAuth.name" :focused="true" @keyup.enter="onSubmit" />
+          <TextInput v-if="isSignupPage" name="firstName" type="name" placeholder="First name" :focused="true" @keyup.enter="onSubmit" />
+          <TextInput v-if="isSignupPage" name="lastName" type="name" placeholder="Last name" @keyup.enter="onSubmit" />
           <TextInput name="email" type="email" placeholder="Email address" :focused="!isSignupPage" @keyup.enter="onSubmit" />
           <div class="u-flex">
             <TextInput name="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" :show-error-message="false" class-name="u-border-r-0 u-rounded-r-none u-border-2 u-border-gray-300 u-rounded-md" @keyup.enter="onSubmit" />

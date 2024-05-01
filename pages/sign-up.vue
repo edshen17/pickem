@@ -5,5 +5,5 @@ definePageMeta({
 </script>
 
 <template>
-  <p>test</p>
+  <UserAuthForm :is-signup-page="true" />
 </template>
