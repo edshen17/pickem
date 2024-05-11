@@ -19,11 +19,14 @@ export default defineNuxtConfig({
     dbPassword: process.env.DB_PASSWORD,
     dbHost: process.env.DB_HOST,
     dbPort: process.env.DB_PORT,
+    public: {
+      baseUrl: process.env.BASE_URL || 'https://PingPongPickEm.com',
+    },
   },
 
   supabase: {
     redirect: false,
-    redirectOptions: { login: '/log-in', callback: '/dashboard', exclude: ['/', '/log-in', '/sign-up'] },
+    redirectOptions: { login: '/log-in', callback: '/confirm', exclude: ['/', '/log-in', '/sign-up'] },
   },
 
   experimental: {

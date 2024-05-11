@@ -4,32 +4,32 @@ const currentYear = new Date().getFullYear()
 const iconData = computed(() => {
   return [
     {
-      link: 'https://www.facebook.com/ManabuOfficial/',
+      link: '#',
       class: 'i-fa-brands:facebook-f',
       name: 'Facebook',
     },
     {
-      link: 'https://twitter.com/lessonsmanabu',
+      link: '#',
       class: 'i-fa-brands:twitter',
       name: 'Twitter',
     },
     {
-      link: 'https://www.instagram.com/nihongo_manabu_/',
+      link: '#',
       class: 'i-fa-brands:instagram',
       name: 'Instagram',
     },
     {
-      link: 'https://www.youtube.com/channel/UCwtTZCZ9apsj7zNn7n1eS5w',
+      link: '#',
       class: 'i-fa-brands:youtube',
       name: 'Youtube',
     },
     {
-      link: 'https://discord.com/invite/zHpyvN2TVA',
+      link: '#',
       class: 'i-fa-brands:discord',
       name: 'Discord',
     },
     {
-      link: 'https://api.whatsapp.com/message/RJYZPGP6LNXNF1',
+      link: '#',
       class: 'i-fa-brands:whatsapp',
       name: 'WhatsApp',
     },
@@ -39,11 +39,11 @@ const iconData = computed(() => {
 const usefulLinkData = computed(() => {
   return [
     {
-      link: '/apply',
+      link: '/',
       title: 'test',
     },
     {
-      link: '/teachers',
+      link: '/',
       title: 'test',
     },
   ]

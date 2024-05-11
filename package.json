@@ -11,8 +11,7 @@
     "start": "node .output/server/index.mjs",
     "start:generate": "npx serve .output/public",
     "lint": "eslint .",
-    "typecheck": "vue-tsc --noEmit",
-    "db:start": "docker-compose up -d"
+    "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.1.12",
