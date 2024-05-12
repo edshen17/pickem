@@ -1,20 +1,28 @@
 <script setup lang="ts">
 const router = useRouter()
-const isLoggedIn = false
+const user = useSupabaseUser()
+const isLoggedIn = computed(() => {
+  return Boolean(user.value)
+})
 const showMobileMenu = ref(false)
 const showDropdownMenu = ref(false)
+
+watch(() => router.currentRoute.value, () => {
+  showMobileMenu.value = false
+  showDropdownMenu.value = false
+});
 
 const routerLinks = computed(() => {
   return [
     {
       title: 'Log In',
       path: '/log-in',
-      isShowing: true,
+      isShowing: !isLoggedIn.value,
     },
     {
       title: 'Sign Up',
       path: '/sign-up',
-      isShowing: true,
+      isShowing: !isLoggedIn.value,
     },
   ]
 })
@@ -23,13 +31,13 @@ const innerRouterLinks = computed(() => {
   return [
     {
       title: 'Settings',
-      path: '/onboarding',
-      isShowing: isLoggedIn,
+      path: '/settings',
+      isShowing: isLoggedIn.value,
     },
     {
       title: 'Log out',
       path: '/log-out',
-      isShowing: isLoggedIn,
+      isShowing: isLoggedIn.value,
     },
   ]
 })
@@ -71,7 +79,7 @@ onUnmounted(() => {
         </RouterLink>
       </div>
       <div v-if="isLoggedIn" class="u-relative u-hidden lg:u-block">
-        <button class="u-relative u-z-10 u-mx-4 u-block u-h-10 u-w-10 u-overflow-hidden u-border-transparent u-border-transparent u-rounded-full u-outline-none u-outline-none u-ring-0 u-ring-2 u-ring-pink-600 focus:u-ring-2 hover:u-ring-2 focus:u-ring-pink-600" @click="showDropdownMenu = !showDropdownMenu">
+        <button class="u-relative u-z-10 u-mx-4 u-block u-h-10 u-w-10 u-overflow-hidden u-border-transparent u-border-transparent u-rounded-full u-outline-none u-outline-none focus:u-ring-2 hover:u-ring-2 focus:u-ring-pink-600 hover:u-ring-pink-600" @click="showDropdownMenu = !showDropdownMenu">
           <img src="" class="u-h-full u-w-full u-object-cover">
         </button>
         <button v-if="showDropdownMenu" class="u-fixed u-inset-0 u-h-full u-w-full u-cursor-default" tabindex="-1" @click="showDropdownMenu = false" />

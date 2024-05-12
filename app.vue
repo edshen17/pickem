@@ -8,6 +8,15 @@ import 'uno.css'
 useHead({
   title: appName,
 })
+
+const supabaseClient = useSupabaseClient()
+const router = useRouter()
+
+onMounted(() => {
+  supabaseClient.auth.onAuthStateChange((_, session) => {
+    router.push(session ? '/dashboard' : `/`)
+  })
+})
 </script>
 
 <template>
