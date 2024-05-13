@@ -1,5 +1,5 @@
 import { Entity, ManyToOne, OneToMany, OneToOne, Property } from '@mikro-orm/core'
-import { UuidPrimaryKey } from '~/entities/common'
+import { UuidPrimaryKey } from '../services/entity.ts'
 
 export enum PoolStatus {
   SCHEDULED = 'Scheduled',
