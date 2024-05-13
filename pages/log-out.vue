@@ -1,9 +1,7 @@
 <script setup lang="ts">
-const { auth } = useSupabaseClient()
+import { handleSignOut } from '~/services/auth'
 
 onMounted(async () => {
-  const { error } = await auth.signOut()
-  if (error)
-    throw error
+  await handleSignOut()
 })
 </script>

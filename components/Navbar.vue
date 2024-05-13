@@ -1,8 +1,9 @@
 <script setup lang="ts">
+import { accessTokenCookieKey } from '~/services/auth'
+
 const router = useRouter()
-const user = useSupabaseUser()
 const isLoggedIn = computed(() => {
-  return Boolean(user.value)
+  return Boolean(useCookie(accessTokenCookieKey).value)
 })
 const showMobileMenu = ref(false)
 const showDropdownMenu = ref(false)
@@ -10,7 +11,7 @@ const showDropdownMenu = ref(false)
 watch(() => router.currentRoute.value, () => {
   showMobileMenu.value = false
   showDropdownMenu.value = false
-});
+})
 
 const routerLinks = computed(() => {
   return [
