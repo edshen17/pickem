@@ -14,40 +14,50 @@
     "typecheck": "vue-tsc --noEmit"
   },
   "dependencies": {
-    "@mikro-orm/core": "^6.1.12",
-    "@mikro-orm/postgresql": "^6.1.12",
-    "@mikro-orm/reflection": "^6.1.12",
-    "@nuxtjs/supabase": "^1.2.1",
+    "@mikro-orm/cli": "^6.2.5",
+    "@mikro-orm/core": "^6.2.5",
+    "@mikro-orm/postgresql": "^6.2.5",
+    "@mikro-orm/reflection": "^6.2.5",
+    "@nuxtjs/supabase": "^1.2.2",
     "@quasar/extras": "^1.16.11",
     "@types/nprogress": "^0.2.3",
-    "@vee-validate/zod": "^4.12.6",
+    "@vee-validate/zod": "^4.12.8",
     "http-status-codes": "^2.3.0",
     "nprogress": "^0.2.0",
-    "quasar": "^2.15.3",
-    "vee-validate": "^4.12.6",
-    "zod": "^3.22.4"
+    "quasar": "^2.16.3",
+    "ts-node": "^10.9.2",
+    "vee-validate": "^4.12.8",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^2.11.4",
-    "@iconify-json/carbon": "^1.1.31",
+    "@antfu/eslint-config": "^2.17.0",
+    "@iconify-json/carbon": "^1.1.33",
     "@iconify-json/fa-brands": "^1.1.8",
     "@iconify-json/fa6-solid": "^1.1.21",
     "@iconify-json/twemoji": "^1.1.15",
-    "@nuxt/eslint": "^0.3.0-beta.6",
-    "@nuxtjs/color-mode": "^3.3.3",
+    "@nuxt/eslint": "^0.3.12",
+    "@nuxtjs/color-mode": "^3.4.1",
     "@pinia/nuxt": "^0.5.1",
-    "@unocss/eslint-config": "^0.58.7",
-    "@unocss/nuxt": "^0.58.7",
+    "@unocss/eslint-config": "^0.58.9",
+    "@unocss/nuxt": "^0.58.9",
     "@vite-pwa/nuxt": "^0.6.0",
     "@vueuse/nuxt": "^10.9.0",
     "consola": "^3.2.3",
     "eslint": "^8.57.0",
-    "eslint-plugin-format": "^0.1.0",
-    "nuxt": "^3.11.1",
-    "nuxt-quasar-ui": "^2.0.8",
+    "eslint-plugin-format": "^0.1.1",
+    "nuxt": "^3.11.2",
+    "nuxt-quasar-ui": "^2.1.2",
     "pinia": "^2.1.7",
-    "sass": "^1.75.0",
-    "typescript": "^5.4.3",
-    "vue-tsc": "^2.0.7"
+    "sass": "^1.77.1",
+    "supabase": "^1.165.0",
+    "typescript": "^5.4.5",
+    "vue-tsc": "^2.0.17"
+  },
+  "mikro-orm": {
+    "useTsNode": true,
+    "configPaths": [
+      "./mikro-orm.config.ts",
+      "./dist/mikro-orm.config.js"
+    ]
   }
 }

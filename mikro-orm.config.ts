@@ -1,9 +1,8 @@
-import type { Options } from '@mikro-orm/core'
 import { PostgreSqlDriver } from '@mikro-orm/postgresql'
 import { TsMorphMetadataProvider } from '@mikro-orm/reflection'
 import { config } from '~/runtime'
 
-export const mikroOrmConfig: Options = {
+export default {
   metadataProvider: TsMorphMetadataProvider,
   entities: ['./dist/entities'],
   entitiesTs: ['./entities'],
