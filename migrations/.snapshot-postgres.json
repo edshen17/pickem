@@ -16,66 +16,17 @@
           "default": "gen_random_uuid()",
           "mappedType": "uuid"
         },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "is_approved": {
-          "name": "is_approved",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "boolean"
-        }
-      },
-      "name": "member",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "member_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
+        "updated_by": {
+          "name": "updated_by",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "gen_random_uuid()",
           "mappedType": "uuid"
         },
-        "start_date": {
-          "name": "start_date",
+        "updated_at": {
+          "name": "updated_at",
           "type": "timestamptz",
           "unsigned": false,
           "autoincrement": false,
@@ -84,8 +35,27 @@
           "length": 6,
           "mappedType": "datetime"
         },
-        "stop_date": {
-          "name": "stop_date",
+        "deleted_at": {
+          "name": "deleted_at",
+          "type": "timestamptz",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": true,
+          "length": 6,
+          "mappedType": "datetime"
+        },
+        "updated_by_user_id": {
+          "name": "updated_by_user_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
+          "mappedType": "uuid"
+        },
+        "created_at": {
+          "name": "created_at",
           "type": "timestamptz",
           "unsigned": false,
           "autoincrement": false,
@@ -93,36 +63,23 @@
           "nullable": false,
           "length": 6,
           "mappedType": "datetime"
-        }
-      },
-      "name": "tournament",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "tournament_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {},
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
+        },
+        "created_by": {
+          "name": "created_by",
           "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "default": "gen_random_uuid()",
+          "mappedType": "uuid"
+        },
+        "created_by_user_id": {
+          "name": "created_by_user_id",
+          "type": "uuid",
+          "unsigned": false,
+          "autoincrement": false,
+          "primary": false,
+          "nullable": false,
           "mappedType": "uuid"
         },
         "name": {
@@ -133,70 +90,13 @@
           "primary": false,
           "nullable": false,
           "mappedType": "string"
-        },
-        "start_date": {
-          "name": "start_date",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "stop_date": {
-          "name": "stop_date",
-          "type": "timestamptz",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "length": 6,
-          "mappedType": "datetime"
-        },
-        "entry_fee": {
-          "name": "entry_fee",
-          "type": "int",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "integer"
-        },
-        "admin_id": {
-          "name": "admin_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "tournament_id": {
-          "name": "tournament_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
         }
       },
-      "name": "pool",
+      "name": "user",
       "schema": "public",
       "indexes": [
         {
-          "columnNames": [
-            "tournament_id"
-          ],
-          "composite": false,
-          "keyName": "pool_tournament_id_unique",
-          "constraint": true,
-          "primary": false,
-          "unique": true
-        },
-        {
-          "keyName": "pool_pkey",
+          "keyName": "user_pkey",
           "columnNames": [
             "id"
           ],
@@ -208,247 +108,28 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "pool_admin_id_foreign": {
-          "constraintName": "pool_admin_id_foreign",
+        "user_updated_by_user_id_foreign": {
+          "constraintName": "user_updated_by_user_id_foreign",
           "columnNames": [
-            "admin_id"
+            "updated_by_user_id"
           ],
-          "localTableName": "public.pool",
+          "localTableName": "public.user",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.member",
+          "referencedTableName": "public.user",
           "updateRule": "cascade"
         },
-        "pool_tournament_id_foreign": {
-          "constraintName": "pool_tournament_id_foreign",
+        "user_created_by_user_id_foreign": {
+          "constraintName": "user_created_by_user_id_foreign",
           "columnNames": [
-            "tournament_id"
+            "created_by_user_id"
           ],
-          "localTableName": "public.pool",
+          "localTableName": "public.user",
           "referencedColumnNames": [
             "id"
           ],
-          "referencedTableName": "public.tournament",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "gen_random_uuid()",
-          "mappedType": "uuid"
-        },
-        "member_id": {
-          "name": "member_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "pool_id": {
-          "name": "pool_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "is_paid": {
-          "name": "is_paid",
-          "type": "boolean",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "boolean"
-        }
-      },
-      "name": "player",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "player_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "player_member_id_foreign": {
-          "constraintName": "player_member_id_foreign",
-          "columnNames": [
-            "member_id"
-          ],
-          "localTableName": "public.player",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.member",
-          "updateRule": "cascade"
-        },
-        "player_pool_id_foreign": {
-          "constraintName": "player_pool_id_foreign",
-          "columnNames": [
-            "pool_id"
-          ],
-          "localTableName": "public.player",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.pool",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "gen_random_uuid()",
-          "mappedType": "uuid"
-        },
-        "name": {
-          "name": "name",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
-        },
-        "pool_id": {
-          "name": "pool_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        }
-      },
-      "name": "choice",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "choice_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "choice_pool_id_foreign": {
-          "constraintName": "choice_pool_id_foreign",
-          "columnNames": [
-            "pool_id"
-          ],
-          "localTableName": "public.choice",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.pool",
-          "updateRule": "cascade"
-        }
-      },
-      "nativeEnums": {}
-    },
-    {
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "default": "gen_random_uuid()",
-          "mappedType": "uuid"
-        },
-        "player_id": {
-          "name": "player_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        },
-        "choice_id": {
-          "name": "choice_id",
-          "type": "uuid",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "uuid"
-        }
-      },
-      "name": "pick",
-      "schema": "public",
-      "indexes": [
-        {
-          "keyName": "pick_pkey",
-          "columnNames": [
-            "id"
-          ],
-          "composite": false,
-          "constraint": true,
-          "primary": true,
-          "unique": true
-        }
-      ],
-      "checks": [],
-      "foreignKeys": {
-        "pick_player_id_foreign": {
-          "constraintName": "pick_player_id_foreign",
-          "columnNames": [
-            "player_id"
-          ],
-          "localTableName": "public.pick",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.player",
-          "updateRule": "cascade"
-        },
-        "pick_choice_id_foreign": {
-          "constraintName": "pick_choice_id_foreign",
-          "columnNames": [
-            "choice_id"
-          ],
-          "localTableName": "public.pick",
-          "referencedColumnNames": [
-            "id"
-          ],
-          "referencedTableName": "public.choice",
+          "referencedTableName": "public.user",
           "updateRule": "cascade"
         }
       },
@@ -532,8 +213,8 @@
           "nullable": false,
           "mappedType": "uuid"
         },
-        "first_name": {
-          "name": "first_name",
+        "name": {
+          "name": "name",
           "type": "varchar(255)",
           "unsigned": false,
           "autoincrement": false,
@@ -541,30 +222,21 @@
           "nullable": false,
           "mappedType": "string"
         },
-        "last_name": {
-          "name": "last_name",
-          "type": "varchar(255)",
+        "host_id": {
+          "name": "host_id",
+          "type": "uuid",
           "unsigned": false,
           "autoincrement": false,
           "primary": false,
           "nullable": false,
-          "mappedType": "string"
-        },
-        "email": {
-          "name": "email",
-          "type": "varchar(255)",
-          "unsigned": false,
-          "autoincrement": false,
-          "primary": false,
-          "nullable": false,
-          "mappedType": "string"
+          "mappedType": "uuid"
         }
       },
-      "name": "user",
+      "name": "tournament",
       "schema": "public",
       "indexes": [
         {
-          "keyName": "user_pkey",
+          "keyName": "tournament_pkey",
           "columnNames": [
             "id"
           ],
@@ -576,24 +248,36 @@
       ],
       "checks": [],
       "foreignKeys": {
-        "user_updated_by_user_id_foreign": {
-          "constraintName": "user_updated_by_user_id_foreign",
+        "tournament_updated_by_user_id_foreign": {
+          "constraintName": "tournament_updated_by_user_id_foreign",
           "columnNames": [
             "updated_by_user_id"
           ],
-          "localTableName": "public.user",
+          "localTableName": "public.tournament",
           "referencedColumnNames": [
             "id"
           ],
           "referencedTableName": "public.user",
           "updateRule": "cascade"
         },
-        "user_created_by_user_id_foreign": {
-          "constraintName": "user_created_by_user_id_foreign",
+        "tournament_created_by_user_id_foreign": {
+          "constraintName": "tournament_created_by_user_id_foreign",
           "columnNames": [
             "created_by_user_id"
           ],
-          "localTableName": "public.user",
+          "localTableName": "public.tournament",
+          "referencedColumnNames": [
+            "id"
+          ],
+          "referencedTableName": "public.user",
+          "updateRule": "cascade"
+        },
+        "tournament_host_id_foreign": {
+          "constraintName": "tournament_host_id_foreign",
+          "columnNames": [
+            "host_id"
+          ],
+          "localTableName": "public.tournament",
           "referencedColumnNames": [
             "id"
           ],

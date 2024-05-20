@@ -2,9 +2,16 @@
 import { accessTokenCookieKey } from '~/services/auth'
 
 const router = useRouter()
+const user = useSupabaseUser()
+
 const isLoggedIn = computed(() => {
   return Boolean(useCookie(accessTokenCookieKey).value)
 })
+const userProfileImg = user.value?.user_metadata.picture
+  || (user.value?.user_metadata.name
+    ? `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.value.user_metadata.name)}`
+    : 'https://api.dicebear.com/8.x/shapes/svg?seed=random')
+
 const showMobileMenu = ref(false)
 const showDropdownMenu = ref(false)
 
@@ -80,8 +87,8 @@ onUnmounted(() => {
         </RouterLink>
       </div>
       <div v-if="isLoggedIn" class="u-relative u-hidden lg:u-block">
-        <button class="u-relative u-z-10 u-mx-4 u-block u-h-10 u-w-10 u-overflow-hidden u-border-transparent u-border-transparent u-rounded-full u-outline-none u-outline-none focus:u-ring-2 hover:u-ring-2 focus:u-ring-pink-600 hover:u-ring-pink-600" @click="showDropdownMenu = !showDropdownMenu">
-          <img src="" class="u-h-full u-w-full u-object-cover">
+        <button class="u-relative u-z-10 u-mx-2 u-block u-h-10 u-w-10 u-overflow-hidden u-border-transparent u-border-transparent u-rounded-full u-outline-none u-outline-none focus:u-ring-2 hover:u-ring-2 focus:u-ring-pink-600 hover:u-ring-pink-600" @click="showDropdownMenu = !showDropdownMenu">
+          <img :src="userProfileImg" class="u-h-full u-w-full u-object-cover">
         </button>
         <button v-if="showDropdownMenu" class="u-fixed u-inset-0 u-h-full u-w-full u-cursor-default" tabindex="-1" @click="showDropdownMenu = false" />
         <FadeInOut>
@@ -90,7 +97,7 @@ onUnmounted(() => {
               <div class="u-my-6 lg:u-my-2" />
               <hr class="u-mx-auto u-border-gray-400 lg:u-hidden">
               <div class="u-grid u-grid-flow-col u-grid-cols-12">
-                <img src="" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2"><div class="font-semi-bold u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
+                <img :src="userProfileImg" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2"><div class="font-semi-bold u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
                   <p class="u-text-lg">
                     test
                   </p>
@@ -113,7 +120,7 @@ onUnmounted(() => {
         <div class="u-my-6 lg:u-my-2" />
         <hr class="u-mx-auto u-border-gray-400 lg:u-hidden">
         <div class="grid-flow-col u-grid u-grid-cols-12">
-          <img src="" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2">
+          <img :src="userProfileImg" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2">
           <div class="u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
             <p class="u-text-lg">
               Name here

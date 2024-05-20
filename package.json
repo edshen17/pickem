@@ -11,7 +11,9 @@
     "start": "node .output/server/index.mjs",
     "start:generate": "npx serve .output/public",
     "lint": "eslint .",
-    "typecheck": "vue-tsc --noEmit"
+    "typecheck": "vue-tsc --noEmit",
+    "db:init": "npx mikro-orm-esm migration:create --initial",
+    "migrate": "npx mikro-orm-esm migration:up"
   },
   "dependencies": {
     "@mikro-orm/cli": "^6.2.5",
