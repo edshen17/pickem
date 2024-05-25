@@ -6,7 +6,7 @@
 
 import { Entity, ManyToOne, Property } from '@mikro-orm/core'
 import { UuidPrimaryKey } from '../services/entity.ts'
-import { FullAuditEntity, User } from '../entities/User.ts'
+import { FullAuditEntity, User } from './User.ts'
 
 @Entity()
 export class Tournament extends FullAuditEntity {
