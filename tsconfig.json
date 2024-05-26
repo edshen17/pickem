@@ -2,8 +2,8 @@
   "extends": "./.nuxt/tsconfig.json",
   "compilerOptions": {
     "experimentalDecorators": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "esModuleInterop": true
   },
   "emitDecoratorMetadata": true,
-  "esModuleInterop": true
 }

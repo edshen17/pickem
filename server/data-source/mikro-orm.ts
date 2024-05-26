@@ -1,6 +1,7 @@
-import { MikroORM } from '@mikro-orm/postgresql'
+import { Migrator } from '@mikro-orm/migrations'
+import { MikroORM, PostgreSqlDriver } from '@mikro-orm/postgresql'
+import { TsMorphMetadataProvider } from '@mikro-orm/reflection'
+import { User } from '../../entities/User'
 import config from '~/mikro-orm.config'
 
-export async function getDb() {
-  return await MikroORM.init(config)
-}
+export const connection = MikroORM.init(config)

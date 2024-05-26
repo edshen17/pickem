@@ -5,8 +5,8 @@
 // do tournaments have start dates? are they different than pool start dates?
 
 import { Entity, ManyToOne, Property } from '@mikro-orm/core'
-import { UuidPrimaryKey } from '../services/entity.ts'
-import { FullAuditEntity, User } from './User.ts'
+import { FullAuditEntity, User } from '~/entities/User'
+import { UuidPrimaryKey } from '~/services/entity'
 
 @Entity()
 export class Tournament extends FullAuditEntity {

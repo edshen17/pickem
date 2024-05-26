@@ -6,8 +6,8 @@ import 'dotenv/config'
 
 export default {
   metadataProvider: TsMorphMetadataProvider,
-  entities: ['./dist/entities'],
-  entitiesTs: ['./entities'],
+  entities: ['./dist/entities/**/*.js'],
+  entitiesTs: ['./entities/**/*.ts'],
   extensions: [Migrator],
   clientUrl: process.env.DB_CONNECTION_URL,
   driver: PostgreSqlDriver,

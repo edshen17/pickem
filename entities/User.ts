@@ -1,5 +1,5 @@
 import { BeforeUpdate, DateTimeType, Entity, ManyToOne, Property, type Rel } from '@mikro-orm/core'
-import { UuidPrimaryKey } from '../services/entity.ts'
+import { UuidPrimaryKey } from '~/services/entity'
 
 export abstract class FullAuditEntity {
   @Property({ type: 'uuid' })
