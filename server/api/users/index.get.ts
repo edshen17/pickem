@@ -1,5 +1,4 @@
 import { serverSupabaseClient } from '#supabase/server'
-// import { getDb } from '~/data-source/mikro-orm'
 
 export default defineEventHandler(async (event) => {
   const { auth } = await serverSupabaseClient(event)
@@ -8,10 +7,6 @@ export default defineEventHandler(async (event) => {
 
   if (!supabaseUser)
     throw createError({ statusCode: 401, message: 'Unauthorized' })
-
-  const em = event.context.em
-
-  console.log(em)
 
   // const { em } = await getDb()
   // const orm = await MikroORM.init(mikroOrmConfig)

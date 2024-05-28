@@ -1,7 +1,7 @@
 {
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@8.15.5",
+  "packageManager": "pnpm@9.1.1",
   "scripts": {
     "build": "nuxi build",
     "dev:pwa": "VITE_PLUGIN_PWA=true nuxi dev",
@@ -16,18 +16,15 @@
     "migrate": "npx mikro-orm-esm migration:up"
   },
   "dependencies": {
-    "@mikro-orm/cli": "^6.2.5",
-    "@mikro-orm/core": "^6.2.5",
-    "@mikro-orm/migrations": "^6.2.5",
-    "@mikro-orm/postgresql": "^6.2.5",
-    "@mikro-orm/reflection": "^6.2.5",
     "@nuxtjs/supabase": "^1.2.2",
     "@quasar/extras": "^1.16.11",
     "@types/nprogress": "^0.2.3",
     "@vee-validate/zod": "^4.12.8",
     "dotenv": "^16.4.5",
+    "drizzle-orm": "^0.30.10",
     "http-status-codes": "^2.3.0",
     "nprogress": "^0.2.0",
+    "postgres": "^3.4.4",
     "quasar": "^2.16.3",
     "ts-node": "^10.9.2",
     "vee-validate": "^4.12.8",
@@ -47,6 +44,7 @@
     "@vite-pwa/nuxt": "^0.6.0",
     "@vueuse/nuxt": "^10.9.0",
     "consola": "^3.2.3",
+    "drizzle-kit": "^0.21.4",
     "eslint": "^8.57.0",
     "eslint-plugin-format": "^0.1.1",
     "nuxt": "^3.11.2",
@@ -56,12 +54,5 @@
     "supabase": "^1.165.0",
     "typescript": "^5.4.5",
     "vue-tsc": "^2.0.17"
-  },
-  "mikro-orm": {
-    "useTsNode": true,
-    "configPaths": [
-      "./mikro-orm.config.ts",
-      "./dist/mikro-orm.config.js"
-    ]
   }
 }
