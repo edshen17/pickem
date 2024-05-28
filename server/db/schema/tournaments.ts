@@ -6,8 +6,8 @@
 
 import { relations } from 'drizzle-orm'
 import { pgTable, uuid, varchar } from 'drizzle-orm/pg-core'
-import { fullAudit } from '~/server/db/schema/audit'
-import { users } from '~/server/db/schema/users'
+import { users } from './users'
+import { fullAudit } from './audit'
 
 export const tournaments = pgTable('tournaments', {
   id: uuid('id').primaryKey().defaultRandom(),

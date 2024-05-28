@@ -1,7 +1,7 @@
 {
   "type": "module",
   "private": true,
-  "packageManager": "pnpm@9.1.1",
+  "packageManager": "pnpm@9.1.3",
   "scripts": {
     "build": "nuxi build",
     "dev:pwa": "VITE_PLUGIN_PWA=true nuxi dev",
@@ -12,8 +12,8 @@
     "start:generate": "npx serve .output/public",
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",
-    "db:init": "npx mikro-orm-esm migration:create --initial",
-    "migrate": "npx mikro-orm-esm migration:up"
+    "db:generate": "pnpm drizzle-kit generate",
+    "db:migrate": "pnpm drizzle-kit migrate"
   },
   "dependencies": {
     "@nuxtjs/supabase": "^1.2.2",

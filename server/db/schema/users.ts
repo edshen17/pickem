@@ -1,6 +1,6 @@
 import { relations } from 'drizzle-orm'
 import { pgTable, uuid, varchar } from 'drizzle-orm/pg-core'
-import { fullAudit } from '~/server/db/schema/audit'
+import { fullAudit } from './audit'
 
 export const users = pgTable('users', {
   id: uuid('id').primaryKey().defaultRandom(),
