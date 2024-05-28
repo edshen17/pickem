@@ -1,3 +1,9 @@
+<script setup lang="ts">
+definePageMeta({
+  requiresAuth: true,
+})
+</script>
+
 <template>
   <div class="u-m-5">
     <p>Play</p>

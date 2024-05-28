@@ -1,4 +1,8 @@
 <script setup lang="ts">
+definePageMeta({
+  requiresRedirectOnAuth: true,
+})
+
 const error = ref<Error | null>(null)
 
 onErrorCaptured((e) => {

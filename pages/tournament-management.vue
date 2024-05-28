@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { toTypedSchema } from '@vee-validate/zod'
 import { useForm } from 'vee-validate'
+import { type TournamentValidator, tournamentValidator } from '~/validators/tournament'
 
 const validationSchema = toTypedSchema(tournamentValidator)
 
@@ -9,7 +10,7 @@ const { values, handleSubmit } = useForm<TournamentValidator>({ validationSchema
 
 <template>
   <div class="u-m-5 u-w-4/12">
-    <TextInput name="text" type="text" placeholder="Tournament name" :focused="true" />
+    <TextInput name="name" type="text" placeholder="Tournament name" :focused="true" />
     <p>Add admins</p>
     <Button>Create</Button>
   </div>
