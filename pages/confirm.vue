@@ -2,7 +2,7 @@
 const user = useSupabaseUser()
 const router = useRouter()
 
-async function createUser() {
+async function onLogin() {
   const response = await fetch('/api/users')
   if (response.ok)
     router.push('/dashboard')
@@ -10,7 +10,7 @@ async function createUser() {
 
 watch(user, () => {
   if (user.value)
-    createUser()
+    onLogin()
 }, { immediate: true })
 </script>
 

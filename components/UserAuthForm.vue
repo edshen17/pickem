@@ -2,7 +2,7 @@
 import { toTypedSchema } from '@vee-validate/zod'
 import NProgress from 'nprogress'
 import { ErrorMessage, useForm } from 'vee-validate'
-import { type UserSchema, getUserSchema } from '~/schemas/user'
+import { type UserValidator, getUserValidator } from '~/validators/user'
 import { handleSignIn, handleSignup } from '~/services/auth'
 
 const { auth } = useSupabaseClient()
@@ -16,9 +16,9 @@ const showPassword = ref(false)
 const buttonClass = 'u-py-3 u-px-4 u-rounded u-w-full u-my-6 btn-hover-gradient'
 const redirectLinkClass = 'u-text-blue-500 hover:u-text-blue-400'
 
-const validationSchema = toTypedSchema(getUserSchema(isSignupPage))
+const validationSchema = toTypedSchema(getUserValidator(isSignupPage))
 
-const { values, handleSubmit } = useForm<UserSchema>({ validationSchema })
+const { values, handleSubmit } = useForm<UserValidator>({ validationSchema })
 
 const onSubmit = handleSubmit(async () => {
   NProgress.start()
