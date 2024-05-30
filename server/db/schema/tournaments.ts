@@ -9,6 +9,7 @@ import { pgTable, uuid, varchar } from 'drizzle-orm/pg-core'
 import { users } from './users'
 import { fullAudit } from './audits'
 
+// add pool relationship
 export const tournaments = pgTable('tournaments', {
   id: uuid('id').primaryKey().defaultRandom(),
   name: varchar('name').notNull(),

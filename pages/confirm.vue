@@ -16,6 +16,8 @@ async function onLogin() {
 watch(user, () => {
   if (user.value)
     onLogin()
+  else
+    router.push('/log-in')
 }, { immediate: true })
 </script>
 

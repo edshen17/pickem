@@ -8,6 +8,20 @@
       "when": 1716894632290,
       "tag": "0000_futuristic_moon_knight",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "6",
+      "when": 1717072806616,
+      "tag": "0001_fresh_taskmaster",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1717075059995,
+      "tag": "0002_free_lester",
+      "breakpoints": true
     }
   ]
 }

@@ -7,7 +7,7 @@ export default defineNuxtRouteMiddleware((to) => {
     return
 
   if (requiresAuth && !user.value)
-    return navigateTo('/')
+    return navigateTo('/log-in')
 
   if (requiresRedirectOnAuth && user.value)
     return navigateTo('/dashboard')
