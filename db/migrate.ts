@@ -2,9 +2,15 @@
 import path from 'node:path'
 import process from 'node:process'
 import { promises as fs } from 'node:fs'
-import { Pool } from 'pg'
+import { fileURLToPath } from 'node:url'
+import pg from 'pg'
 import { FileMigrationProvider, Kysely, Migrator, PostgresDialect } from 'kysely'
 import 'dotenv/config'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = path.dirname(__filename)
+
+const { Pool } = pg
 
 export const db = new Kysely({
   dialect: new PostgresDialect({

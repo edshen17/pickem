@@ -13,8 +13,8 @@
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",
     "db:types": "npx kysely-codegen",
-    "db:generate": "npx tsc -w db/migrate.ts",
-    "db:migrate": "npx tsc -w db/generate.ts"
+    "db:generate": "npx tsx db/generate.ts",
+    "db:migrate": "npx tsx db/migrate.ts"
   },
   "dependencies": {
     "@nuxtjs/supabase": "^1.2.2",
