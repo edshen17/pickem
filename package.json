@@ -14,7 +14,8 @@
     "typecheck": "vue-tsc --noEmit",
     "db:types": "npx kysely-codegen",
     "db:generate": "npx tsx db/generate.ts",
-    "db:migrate": "npx tsx db/migrate.ts"
+    "db:migrate": "npx tsx db/migrate.ts",
+    "db:revert": "npx tsx db/revert.ts"
   },
   "dependencies": {
     "@nuxtjs/supabase": "^1.2.2",

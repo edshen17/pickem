@@ -1,37 +1,27 @@
 /* eslint-disable no-console */
-import path from 'node:path'
 import process from 'node:process'
-import { promises as fs } from 'node:fs'
-import { fileURLToPath } from 'node:url'
 import pg from 'pg'
-import { FileMigrationProvider, Kysely, Migrator, PostgresDialect } from 'kysely'
+import { Kysely, Migrator, PostgresDialect } from 'kysely'
 import 'dotenv/config'
-
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+import { ESMFileMigrationProvider } from '~/db/provider'
 
 const { Pool } = pg
 
 export const db = new Kysely({
   dialect: new PostgresDialect({
     pool: new Pool({
-      connectionString: process.env.DB_CONNECTION_URL ?? ``,
+      connectionString: process.env.DATABASE_URL ?? ``,
     }),
   }),
 })
 
-const migrator = new Migrator({
+export const migrator = new Migrator({
   db,
-  provider: new FileMigrationProvider({
-    fs,
-    path,
-    migrationFolder: path.join(__dirname, 'migrations'),
-  }),
+  provider: new ESMFileMigrationProvider('./migrations'),
   allowUnorderedMigrations: true,
 })
 
 async function migrateToLatest() {
-  await migrator.migrateDown()
   const { error, results } = await migrator.migrateToLatest()
 
   results?.forEach((it) => {

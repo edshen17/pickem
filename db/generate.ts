@@ -1,15 +1,14 @@
 /* eslint-disable no-console */
+import { fileURLToPath } from 'node:url'
 import fs from 'node:fs'
 import path from 'node:path'
 import process from 'node:process'
-import { fileURLToPath } from 'node:url'
 import dayjs from 'dayjs'
 
-const __filename = fileURLToPath(import.meta.url) // get the resolved path to the file
-const __dirname = path.dirname(__filename)
-
-const migrationsFolder = path.join(__dirname, 'migrations')
+export const __filename = fileURLToPath(import.meta.url)
 const fileName = process.argv[2]
+const __dirname = path.dirname(__filename)
+const migrationFolder = path.join(__dirname, 'migrations')
 
 if (!fileName) {
   console.error('Please provide a filename for the migration.')
@@ -18,7 +17,7 @@ if (!fileName) {
 
 const currentDate = dayjs().format('YYYY-MM-DD_HH-mm-ss')
 const migrationFileName = `${currentDate}_${fileName}.ts`
-const migrationFilePath = path.join(migrationsFolder, migrationFileName)
+const migrationFilePath = path.join(migrationFolder, migrationFileName)
 
 const migrationTemplate = `
 import type { Kysely } from 'kysely'
