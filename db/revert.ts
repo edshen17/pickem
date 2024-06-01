@@ -1,7 +1,7 @@
 /* eslint-disable no-console */
 import process from 'node:process'
 import 'dotenv/config'
-import { db, migrator } from '~/db/migrate'
+import { db, migrator } from '~/db/kysely'
 
 async function revertLastMigration() {
   const { error, results } = await migrator.migrateDown()

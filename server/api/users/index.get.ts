@@ -1,8 +1,7 @@
-import { eq } from 'drizzle-orm'
+import type { Insertable } from 'kysely'
+import type { Users } from 'kysely-codegen'
 import { serverSupabaseClient } from '#supabase/server'
-import { db } from '~/server/db/data-source'
-import type { NewUser } from '~/server/db/schema/users'
-import { users } from '~/server/db/schema/users'
+import { userRepository } from '~/repositories/user-repository'
 
 export default defineEventHandler(async (event) => {
   const { auth } = await serverSupabaseClient(event)
@@ -12,18 +11,17 @@ export default defineEventHandler(async (event) => {
   if (!supabaseUser)
     throw createError({ statusCode: 401, message: 'Unauthorized' })
 
-  const [existingUser] = await db.select().from(users).where(eq(users.id, supabaseUser.id)).limit(1).execute()
+  const existingUser = await userRepository.findById(supabaseUser.id)
 
   if (!existingUser) {
-    const newUser: NewUser = {
+    const newUser: Insertable<Users> = {
       id: supabaseUser.id,
       name: supabaseUser.user_metadata.full_name ?? supabaseUser.email?.split('@')[0],
-      createdBy: supabaseUser.id,
-      updatedBy: supabaseUser.id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      created_by: supabaseUser.id,
+      updated_at: new Date(),
+      created_at: new Date(),
     }
-    await db.insert(users).values(newUser).execute()
+    await userRepository.insert(newUser)
   }
 
   return { statusCode: 200, message: 'Success' }
