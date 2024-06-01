@@ -2,6 +2,16 @@ import type { Insertable, ReferenceExpression, Updateable } from 'kysely'
 import type { DB } from 'kysely-codegen'
 import { db } from '~/db/kysely'
 
+export interface IAuditUser {
+  id: string
+}
+
+type FullAuditFields = 'updated_by' | 'created_by' | 'updated_at' | 'created_at'
+
+export function fullAudit(v: Record<string, any>, user: IAuditUser | null) {
+  return { updated_by: user?.id, created_by: user?.id, updated_at: new Date(), created_at: new Date(), ...v }
+}
+
 export abstract class BaseRepository<T> {
   protected abstract tableName: keyof DB
 
@@ -24,22 +34,23 @@ export abstract class BaseRepository<T> {
     return await query.selectAll().execute()
   }
 
-  async updateById(id: string, updateWith: Updateable<T>) {
+  async updateById(id: string, update: Omit<Updateable<T>, FullAuditFields>, user: IAuditUser | null) {
     return await db
       .updateTable(this.tableName)
-      .set(updateWith)
+      .set(fullAudit(update, user))
       .where('id', '=', id)
       .execute()
   }
 
-  async insert(entity: Insertable<T>) {
+  async insert(entity: Omit<Insertable<T>, FullAuditFields>, user: IAuditUser | null) {
     return await db
       .insertInto(this.tableName)
-      .values(entity)
+      .values(fullAudit(entity, user))
       .returningAll()
       .executeTakeFirstOrThrow()
   }
 
+  // TODO: set deleted_at
   async deleteById(id: string) {
     return await db
       .deleteFrom(this.tableName)
