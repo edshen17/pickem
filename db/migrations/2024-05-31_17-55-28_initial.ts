@@ -45,10 +45,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable('audit_log')
     .addColumn('id', 'uuid', uuid)
     .addColumn('table_name', 'text')
-    .addColumn('record_id', 'text')
+    .addColumn('record_id', 'uuid')
     .addColumn('operation_type', sql`varchar(255) check (operation_type in ('INSERT', 'UPDATE', 'DELETE'))`)
     .addColumn('updated_at', 'timestamp', col => col.defaultTo(sql`now()`))
-    .addColumn('updated_by', 'text')
+    .addColumn('updated_by', 'uuid')
     .addColumn('original_values', 'jsonb')
     .addColumn('new_values', 'jsonb'),
   )
