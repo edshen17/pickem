@@ -12,7 +12,7 @@ export function fullAudit(v: Record<string, any>, user: IAuditUser | null) {
   return { updated_by: user?.id, created_by: user?.id, updated_at: new Date(), created_at: new Date(), ...v }
 }
 
-export abstract class BaseRepository<T> {
+export abstract class BaseRepository<T extends { id: string }> {
   protected abstract tableName: keyof DB
 
   async findById(id: string) {
@@ -67,7 +67,7 @@ export abstract class BaseRepository<T> {
       .insertInto(this.tableName)
       .values(fullAudit(entity, user))
       .returningAll()
-      .executeTakeFirstOrThrow()
+      .executeTakeFirstOrThrow() as T
 
     if (!insertedEntity.id)
       throw new Error('Inserted entity missing ID')
