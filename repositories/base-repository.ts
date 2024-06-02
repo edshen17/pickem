@@ -35,19 +35,56 @@ export abstract class BaseRepository<T> {
   }
 
   async updateById(id: string, update: Omit<Updateable<T>, FullAuditFields>, user: IAuditUser | null) {
-    return await db
+    const originalEntity = await db
+      .selectFrom(this.tableName)
+      .where('id', '=', id)
+      .selectAll()
+      .executeTakeFirst()
+
+    const updatedEntity = await db
       .updateTable(this.tableName)
       .set(fullAudit(update, user))
       .where('id', '=', id)
       .execute()
+
+    await db
+      .insertInto('audit_log')
+      .values({
+        table_name: this.tableName,
+        record_id: id,
+        operation_type: 'UPDATE',
+        updated_by: user?.id || null,
+        original_values: JSON.stringify(originalEntity),
+        new_values: JSON.stringify(updatedEntity),
+      })
+      .execute()
+
+    return updatedEntity
   }
 
   async insert(entity: Omit<Insertable<T>, FullAuditFields>, user: IAuditUser | null) {
-    return await db
+    const insertedEntity = await db
       .insertInto(this.tableName)
       .values(fullAudit(entity, user))
       .returningAll()
       .executeTakeFirstOrThrow()
+
+    if (!insertedEntity.id)
+      throw new Error('Inserted entity missing ID')
+
+    await db
+      .insertInto('audit_log')
+      .values({
+        table_name: this.tableName,
+        record_id: insertedEntity.id?.toString(),
+        operation_type: 'INSERT',
+        updated_by: user?.id || null,
+        original_values: null,
+        new_values: JSON.stringify(entity),
+      })
+      .execute()
+
+    return insertedEntity
   }
 
   // TODO: set deleted_at
