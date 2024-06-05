@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { accessTokenCookieKey } from '~/services/auth'
-
 const router = useRouter()
 const user = useSupabaseUser()
+const { user: piniaUser } = storeToRefs(useUserStore())
 
 const isLoggedIn = computed(() => {
-  return Boolean(useCookie(accessTokenCookieKey).value)
+  return Boolean(piniaUser.value)
 })
+
 const userProfileImg = user.value?.user_metadata.picture
   || (user.value?.user_metadata.name
     ? `https://api.dicebear.com/8.x/initials/svg?seed=${encodeURIComponent(user.value.user_metadata.name)}`
@@ -66,6 +66,7 @@ onUnmounted(() => {
 
 <template>
   <header class="u-relative u-top-0 u-z-10000 u-w-full u-flex u-flex-wrap u-items-center u-justify-between u-border-b-2 u-bg-white u-px-4 u-py-3 lg:u-sticky dark:u-border-gray-700 md:u-border-none dark:u-bg-dark md:u-shadow-md dark:md:u-border-b-1.5">
+    {{ piniaUser }}
     <div class="u-w-full u-flex u-items-center u-justify-between u-py-1 lg:u-w-auto lg:u-py-2">
       <RouterLink to="/" class="u-px-3 u-text-4xl u-text-black u-font-bold u-font-sans dark:u-text-white">
         PickEm
@@ -99,7 +100,7 @@ onUnmounted(() => {
               <div class="u-grid u-grid-flow-col u-grid-cols-12">
                 <img :src="userProfileImg" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2"><div class="font-semi-bold u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
                   <p class="u-text-lg">
-                    test
+                    {{ piniaUser?.name }}
                   </p>
                 </div>
               </div>
@@ -123,7 +124,7 @@ onUnmounted(() => {
           <img :src="userProfileImg" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2">
           <div class="u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
             <p class="u-text-lg">
-              Name here
+              {{ piniaUser?.name }}
             </p>
           </div>
         </div>

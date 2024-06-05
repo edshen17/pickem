@@ -1,32 +1,30 @@
+import type { Users } from 'kysely-codegen'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', () => {
-  /**
-   * Current named of the user.
-   */
-  const savedName = ref('')
-  const previousNames = ref(new Set<string>())
+  const user = ref<Users | null>(null)
 
-  const usedNames = computed(() => Array.from(previousNames.value))
-  const otherNames = computed(() => usedNames.value.filter(name => name !== savedName.value))
+  function setUser(v: Users | null) {
+    user.value = v
+  }
 
-  /**
-   * Changes the current name of the user and saves the one that was used
-   * before.
-   *
-   * @param name - new name to set
-   */
-  function setNewName(name: string) {
-    if (savedName.value)
-      previousNames.value.add(savedName.value)
+  async function getUser() {
+    const response = await fetch(`${useRuntimeConfig().public.baseUrl}/api/users`)
+    if (response.ok) {
+      const { data } = await response.json()
+      setUser(data)
+    }
+  }
 
-    savedName.value = name
+  function resetUser() {
+    setUser(null)
   }
 
   return {
-    setNewName,
-    otherNames,
-    savedName,
+    user,
+    getUser,
+    setUser,
+    resetUser,
   }
 })
 

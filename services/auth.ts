@@ -15,6 +15,9 @@ export async function handleSignIn(email: string, password: string) {
 export async function handleSignOut() {
   const router = useRouter()
   const { auth } = useSupabaseClient()
+  const userStore = useUserStore()
+  userStore.resetUser()
+
   const accessTokenCookie = useCookie(accessTokenCookieKey)
   accessTokenCookie.value = null
   const { error } = await auth.signOut()

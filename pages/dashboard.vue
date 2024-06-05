@@ -5,11 +5,18 @@ definePageMeta({
 </script>
 
 <template>
-  <div class="u-m-5">
+  <div class="u-m-5 u-space-y-3">
     <p>Play</p>
     <p>Create pool</p>
-    <router-link to="/tournament-management" class="u-text-blue-600 u-nav-link">
-      Create tournament
-    </router-link>
+    <p>
+      <router-link to="/tournament-management" class="u-text-blue-600">
+        Tournament management
+      </router-link>
+    </p>
+    <p>
+      <router-link to="/host-club-management" class="u-text-blue-600">
+        Host Club management
+      </router-link>
+    </p>
   </div>
 </template>

@@ -9,14 +9,14 @@ export default defineEventHandler(async (event) => {
   if (!supabaseUser)
     throw createError({ statusCode: 401, message: 'Unauthorized' })
 
-  const existingUser = await userRepository.findById(supabaseUser.id)
+  let existingUser = await userRepository.findById(supabaseUser.id)
 
   if (!existingUser) {
-    await userRepository.insert({
+    existingUser = await userRepository.insert({
       id: supabaseUser.id,
       name: supabaseUser.user_metadata.full_name ?? supabaseUser.email?.split('@')[0],
     }, supabaseUser)
   }
 
-  return { statusCode: 200, message: 'Success' }
+  return { statusCode: 200, message: 'Success', data: existingUser }
 })
