@@ -26,6 +26,8 @@ export const useUserStore = defineStore('user', () => {
     setUser,
     resetUser,
   }
+}, {
+  persist: true,
 })
 
 if (import.meta.hot)

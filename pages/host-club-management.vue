@@ -1,25 +1,30 @@
 <script setup>
 const { data: result, error } = await useAsyncData('host-club', async () => {
   const client = useSupabaseClient()
-  const userId = 'your-user-id' // Replace with the actual user ID
+  const { user: piniaUser } = storeToRefs(useUserStore())
 
   const { data, error } = await client
     .from('host_clubs')
     .select(`
-      *,
-      host_club_members (
-        user_id
+    *,
+    host_club_members (
+      user_id,
+      users (
+        id,
+        name,
+        email
       )
-    `)
-    .eq('host_club_members.user_id', userId)
+    )
+  `)
+    .eq('host_club_members.user_id', piniaUser.value.id)
 
-  if (error) {
-    console.error('Error fetching data:', error)
-    return null
-  }
+  if (error)
+    throw error
 
   return data
 })
+
+console.log(result.value, error.value)
 
 const data = [
   { title: 'Name', value: 'Edwin', editable: true },
