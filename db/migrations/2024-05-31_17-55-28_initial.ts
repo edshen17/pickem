@@ -60,7 +60,19 @@ export async function up(db: Kysely<any>): Promise<void> {
     .columns(['table_name', 'record_id', 'updated_by'])
     .execute()
 
-  // enable RLS for all tables, maybe in base schema?
+  await sql`ALTER TABLE users ENABLE ROW LEVEL SECURITY;`.execute(db)
+  await sql`CREATE POLICY users_policy ON users
+  USING (
+    id = auth.uid()
+  );`.execute(db)
+
+  await sql`ALTER TABLE roles ENABLE ROW LEVEL SECURITY;`.execute(db)
+  await sql`CREATE POLICY roles_policy ON roles
+  USING (
+    true
+  );`.execute(db)
+
+  await sql`ALTER TABLE host_clubs ENABLE ROW LEVEL SECURITY;`.execute(db)
   await sql`CREATE POLICY host_clubs_members_policy ON host_clubs
   USING (
     id IN (
@@ -68,17 +80,33 @@ export async function up(db: Kysely<any>): Promise<void> {
       WHERE user_id = auth.uid()
     )
   );`.execute(db)
+
+  await sql`ALTER TABLE tournaments ENABLE ROW LEVEL SECURITY;`.execute(db)
+  await sql`CREATE POLICY tournaments_members_policy ON tournaments
+  USING (
+    host_club_id IN (
+      SELECT host_club_id FROM host_club_members
+      WHERE user_id = auth.uid()
+    )
+  );`.execute(db)
+
+  await sql`ALTER TABLE host_club_members ENABLE ROW LEVEL SECURITY;`.execute(db)
+  await sql`CREATE POLICY host_club_members_policy ON host_club_members
+  USING (
+    user_id = auth.uid()
+  );`.execute(db)
+
+  await sql`ALTER TABLE audit_log ENABLE ROW LEVEL SECURITY;`.execute(db)
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropIndex('idx_audit_log_query').execute()
   await db.schema.dropIndex('idx_host_club_members_query').execute()
-  await sql`DROP POLICY IF EXISTS host_clubs_members_policy ON host_clubs CASCADE`.execute(db)
 
   await db.schema.dropTable('audit_log').execute()
-  await db.schema.dropTable('host_club_members').execute()
-  await db.schema.dropTable('tournaments').execute()
-  await db.schema.dropTable('host_clubs').execute()
+  await db.schema.dropTable('tournaments').cascade().execute()
+  await db.schema.dropTable('host_club_members').cascade().execute()
+  await db.schema.dropTable('host_clubs').cascade().execute()
   await db.schema.dropTable('roles').execute()
   await db.schema.dropTable('users').execute()
 }
