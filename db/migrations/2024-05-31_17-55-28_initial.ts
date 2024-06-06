@@ -59,6 +59,15 @@ export async function up(db: Kysely<any>): Promise<void> {
     .on('audit_log')
     .columns(['table_name', 'record_id', 'updated_by'])
     .execute()
+
+  // enable RLS for all tables, maybe in base schema?
+  await sql`CREATE POLICY host_clubs_members_policy ON host_clubs
+  USING (
+    id IN (
+      SELECT host_club_id FROM host_club_members
+      WHERE user_id = auth.uid()
+    )
+  );`.execute(db)
 }
 
 export async function down(db: Kysely<any>): Promise<void> {

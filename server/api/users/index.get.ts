@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   const { data: { user: supabaseUser } } = await auth.getUser(event.context.user)
 
-  if (!supabaseUser)
+  if (!supabaseUser || !supabaseUser.email)
     throw createError({ statusCode: 401, message: 'Unauthorized' })
 
   let existingUser = await userRepository.findById(supabaseUser.id)
@@ -15,6 +15,7 @@ export default defineEventHandler(async (event) => {
     existingUser = await userRepository.insert({
       id: supabaseUser.id,
       name: supabaseUser.user_metadata.full_name ?? supabaseUser.email?.split('@')[0],
+      email: supabaseUser.email,
     }, supabaseUser)
   }
 

@@ -2,20 +2,15 @@
 const { data: result, error } = await useAsyncData('host-club', async () => {
   const client = useSupabaseClient()
   const { user: piniaUser } = storeToRefs(useUserStore())
-
   const { data, error } = await client
     .from('host_clubs')
     .select(`
-    *,
-    host_club_members (
-      user_id,
-      users (
-        id,
-        name,
-        email
+      *,
+      host_club_members (
+        ...users(id, name, email),
+        ...roles(role:name)
       )
-    )
-  `)
+    `)
     .eq('host_club_members.user_id', piniaUser.value.id)
 
   if (error)
@@ -54,10 +49,3 @@ const data = [
     </div>
   </div>
 </template>
-
-<style scoped>
-[contenteditable] {
-  outline: none;
-  @apply u-border-b u-border-dashed u-border-gray-400;
-}
-</style>
