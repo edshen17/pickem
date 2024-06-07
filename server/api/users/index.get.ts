@@ -1,22 +1,21 @@
-import { serverSupabaseClient } from '#supabase/server'
 import { userRepository } from '~/repositories/user-repository'
+import { protectRoute } from '~/server/utils/protect-route'
 
 export default defineEventHandler(async (event) => {
-  const { auth } = await serverSupabaseClient(event)
+  const supabaseUser = await protectRoute(event)
 
-  const { data: { user: supabaseUser } } = await auth.getUser(event.context.user)
-
-  if (!supabaseUser || !supabaseUser.email)
+  if (!supabaseUser.email)
     throw createError({ statusCode: 401, message: 'Unauthorized' })
-
-  let existingUser = await userRepository.findById(supabaseUser.id)
+  let existingUser = await userRepository.findByIdWithRoles(supabaseUser.id)
 
   if (!existingUser) {
-    existingUser = await userRepository.insert({
+    // TODO: unify insert and join
+    await userRepository.insert({
       id: supabaseUser.id,
       name: supabaseUser.user_metadata.full_name ?? supabaseUser.email?.split('@')[0],
       email: supabaseUser.email,
     }, supabaseUser)
+    existingUser = await userRepository.findByIdWithRoles(supabaseUser.id)
   }
 
   return { statusCode: 200, message: 'Success', data: existingUser }

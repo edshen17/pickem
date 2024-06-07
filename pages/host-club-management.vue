@@ -2,24 +2,24 @@
 const { data: result, error } = await useAsyncData('host-club', async () => {
   const client = useSupabaseClient()
   const { user: piniaUser } = storeToRefs(useUserStore())
-  const { data, error } = await client
-    .from('host_clubs')
-    .select(`
-      *,
-      host_club_members (
-        ...users(id, name, email),
-        ...roles(role:name)
-      )
-    `)
-    .eq('host_club_members.user_id', piniaUser.value.id)
 
-  if (error)
-    throw error
+  const response = await fetch(`${useRuntimeConfig().public.baseUrl}/api/host-clubs`)
+  if (response.ok) {
+    const { data } = await response.json()
+    console.log(data)
+  }
 
-  return data
+  // const { data, error } = await client
+  //   .from('host_clubs')
+  //   .select(`
+  //     *,
+  //     host_club_members (
+  //       ...users(id, name, email),
+  //       ...roles(role:name)
+  //     )
+  //   `)
+  //   .eq('host_club_members.user_id', piniaUser.value.id)
 })
-
-console.log(result.value, error.value)
 
 const data = [
   { title: 'Name', value: 'Edwin', editable: true },

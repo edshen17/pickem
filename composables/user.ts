@@ -1,10 +1,12 @@
+import type { Updateable } from 'kysely'
 import type { Users } from 'kysely-codegen'
 import { acceptHMRUpdate, defineStore } from 'pinia'
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<Users | null>(null)
+  const user = ref<Updateable<Users> | null>(null)
 
-  function setUser(v: Users | null) {
+  function setUser(v: Updateable<Users> | null) {
+    // @ts-expect-error user permissions is kysely generated type
     user.value = v
   }
 
