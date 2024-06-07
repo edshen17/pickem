@@ -41,11 +41,12 @@ function validateRole() {
   isRoleValid.value = Boolean(selectedRoleId.value)
 }
 
-// function onSubmit() {
-//   if (isValidEmail.value && isRoleValid.value) {
-
-//   }
-// }
+function onSubmit() {
+  if (isValidEmail.value && isRoleValid.value) {
+    // make api
+    resetModal()
+  }
+}
 
 function resetModal() {
   invitedEmail.value = ''
@@ -92,11 +93,11 @@ function resetModal() {
             @blur="validateEmail"
             @hide="resetModal"
           />
-          <RoleSelect v-model="selectedRoleId" :error="!isRoleValid" />
+          <RoleSelect v-model="selectedRoleId" :error="!isRoleValid" @blur="validateRole" />
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn v-close-popup flat label="Cancel" />
-          <q-btn flat label="Send invite" />
+          <q-btn flat label="Send invite" @click="onSubmit" />
         </q-card-actions>
       </q-card>
     </q-dialog>

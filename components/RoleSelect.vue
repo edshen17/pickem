@@ -14,6 +14,7 @@ const { error, errorMessage } = defineProps<{
 
 const emit = defineEmits<{
   (e: 'update:model-value', value: string | null): void
+  (e: 'blur'): void
 }>()
 
 const supabase = useSupabaseClient()
@@ -50,6 +51,7 @@ onMounted(() => {
       :error="error"
       :error-message="errorMessage || 'Please select a role'"
       @update:model-value="updateModelValue"
+      @blur="emit('blur')"
     />
   </div>
 </template>
