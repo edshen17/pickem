@@ -2,7 +2,7 @@ import { serverSupabaseClient } from '#supabase/server'
 import { protectRoute } from '~/server/utils/protect-route'
 
 export default defineEventHandler(async (event) => {
-  // TODO: check user permissions (host clubs)
+  // TODO: check user permissions (host clubs) + roles
   const user = await protectRoute(event)
   const client = await serverSupabaseClient(event)
 
@@ -20,5 +20,5 @@ export default defineEventHandler(async (event) => {
   if (error)
     throw error
 
-  return { statusCode: 200, message: 'Success', data }
+  return data
 })

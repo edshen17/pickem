@@ -38,11 +38,7 @@ html.dark {
   font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
 }
 
-select {
-  @apply u-w-full u-rounded u-shadow-sm dark:focus:u-ring-gray-400
-}
-
-input, select, .form-border {
+.auth input, select, .form-border {
   @apply u-block u-border-2 u-border-gray-300 disabled:u-border-gray-200 u-rounded-md u-border-solid disabled:u-bg-gray-50 disabled:u-text-gray-500 disabled:u-shadow-none disabled:u-cursor-not-allowed u-w-full u-py-2 u-px-3 dark:u-bg-dark dark:u-text-white dark:u-border-gray-500 dark:u-text-gray-300
 }
 

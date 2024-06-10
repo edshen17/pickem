@@ -7,7 +7,7 @@ const validationSchema = toTypedSchema(tournamentValidator)
 
 const { values, handleSubmit } = useForm<TournamentValidator>({ validationSchema })
 
-console.log(values)
+// console.log(values)
 </script>
 
 <template>

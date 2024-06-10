@@ -2,11 +2,12 @@ import { type Selectable, sql } from 'kysely'
 import type { DB, HostClubs, Users } from 'kysely-codegen'
 import { db } from '~/db/kysely'
 import { BaseRepository } from '~/repositories/base-repository'
+import type { IUser } from '~/view-models/user-view'
 
 export class UserRepository extends BaseRepository<Users> {
   protected tableName = 'users' as keyof DB
 
-  async findByIdWithRoles(userId: string) {
+  async findByIdWithHostClub(userId: string): Promise<IUser | null> {
     const result = await db
       .selectFrom('users')
       .where('users.id', '=', userId)

@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
 
   if (!supabaseUser.email)
     throw createError({ statusCode: 401, message: 'Unauthorized' })
-  let existingUser = await userRepository.findByIdWithRoles(supabaseUser.id)
+  let existingUser = await userRepository.findByIdWithHostClub(supabaseUser.id)
 
   if (!existingUser) {
     // TODO: unify insert and join
@@ -15,8 +15,8 @@ export default defineEventHandler(async (event) => {
       name: supabaseUser.user_metadata.full_name ?? supabaseUser.email?.split('@')[0],
       email: supabaseUser.email,
     }, supabaseUser)
-    existingUser = await userRepository.findByIdWithRoles(supabaseUser.id)
+    existingUser = await userRepository.findByIdWithHostClub(supabaseUser.id)
   }
 
-  return { statusCode: 200, message: 'Success', data: existingUser }
+  return existingUser
 })

@@ -8,6 +8,14 @@ import 'uno.css'
 useHead({
   title: appName,
 })
+
+const $q = useQuasar()
+
+const color = useColorMode()
+
+watch(color, (newMode) => {
+  $q.dark.set(newMode.value !== 'light')
+})
 </script>
 
 <template>

@@ -1,12 +1,14 @@
 import { z } from 'zod'
 
+export const emailValidator = z.string().min(1, 'Please enter an email').email('Please enter a valid email')
+
 export const userValidator = z.object({
-  email: z.string().min(1, 'Please enter an email').email('Please enter a valid email'),
+  email: emailValidator,
   password: z.string().min(8, 'Please enter a password with at least 8 characters'),
 })
 
 // can update to use name:
-// firstName: z.string().optional()
+// firstName: z.string().required()
 export const logInUserValidator = userValidator.extend({})
 
 export function getUserValidator(isSignupPage: boolean) {

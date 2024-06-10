@@ -1,21 +1,18 @@
-import type { Updateable } from 'kysely'
-import type { Users } from 'kysely-codegen'
 import { acceptHMRUpdate, defineStore } from 'pinia'
+import type { IUser } from '~/view-models/user-view'
 
 export const useUserStore = defineStore('user', () => {
-  const user = ref<Updateable<Users> | null>(null)
+  const user = ref<IUser | null>(null)
 
-  function setUser(v: Updateable<Users> | null) {
+  function setUser(v: IUser | null) {
     // @ts-expect-error user permissions is kysely generated type
     user.value = v
   }
 
   async function getUser() {
-    const response = await fetch(`${useRuntimeConfig().public.baseUrl}/api/users`)
-    if (response.ok) {
-      const { data } = await response.json()
-      setUser(data)
-    }
+    const { data } = await useFetch<IUser>('/api/users')
+    if (data.value)
+      setUser(data.value)
   }
 
   function resetUser() {

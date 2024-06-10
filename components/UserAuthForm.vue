@@ -45,7 +45,7 @@ async function _handleLogin(): Promise<void> {
 </script>
 
 <template>
-  <div class="u-min-h-screen">
+  <div class="auth u-min-h-screen">
     <div class="u-flex u-flex-wrap u-justify-center">
       <img
         src="../assets/img/paddles.png"
@@ -58,7 +58,7 @@ async function _handleLogin(): Promise<void> {
           <!-- can add additional fields for sign up if needed -->
           <TextInput name="email" type="email" placeholder="Email address" :focused="!isSignupPage" @keyup.enter="onSubmit" />
           <div class="u-flex">
-            <TextInput name="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" :show-error-message="false" class-name="u-border-r-0 u-rounded-r-none u-border-2 u-border-gray-300 u-rounded-md" @keyup.enter="onSubmit" />
+            <TextInput name="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" :show-error-message="false" class-name="u-border-r-none! u-rounded-r-0! u-border-2 u-border-gray-300 u-rounded-md" @keyup.enter="onSubmit" />
             <button
               class="form-border u-text-center u-w-1/6! u-rounded-l-none!"
               type="button"

@@ -68,9 +68,13 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await sql`ALTER TABLE roles ENABLE ROW LEVEL SECURITY;`.execute(db)
   await sql`CREATE POLICY roles_policy ON roles
+  as PERMISSIVE
+  for SELECT
+  to public
   USING (
     true
-  );`.execute(db)
+  ); 
+  `.execute(db)
 
   await sql`ALTER TABLE host_clubs ENABLE ROW LEVEL SECURITY;`.execute(db)
   await sql`CREATE POLICY host_clubs_members_policy ON host_clubs

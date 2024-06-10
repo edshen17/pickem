@@ -77,7 +77,6 @@ export default defineNuxtConfig({
   },
 
   features: {
-    // For UnoCSS
     inlineStyles: false,
   },
 
