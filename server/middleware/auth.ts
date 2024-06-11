@@ -1,4 +1,4 @@
-import type { EventHandler, EventHandlerRequest, H3Event } from 'h3'
+import type { EventHandlerRequest, H3Event } from 'h3'
 import type { User } from '@supabase/supabase-js'
 
 import { createError } from 'h3'
@@ -7,29 +7,34 @@ import { userRepository } from '~/repositories/user-repository'
 import { throwUnauthorizedError } from '~/server/utils/errors/common'
 import type { IUser } from '~/view-models/user-view'
 
-export interface AuthenticatedEvent extends EventHandlerRequest {
-  context: {
-    supabaseUser: User | null
-    user: IUser | null
-  }
+interface IApiMethodRequest {
+  event: H3Event<EventHandlerRequest>
+  user: IUser | null
+  supabaseUser: User | null
 }
 
-export function apiMiddleware(handler: EventHandler<AuthenticatedEvent, Promise<User | null>>, requireAuthentication: boolean) {
+interface IAuthenticatedMethodRequest extends IApiMethodRequest {
+  supabaseUser: User
+}
+
+type ApiMethod<T> = (props: IApiMethodRequest) => Promise<T>
+type AuthenticatedApiMethod<T> = (props: IAuthenticatedMethodRequest) => Promise<T>
+
+export function apiMiddleware<T>(apiMethod: ApiMethod<T>, requireAuthentication: boolean) {
   return async (event: H3Event) => {
-    const user: User | null = null
+    let supabaseUser: User | null = null
+    let user: IUser | null = null
 
     try {
       if (requireAuthentication) {
-        const supabaseUser = await serverSupabaseUser(event)
+        supabaseUser = await serverSupabaseUser(event)
 
         if (!supabaseUser)
           throwUnauthorizedError()
 
-        const user = await userRepository.findByIdWithHostClub(supabaseUser.id)
-        event.context.supabaseUser = supabaseUser
-        event.context.user = user
+        user = await userRepository.findByIdWithHostClub(supabaseUser.id)
       }
-      return await handler(event, user)
+      return await apiMethod({ event, user, supabaseUser })
     }
     catch (e: any) {
       console.error(e)
@@ -52,10 +57,10 @@ export function apiMiddleware(handler: EventHandler<AuthenticatedEvent, Promise<
   }
 }
 
-export function authenticated(apiMethod: any) {
-  return apiMiddleware(apiMethod, true)
+export function authenticated<T>(apiMethod: AuthenticatedApiMethod<T>) {
+  return apiMiddleware(apiMethod as ApiMethod<T>, true)
 }
 
-export function anonymous(apiMethod: any) {
+export function anonymous<T>(apiMethod: ApiMethod<T>) {
   return apiMiddleware(apiMethod, false)
 }
