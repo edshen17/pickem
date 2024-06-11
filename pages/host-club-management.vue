@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import type { QTableProps } from 'quasar'
-import { formatRole } from '~/utils/formatter/role'
+import { hostClubManagementColumns as columns } from '~/components/data-table/columns'
 import { emailValidator } from '~/validators/user'
+
+const { user: piniaUser } = storeToRefs(useUserStore())
 
 const loading = ref(true)
 const isInviteModalOpen = ref(false)
 const invitedEmail = ref('')
-const isValidEmail = ref(true)
-const errorMessage = ref('')
+const isValidEmail = ref<boolean | null>(null)
+const emailErrorMessage = ref('')
 const selectedRoleId = ref<string | null>(null)
+const isRoleValid = ref<boolean | null>(null)
 
 // sort by owner, then name
 const { data } = await useFetch<any[]>('/api/host-clubs').then((res) => {
@@ -16,51 +18,40 @@ const { data } = await useFetch<any[]>('/api/host-clubs').then((res) => {
   return res
 })
 
-const { user: piniaUser } = storeToRefs(useUserStore())
-
-const columns: QTableProps['columns'] = [
-  {
-    name: 'name',
-    label: 'Name',
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
-  {
-    name: 'role',
-    label: 'Role',
-    align: 'left',
-    field: 'role',
-    sortable: true,
-    format: v => formatRole(v),
-  },
-  {
-    name: 'email',
-    label: 'Email',
-    align: 'left',
-    field: 'email',
-    sortable: true,
-  },
-]
+const rows = computed(() => {
+  const selectedHostClubId = piniaUser.value?.host_club?.id
+  const selectedHostClub = data.value?.find(club => club.id === selectedHostClubId)
+  return selectedHostClub ? selectedHostClub.host_club_members : []
+})
 
 // refactor to be generic
 function validateEmail() {
   try {
     emailValidator.parse(invitedEmail.value)
     isValidEmail.value = true
-    errorMessage.value = ''
+    emailErrorMessage.value = ''
   }
   catch (error: any) {
     isValidEmail.value = false
-    errorMessage.value = error.issues[0].message
+    emailErrorMessage.value = error.issues[0].message
   }
 }
 
-const rows = computed(() => {
-  const selectedHostClubId = piniaUser.value?.host_club?.id
-  const selectedHostClub = data.value?.find(club => club.id === selectedHostClubId)
-  return selectedHostClub ? selectedHostClub.host_club_members : []
-})
+function validateRole() {
+  isRoleValid.value = Boolean(selectedRoleId.value)
+}
+
+// function onSubmit() {
+//   if (isValidEmail.value && isRoleValid.value) {
+
+//   }
+// }
+
+function resetModal() {
+  invitedEmail.value = ''
+  isValidEmail.value = null
+  emailErrorMessage.value = ''
+}
 </script>
 
 <template>
@@ -93,20 +84,19 @@ const rows = computed(() => {
             Invite members to your team
           </div>
         </q-card-section>
-
         <q-card-section class="q-pt-sm">
           <q-input
             v-model="invitedEmail"
-            class="q-mb-sm" filled dense label="Email address" :error="!isValidEmail"
-            :error-message="errorMessage"
+            class="q-mb-sm" filled dense label="Email address" :error="isValidEmail !== null && !isValidEmail"
+            :error-message="emailErrorMessage"
             @blur="validateEmail"
+            @hide="resetModal"
           />
-          <RoleSelect v-model="selectedRoleId" />
+          <RoleSelect v-model="selectedRoleId" :error="!isRoleValid" />
         </q-card-section>
-
         <q-card-actions align="right" class="text-primary">
           <q-btn v-close-popup flat label="Cancel" />
-          <q-btn v-close-popup flat label="Send invite" />
+          <q-btn flat label="Send invite" />
         </q-card-actions>
       </q-card>
     </q-dialog>

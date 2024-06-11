@@ -1,4 +1,3 @@
-<!-- RoleSelect.vue -->
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { formatRole } from '~/utils/formatter/role'
@@ -8,8 +7,13 @@ interface Role {
   name: string
 }
 
+const { error, errorMessage } = defineProps<{
+  error?: boolean | null
+  errorMessage?: string
+}>()
+
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string | null): void
+  (e: 'update:model-value', value: string | null): void
 }>()
 
 const supabase = useSupabaseClient()
@@ -17,8 +21,8 @@ const supabase = useSupabaseClient()
 const selectedRole = ref<string | null>(null)
 const roles = ref<Role[]>([])
 
-function emitSelectedRole(value: string | null) {
-  emit('update:modelValue', value)
+function updateModelValue(value: string | null) {
+  emit('update:model-value', value)
 }
 
 async function fetchRoles() {
@@ -35,16 +39,17 @@ onMounted(() => {
 </script>
 
 <template>
-  <q-select
-    v-model="selectedRole"
-    :options="roles"
-    :option-label="(role) => formatRole(role.name)"
-    option-value="id"
-    emit-value
-    map-options
-    filled
-    dense
-    label="Role"
-    @update:model-value="emitSelectedRole"
-  />
+  <div>
+    <q-select
+      v-model="selectedRole"
+      :options="roles"
+      :option-label="(role) => formatRole(role.name)"
+      option-value="id"
+      filled dense emit-value map-options
+      label="Role"
+      :error="error"
+      :error-message="errorMessage || 'Please select a role'"
+      @update:model-value="updateModelValue"
+    />
+  </div>
 </template>

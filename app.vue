@@ -10,7 +10,6 @@ useHead({
 })
 
 const $q = useQuasar()
-
 const color = useColorMode()
 
 watch(color, (newMode) => {

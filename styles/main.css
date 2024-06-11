@@ -10,8 +10,8 @@ body,
   font-family: 'Noto Sans JP', sans-serif;
 }
 
-html.dark {
-  background: #121212;
+html.dark, body.body--dark {
+  background: #222;
   color-scheme: dark;
 }
 
