@@ -1,13 +1,10 @@
 import { userRepository } from '~/repositories/user-repository'
-import type { AuthenticatedEvent } from '~/server/middleware/auth'
-import { authenticated } from '~/server/middleware/auth'
-import { throwUnauthorizedError } from '~/server/utils/errors/common'
 
-export default authenticated(async (event: AuthenticatedEvent, user: User) => {
+export default defineEventHandler(async (event) => {
   const { supabaseUser } = await protectRoute(event)
 
   if (!supabaseUser.email)
-    throwUnauthorizedError()
+    throw createError({ statusCode: 401, message: 'Unauthorized' })
   let existingUser = await userRepository.findByIdWithHostClub(supabaseUser.id)
 
   if (!existingUser) {

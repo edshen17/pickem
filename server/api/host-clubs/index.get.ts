@@ -1,9 +1,10 @@
 import { serverSupabaseClient } from '#supabase/server'
-import { protectRoute } from '~/server/utils/protect-route'
+import { AuthGuard } from '~/server/utils/auth-guards'
 
 export default defineEventHandler(async (event) => {
-  // TODO: check user permissions (host clubs) + roles
-  const user = await protectRoute(event)
+  // TODO: check user permissions (host clubs)
+  const { supabaseUser, user } = await protectRoute(event)
+  AuthGuard.availableFor(user, ['OWNER'])
   const client = await serverSupabaseClient(event)
 
   const { data, error } = await client
@@ -15,7 +16,7 @@ export default defineEventHandler(async (event) => {
         ...roles(role:name)
       )
     `)
-    .eq('host_club_members.user_id', user.id)
+    .eq('host_club_members.user_id', supabaseUser.id)
 
   if (error)
     throw error
