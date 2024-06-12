@@ -1,8 +1,9 @@
 import { userRepository } from '~/repositories/user-repository'
-import { authenticated } from '~/server/middleware/auth'
+import { authenticated } from '~/server/utils/middleware/auth'
 
-export default authenticated(async ({ supabaseUser }) => {
-  let existingUser = await userRepository.findByIdWithHostClub(supabaseUser.id)
+export default authenticated(async ({ supabaseUser, user: existingUser }) => {
+  if (!supabaseUser.email)
+    throw createError({ statusCode: 401, message: 'Unauthorized' })
 
   if (!existingUser) {
     // TODO: unify insert and join

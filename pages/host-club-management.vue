@@ -13,7 +13,7 @@ const selectedRoleId = ref<string | null>(null)
 const isValidRole = ref<boolean | null>(null)
 
 // sort by owner, then name
-const { data } = await useFetch<any[]>('/api/host-clubs').then((res) => {
+const { data } = await useFetchApi<any[]>('/api/host-clubs').then((res) => {
   loading.value = false
   return res
 })

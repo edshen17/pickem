@@ -58,9 +58,9 @@ export function apiMiddleware<T>(apiMethod: ApiMethod<T>, requireAuthentication:
 }
 
 export function authenticated<T>(apiMethod: AuthenticatedApiMethod<T>) {
-  return apiMiddleware(apiMethod as ApiMethod<T>, true)
+  return eventHandler(apiMiddleware(apiMethod as ApiMethod<T>, true))
 }
 
 export function anonymous<T>(apiMethod: ApiMethod<T>) {
-  return apiMiddleware(apiMethod, false)
+  return eventHandler(apiMiddleware(apiMethod, false))
 }
