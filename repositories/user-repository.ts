@@ -2,7 +2,7 @@ import { type Selectable, sql } from 'kysely'
 import type { DB, HostClubs, Users } from 'kysely-codegen'
 import { db } from '~/db/kysely'
 import { BaseRepository } from '~/repositories/base-repository'
-import type { IUser } from '~/view-models/user-view'
+import type { IUser } from '~/view-models/user'
 
 export class UserRepository extends BaseRepository<Users> {
   protected tableName = 'users' as keyof DB

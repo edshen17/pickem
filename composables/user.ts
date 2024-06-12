@@ -1,5 +1,5 @@
 import { acceptHMRUpdate, defineStore } from 'pinia'
-import type { IUser } from '~/view-models/user-view'
+import type { IUser } from '~/view-models/user'
 
 export const useUserStore = defineStore('user', () => {
   const user = ref<IUser | null>(null)

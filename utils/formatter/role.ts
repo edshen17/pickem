@@ -1,16 +1,18 @@
-export function formatRole(role: string): string {
+import { Role } from '~/view-models/role'
+
+export function formatRole(role: Role): string {
   switch (role) {
-    case 'OWNER':
+    case Role.OWNER:
       return 'Owner'
-    case 'ADMIN':
+    case Role.ADMIN:
       return 'Admin'
-    case 'MEMBER':
+    case Role.MEMBER:
       return 'Member'
-    case 'NATION':
+    case Role.NATION:
       return 'Nation'
-    case 'CLUB_DIRECTOR':
+    case Role.CLUB_DIRECTOR:
       return 'Club Director'
-    case 'FAN':
+    case Role.FAN:
       return 'Fan'
     default:
       return role

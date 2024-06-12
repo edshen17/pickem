@@ -5,7 +5,7 @@ import { createError } from 'h3'
 import { serverSupabaseUser } from '#supabase/server'
 import { userRepository } from '~/repositories/user-repository'
 import { throwUnauthorizedError } from '~/server/utils/errors/common'
-import type { IUser } from '~/view-models/user-view'
+import type { IUser } from '~/view-models/user'
 
 interface IApiMethodRequest {
   event: H3Event<EventHandlerRequest>

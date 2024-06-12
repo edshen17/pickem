@@ -1,5 +1,5 @@
 import { throwError, throwUnauthorizedError } from '~/server/utils/errors/common'
-import type { IUser } from '~/view-models/user-view'
+import type { IUser } from '~/view-models/user'
 
 export function hasRoles(user: IUser, roles: string[]) {
   return roles.includes(user.role ?? throwError('Role required'))
