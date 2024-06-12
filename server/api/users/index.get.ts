@@ -2,8 +2,9 @@ import { userRepository } from '~/repositories/user-repository'
 import type { AuthenticatedEvent } from '~/server/middleware/auth'
 import { authenticated } from '~/server/middleware/auth'
 import { throwUnauthorizedError } from '~/server/utils/errors/common'
+import { IUser } from '~/view-models/user-view'
 
-export default authenticated(async (event: AuthenticatedEvent, user: User) => {
+export default authenticated(async (event: AuthenticatedEvent, user: IUser) => {
   const { supabaseUser } = await protectRoute(event)
 
   if (!supabaseUser.email)
