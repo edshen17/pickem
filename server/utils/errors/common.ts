@@ -9,10 +9,14 @@ function throwApiError(statusCode: StatusCodes, message: string): never {
   throw createError({ statusCode, message })
 }
 
-export function throwForbiddenError(): never {
-  throw throwApiError(StatusCodes.FORBIDDEN, 'Forbidden')
+export function throwForbiddenError(message?: string): never {
+  throw throwApiError(StatusCodes.FORBIDDEN, message ?? 'Forbidden')
 }
 
-export function throwUnauthorizedError(): never {
-  throw throwApiError(StatusCodes.UNAUTHORIZED, 'Unauthorized')
+export function throwUnauthorizedError(message?: string): never {
+  throw throwApiError(StatusCodes.UNAUTHORIZED, message ?? 'Unauthorized')
+}
+
+export function throwNotFoundError(message?: string): never {
+  throw throwApiError(StatusCodes.NOT_FOUND, message ?? 'Not found')
 }

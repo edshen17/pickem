@@ -6,3 +6,5 @@ export enum Role {
   CLUB_DIRECTOR = 'CLUB_DIRECTOR',
   FAN = 'FAN',
 }
+
+export const adminRoles = [Role.OWNER, Role.ADMIN, Role.CLUB_DIRECTOR]

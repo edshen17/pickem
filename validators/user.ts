@@ -7,6 +7,11 @@ export const userValidator = z.object({
   password: z.string().min(8, 'Please enter a password with at least 8 characters'),
 })
 
+export const inviteUserValidator = z.object({
+  email: emailValidator,
+  roleId: z.string().uuid(),
+})
+
 // can update to use name:
 // firstName: z.string().required()
 export const logInUserValidator = userValidator.extend({})

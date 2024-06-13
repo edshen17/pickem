@@ -1,9 +1,10 @@
 import { userRepository } from '~/repositories/user-repository'
+import { throwUnauthorizedError } from '~/server/utils/errors/common'
 import { authenticated } from '~/server/utils/middleware/auth'
 
 export default authenticated(async ({ supabaseUser, user: existingUser }) => {
   if (!supabaseUser.email)
-    throw createError({ statusCode: 401, message: 'Unauthorized' })
+    throwUnauthorizedError()
 
   if (!existingUser) {
     // TODO: unify insert and join

@@ -1,11 +1,11 @@
 import { serverSupabaseClient } from '#supabase/server'
 import { authenticated } from '~/server/utils/middleware/auth'
 import { AuthGuard } from '~/server/utils/auth-guards'
-import { Role } from '~/view-models/role'
+import { adminRoles } from '~/view-models/role'
 
 export default authenticated(async ({ event, supabaseUser, user }) => {
   // TODO: check user permissions (host clubs)
-  AuthGuard.availableFor(user, [Role.OWNER, Role.CLUB_DIRECTOR, Role.ADMIN])
+  AuthGuard.availableFor(user, adminRoles)
 
   const client = await serverSupabaseClient(event)
 
