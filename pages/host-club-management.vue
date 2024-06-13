@@ -45,10 +45,17 @@ function hasError(v: boolean | null) {
   return v !== null && !v
 }
 
-function onSubmit() {
+async function onSubmit() {
   if (isValidEmail.value && isValidRole.value) {
     // make api
     // resetModal()
+    const { data } = await useFetchApi('/api/users/invite', { method: 'POST', body: {
+      email: invitedEmail.value,
+      roleId: selectedRoleId.value,
+    } }).then((res) => {
+      loading.value = false
+      return res
+    })
   }
 }
 

@@ -1,4 +1,4 @@
-import type { Generated, Insertable, ReferenceExpression, Updateable } from 'kysely'
+import type { Generated, Insertable, ReferenceExpression, Selectable, Updateable } from 'kysely'
 import type { DB } from 'kysely-codegen'
 import { db } from '~/db/kysely'
 
@@ -20,7 +20,7 @@ export abstract class BaseRepository<T extends { id: Generated<string> }> {
       .selectFrom(this.tableName)
       .where('id', '=', id)
       .selectAll()
-      .executeTakeFirst() as T
+      .executeTakeFirst() as Selectable<T>
   }
 
   async find(criteria: Partial<T>) {

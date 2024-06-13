@@ -1,4 +1,3 @@
-// composables/useCustomFetch.ts
 import type { UseFetchOptions } from 'nuxt/app'
 
 export function useFetchApi<T>(

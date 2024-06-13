@@ -1,18 +1,24 @@
+import type { User } from '@supabase/supabase-js'
+import type { Insertable, Selectable } from 'kysely'
+import type { Users } from 'kysely-codegen'
 import { userRepository } from '~/repositories/user-repository'
-import { throwUnauthorizedError } from '~/server/utils/errors/common'
 import { authenticated } from '~/server/utils/middleware/auth'
 
-export default authenticated(async ({ supabaseUser, user: existingUser }) => {
+export async function createUserFromSupabase(supabaseUser: User) {
   if (!supabaseUser.email)
-    throwUnauthorizedError()
+    throwError('Email required')
 
+  return await userRepository.insert({
+    id: supabaseUser.id,
+    name: supabaseUser.user_metadata.full_name ?? supabaseUser.email.split('@')[0],
+    email: supabaseUser.email,
+  }, supabaseUser)
+}
+
+export default authenticated(async ({ supabaseUser, user: existingUser }) => {
   if (!existingUser) {
     // TODO: unify insert and join
-    await userRepository.insert({
-      id: supabaseUser.id,
-      name: supabaseUser.user_metadata.full_name ?? supabaseUser.email?.split('@')[0],
-      email: supabaseUser.email,
-    }, supabaseUser)
+    await createUserFromSupabase(supabaseUser)
     existingUser = await userRepository.findByIdWithHostClub(supabaseUser.id)
   }
 
