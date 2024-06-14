@@ -34,7 +34,6 @@ export default authenticated(async ({ user, event }) => {
   if (!invitedUser)
     await createUserFromSupabase(invitedSupabaseUser)
 
-  // check if not inside team already
   const invitedHostClubMember = await hostClubMemberRepository.findByHostClubAndUser(user.host_club.id, invitedSupabaseUser.id)
 
   if (!invitedHostClubMember) {
