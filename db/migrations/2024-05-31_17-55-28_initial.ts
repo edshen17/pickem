@@ -49,7 +49,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('record_id', 'uuid')
     .addColumn('operation_type', sql`text check (operation_type in ('INSERT', 'UPDATE', 'DELETE'))`)
     .addColumn('updated_at', 'timestamp', col => col.defaultTo(sql`now()`))
-    .addColumn('updated_by', 'uuid')
+    .addColumn('updated_by', 'uuid', col => col.notNull().references('users.id'))
     .addColumn('original_values', 'jsonb')
     .addColumn('new_values', 'jsonb'),
   )

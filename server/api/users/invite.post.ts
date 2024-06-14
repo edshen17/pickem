@@ -2,7 +2,7 @@ import { AuthGuard } from '~/server/utils/auth-guards'
 import { authenticated } from '~/server/utils/middleware/auth'
 import { inviteUserValidator } from '~/validators/user'
 import { adminRoles } from '~/view-models/role'
-import { serverSupabaseClient } from '#supabase/server'
+import { serverSupabaseServiceRole } from '#supabase/server'
 import { throwNotFoundError } from '~/server/utils/errors/common'
 import { userRepository } from '~/repositories/user-repository'
 import { createUserFromSupabase } from '~/server/api/users/index.get'
@@ -13,7 +13,7 @@ export default authenticated(async ({ user, event }) => {
 
   const { email, roleId } = await readValidatedBody(event, body => inviteUserValidator.parse(body))
   const redirectTo = `${useRuntimeConfig().public.baseUrl}/sign-up`
-  const client = await serverSupabaseClient(event)
+  const client = serverSupabaseServiceRole(event)
 
   if (!user || !user.host_club)
     throwNotFoundError('User or host club not found')
@@ -26,8 +26,6 @@ export default authenticated(async ({ user, event }) => {
     data: { hostClubId: user.host_club.id },
   })
 
-  console.log(error, invitedSupabaseUser)
-
   if (error || invitedSupabaseUser === null)
     throwNotFoundError(`Unable to invite ${email}`)
 
@@ -35,6 +33,8 @@ export default authenticated(async ({ user, event }) => {
 
   if (!invitedUser)
     await createUserFromSupabase(invitedSupabaseUser)
+
+  // check if not inside team already
 
   await hostClubMemberRepository.insert({
     user_id: invitedSupabaseUser.id,

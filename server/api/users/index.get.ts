@@ -1,6 +1,4 @@
 import type { User } from '@supabase/supabase-js'
-import type { Insertable, Selectable } from 'kysely'
-import type { Users } from 'kysely-codegen'
 import { userRepository } from '~/repositories/user-repository'
 import { authenticated } from '~/server/utils/middleware/auth'
 
