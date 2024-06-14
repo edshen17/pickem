@@ -1,4 +1,5 @@
-import type { Generated, Insertable, ReferenceExpression, Selectable, Updateable } from 'kysely'
+import type { Generated, Insertable, ReferenceExpression, SelectQueryBuilder, Selectable, Updateable } from 'kysely'
+
 import type { DB } from 'kysely-codegen'
 import { db } from '~/db/kysely'
 
@@ -12,26 +13,30 @@ export function fullAudit(v: Record<string, any>, user: IAuditUser | null) {
   return { updated_by: user?.id, created_by: user?.id, updated_at: new Date(), created_at: new Date(), ...v }
 }
 
-export abstract class BaseRepository<T extends { id: Generated<string> }> {
-  protected abstract tableName: keyof DB
+export class BaseRepository<T extends { id: Generated<string> }> {
+  public db = db
+  protected tableName: keyof DB
+  protected query: SelectQueryBuilder<DB, keyof DB, any>
+
+  constructor(tableName: keyof DB) {
+    this.tableName = tableName
+    this.query = db.selectFrom(this.tableName)
+  }
 
   async findById(id: string) {
-    return await db
-      .selectFrom(this.tableName)
+    return await this.query
       .where('id', '=', id)
       .selectAll()
       .executeTakeFirst() as Selectable<T>
   }
 
   async find(criteria: Partial<T>) {
-    let query = db.selectFrom(this.tableName)
-
     for (const [key, value] of Object.entries(criteria)) {
       if (value !== undefined)
-        query = query.where(key as ReferenceExpression<DB, keyof DB>, value === null ? 'is' : '=', value)
+        this.query = this.query.where(key as ReferenceExpression<DB, keyof DB>, value === null ? 'is' : '=', value)
     }
 
-    return await query.selectAll().execute()
+    return await this.query.selectAll().execute()
   }
 
   async updateById(id: string, update: Omit<Updateable<T>, FullAuditFields>, user: IAuditUser | null) {

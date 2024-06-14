@@ -5,7 +5,9 @@ import { BaseRepository } from '~/repositories/base-repository'
 import type { IUser } from '~/view-models/user'
 
 export class UserRepository extends BaseRepository<Users> {
-  protected tableName = 'users' as keyof DB
+  constructor() {
+    super('users')
+  }
 
   async findByIdWithHostClub(userId: string): Promise<IUser | null> {
     const result = await db
