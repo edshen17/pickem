@@ -22,7 +22,7 @@ export default authenticated(async ({ user }) => {
       'host_clubs.updated_at',
       'host_clubs.updated_by',
       'host_clubs.deleted_at',
-      sql<ITeamMember>`json_agg(
+      sql<ITeamMember[]>`json_agg(
       json_build_object(
         'id', users.id,
         'name', users.name,

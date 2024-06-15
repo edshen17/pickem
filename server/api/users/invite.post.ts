@@ -7,6 +7,7 @@ import { throwNotFoundError } from '~/server/utils/errors/common'
 import { userRepository } from '~/repositories/user-repository'
 import { createUserFromSupabase } from '~/server/api/users/index.get'
 import { hostClubMemberRepository } from '~/repositories/host-club-member-repository'
+import { db } from '~/db/kysely'
 
 export default authenticated(async ({ user, event }) => {
   AuthGuard.availableFor(user, adminRoles)
@@ -15,32 +16,37 @@ export default authenticated(async ({ user, event }) => {
   const redirectTo = `${useRuntimeConfig().public.baseUrl}/sign-up`
   const client = serverSupabaseServiceRole(event)
 
-  if (!user || !user.host_club)
-    throwNotFoundError('User or host club not found')
+  // throwError('test')
 
-  const {
-    data: { user: invitedSupabaseUser },
-    error,
-  } = await client.auth.admin.inviteUserByEmail(email, {
-    redirectTo,
-    data: { hostClubId: user.host_club.id },
+  db.transaction().execute(async () => {
+    if (!user || !user.host_club)
+      throwNotFoundError('User or host club not found')
+
+    const {
+      data: { user: invitedSupabaseUser },
+      error,
+    } = await client.auth.admin.inviteUserByEmail(email, {
+      redirectTo,
+      data: { hostClubId: user.host_club.id },
+    })
+
+    if (error || invitedSupabaseUser === null)
+      throwNotFoundError(`Unable to invite ${email}`)
+
+    const invitedUser = await userRepository.findById(invitedSupabaseUser.id)
+
+    if (!invitedUser)
+      await createUserFromSupabase(invitedSupabaseUser)
+
+    const invitedHostClubMember = await hostClubMemberRepository.findByHostClubAndUser(user.host_club.id, invitedSupabaseUser.id)
+
+    if (!invitedHostClubMember) {
+      console.log('inserted')
+      await hostClubMemberRepository.insert({
+        user_id: invitedSupabaseUser.id,
+        host_club_id: user.host_club.id,
+        role_id: roleId,
+      }, user)
+    }
   })
-
-  if (error || invitedSupabaseUser === null)
-    throwNotFoundError(`Unable to invite ${email}`)
-
-  const invitedUser = await userRepository.findById(invitedSupabaseUser.id)
-  // do transaction here
-  if (!invitedUser)
-    await createUserFromSupabase(invitedSupabaseUser)
-
-  const invitedHostClubMember = await hostClubMemberRepository.findByHostClubAndUser(user.host_club.id, invitedSupabaseUser.id)
-
-  if (!invitedHostClubMember) {
-    await hostClubMemberRepository.insert({
-      user_id: invitedSupabaseUser.id,
-      host_club_id: user.host_club.id,
-      role_id: roleId,
-    }, user)
-  }
 })

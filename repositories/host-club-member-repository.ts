@@ -10,7 +10,7 @@ export class HostClubMemberRepository extends BaseRepository<HostClubMembers> {
   }
 
   async findByHostClubAndUser(hostClubId: string, userId: string) {
-    return await this.query.where('host_club_id', '=', hostClubId).where('user_id', '=', userId).selectAll().execute()
+    return await this.query.where('host_club_id', '=', hostClubId).where('user_id', '=', userId).selectAll().executeTakeFirst()
   }
 }
 

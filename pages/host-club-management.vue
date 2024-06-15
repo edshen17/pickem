@@ -4,7 +4,11 @@ import { emailValidator } from '~/validators/user'
 
 const { user: piniaUser } = storeToRefs(useUserStore())
 
-const loading = ref(true)
+// TODO: sort rows by role, install quasar notify plugin, make limit on table 50 (maybe use virtual scroll?)
+// TODO: soft delete invited user
+
+const loadingHostClubs = ref(true)
+const loadingInvite = ref (false)
 const isInviteModalOpen = ref(false)
 const invitedEmail = ref('')
 const isValidEmail = ref<boolean | null>(null)
@@ -12,11 +16,16 @@ const emailErrorMessage = ref('')
 const selectedRoleId = ref<string | null>(null)
 const isValidRole = ref<boolean | null>(null)
 
-// sort by owner, then name
-const { data } = await useFetchApi<any[]>('/api/host-clubs').then((res) => {
-  loading.value = false
+const { data } = await useFetchApi('/api/host-clubs').then((res) => {
+  loadingHostClubs.value = false
   return res
 })
+
+async function refreshTableData() {
+  loadingHostClubs.value = true
+  await refreshNuxtData()
+  loadingHostClubs.value = false
+}
 
 const rows = computed(() => {
   const selectedHostClubId = piniaUser.value?.host_club?.id
@@ -47,14 +56,17 @@ function hasError(v: boolean | null) {
 
 async function onSubmit() {
   if (isValidEmail.value && isValidRole.value) {
-    // make api
-    // resetModal()
-    const { data } = await useFetchApi('/api/users/invite', { method: 'POST', body: {
+    loadingInvite.value = true
+    $fetch('/api/users/invite', { method: 'POST', body: {
       email: invitedEmail.value,
       roleId: selectedRoleId.value,
-    } }).then((res) => {
-      loading.value = false
-      return res
+    } }).then(() => {
+      refreshTableData()
+    }).catch(() => {
+      // TODO: notify error here
+    }).finally(() => {
+      loadingInvite.value = false
+      isInviteModalOpen.value = false
     })
   }
 }
@@ -77,7 +89,7 @@ function resetModal() {
       <p>{{ piniaUser?.host_club?.name }}</p>
     </div>
     <q-table
-      :loading="loading"
+      :loading="loadingHostClubs"
       :dense="$q.screen.lt.md"
       flat bordered
       title="Members"
@@ -102,6 +114,7 @@ function resetModal() {
           </div>
         </q-card-section>
         <q-card-section class="q-pt-sm">
+          {{ loadingInvite }}
           <q-input
             v-model="invitedEmail"
             class="q-mb-sm" filled dense label="Email address" :error="hasError(isValidEmail)"
@@ -112,7 +125,7 @@ function resetModal() {
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn v-close-popup flat label="Cancel" />
-          <q-btn flat label="Send invite" @click="onSubmit" />
+          <q-btn flat label="Send invite" :loading="loadingInvite" @click="onSubmit" />
         </q-card-actions>
       </q-card>
     </q-dialog>

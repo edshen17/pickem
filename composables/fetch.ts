@@ -1,9 +1,6 @@
 import type { UseFetchOptions } from 'nuxt/app'
 
-export function useFetchApi<T>(
-  url: string | (() => string),
-  options: UseFetchOptions<T> = {},
-) {
+export const useFetchApi: typeof useFetch = <T>(url: string | (() => string), options: UseFetchOptions<T> = {}) => {
   return useFetch(url, {
     ...options,
     onResponseError({ response }) {
@@ -21,8 +18,8 @@ export function useFetchApi<T>(
             break
           // Add more cases for other status codes as needed
           default:
-            // Handle other error status codes or fallback to a generic error page
             navigateTo('/error')
+            break
         }
       }
     },
