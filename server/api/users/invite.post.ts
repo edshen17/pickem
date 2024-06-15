@@ -30,7 +30,7 @@ export default authenticated(async ({ user, event }) => {
     throwNotFoundError(`Unable to invite ${email}`)
 
   const invitedUser = await userRepository.findById(invitedSupabaseUser.id)
-
+  // do transaction here
   if (!invitedUser)
     await createUserFromSupabase(invitedSupabaseUser)
 
