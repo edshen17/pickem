@@ -65,7 +65,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <header class="u-relative u-top-0 u-z-10000 u-w-full u-flex u-flex-wrap u-items-center u-justify-between u-border-b-2 u-bg-white u-px-4 u-py-3 lg:u-sticky dark:u-border-gray-700 md:u-border-none dark:u-bg-dark md:u-shadow-md dark:md:u-border-b-1.5">
+  <header class="u-relative u-top-0 u-z-100 u-w-full u-flex u-flex-wrap u-items-center u-justify-between u-border-b-2 u-bg-white u-px-4 u-py-3 lg:u-sticky dark:u-border-gray-700 md:u-border-none dark:u-bg-dark md:u-shadow-md dark:md:u-border-b-1.5">
     <div class="u-w-full u-flex u-items-center u-justify-between u-py-1 lg:u-w-auto lg:u-py-2">
       <RouterLink to="/" class="u-px-3 u-text-4xl u-text-black u-font-bold u-font-sans dark:u-text-white">
         PickEm

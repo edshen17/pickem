@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { hostClubManagementColumns as columns } from '~/components/data-table/columns'
+import { NotificationManager } from '~/utils/formatter/notification-manager'
 import { emailValidator } from '~/validators/user'
 
 const { user: piniaUser } = storeToRefs(useUserStore())
 
-// TODO: sort rows by role, install quasar notify plugin, make limit on table 50 (maybe use virtual scroll?)
+// TODO: sort rows by role
 // TODO: soft delete invited user
 
 const loadingHostClubs = ref(true)
@@ -15,6 +16,9 @@ const isValidEmail = ref<boolean | null>(null)
 const emailErrorMessage = ref('')
 const selectedRoleId = ref<string | null>(null)
 const isValidRole = ref<boolean | null>(null)
+const initialPagination = {
+  rowsPerPage: 10,
+}
 
 const { data } = await useFetchApi('/api/host-clubs').then((res) => {
   loadingHostClubs.value = false
@@ -60,10 +64,11 @@ async function onSubmit() {
     $fetch('/api/users/invite', { method: 'POST', body: {
       email: invitedEmail.value,
       roleId: selectedRoleId.value,
-    } }).then(() => {
-      refreshTableData()
+    } }).then(async () => {
+      await refreshTableData()
+      NotificationManager.success('User invited')
     }).catch(() => {
-      // TODO: notify error here
+      NotificationManager.error()
     }).finally(() => {
       loadingInvite.value = false
       isInviteModalOpen.value = false
@@ -96,6 +101,7 @@ function resetModal() {
       :rows="rows"
       :columns="columns"
       row-key="name"
+      :pagination="initialPagination"
     >
       <template #top>
         <span class="u-text-lg">Members</span>
@@ -114,7 +120,6 @@ function resetModal() {
           </div>
         </q-card-section>
         <q-card-section class="q-pt-sm">
-          {{ loadingInvite }}
           <q-input
             v-model="invitedEmail"
             class="q-mb-sm" filled dense label="Email address" :error="hasError(isValidEmail)"
