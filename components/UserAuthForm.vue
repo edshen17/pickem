@@ -20,6 +20,8 @@ const validationSchema = toTypedSchema(getUserValidator(isSignupPage))
 
 const { values, handleSubmit } = useForm<UserValidator>({ validationSchema })
 
+// TODO: get access token and stuff, make sure to send query
+
 const onSubmit = handleSubmit(async () => {
   NProgress.start()
   await _handleLogin()
