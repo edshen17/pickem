@@ -9,14 +9,16 @@ import { createUserFromSupabase } from '~/server/api/users/index.get'
 import { hostClubMemberRepository } from '~/repositories/host-club-member-repository'
 import { db } from '~/db/kysely'
 
+export interface ISupabaseUserMetadata {
+  hostClubId: string
+}
+
 export default authenticated(async ({ user, event }) => {
   AuthGuard.availableFor(user, adminRoles)
 
   const { email, roleId } = await readValidatedBody(event, body => inviteUserValidator.parse(body))
   const redirectTo = `${useRuntimeConfig().public.baseUrl}/sign-up`
   const client = serverSupabaseServiceRole(event)
-
-  // throwError('test')
 
   db.transaction().execute(async () => {
     if (!user || !user.host_club)

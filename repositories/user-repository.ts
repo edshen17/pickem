@@ -1,15 +1,17 @@
-import { type Selectable, sql } from 'kysely'
+import { type SelectQueryBuilder, type Selectable, sql } from 'kysely'
 import type { DB, HostClubs, Users } from 'kysely-codegen'
 import { db } from '~/db/kysely'
 import { BaseRepository } from '~/repositories/base-repository'
 import type { IUser } from '~/view-models/user'
 
 export class UserRepository extends BaseRepository<Users> {
+  declare query: SelectQueryBuilder<DB, 'users', any>
+
   constructor() {
     super('users')
   }
 
-  async findByIdWithHostClub(userId: string): Promise<IUser | null> {
+  async findByIdWithHostClub(userId: string, hostClubId?: string): Promise<IUser | null> {
     const result = await db
       .selectFrom('users')
       .where('users.id', '=', userId)
@@ -35,11 +37,11 @@ export class UserRepository extends BaseRepository<Users> {
     const { user, host_clubs_with_roles } = result
 
     const selectedClub
-    = host_clubs_with_roles.find(hc => hc.host_club?.id === user.selected_host_club_id)
+    = host_clubs_with_roles.find(hc => hc.host_club?.id === hostClubId ?? user.selected_host_club_id)
     || host_clubs_with_roles[0]
     || null
 
-    // create auth view and don't pass
+    // TODO: create auth view and don't pass
     return {
       ...user,
       role: selectedClub?.role ?? null,

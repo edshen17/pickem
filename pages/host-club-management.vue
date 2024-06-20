@@ -20,16 +20,10 @@ const initialPagination = {
   rowsPerPage: 10,
 }
 
-const { data } = await useFetchApi('/api/host-clubs').then((res) => {
+const { data, refresh } = await useFetchApi('/api/host-clubs').then((res) => {
   loadingHostClubs.value = false
   return res
 })
-
-async function refreshTableData() {
-  loadingHostClubs.value = true
-  await refreshNuxtData()
-  loadingHostClubs.value = false
-}
 
 const rows = computed(() => {
   const selectedHostClubId = piniaUser.value?.host_club?.id
@@ -65,7 +59,11 @@ async function onSubmit() {
       email: invitedEmail.value,
       roleId: selectedRoleId.value,
     } }).then(async () => {
-      await refreshTableData()
+      loadingHostClubs.value = true
+      setTimeout(async () => {
+        await refresh()
+        loadingHostClubs.value = false
+      }, 2000)
       NotificationManager.success('User invited')
     }).catch(() => {
       NotificationManager.error()
