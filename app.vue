@@ -18,6 +18,7 @@ watch(color, (newMode) => {
 </script>
 
 <template>
+  <NuxtLoadingIndicator />
   <VitePwaManifest />
   <NuxtLayout>
     <NuxtPage />

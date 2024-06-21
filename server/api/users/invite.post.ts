@@ -20,7 +20,7 @@ export default authenticated(async ({ user, event }) => {
   const redirectTo = `${useRuntimeConfig().public.baseUrl}/sign-up`
   const client = serverSupabaseServiceRole(event)
 
-  db.transaction().execute(async () => {
+  await db.transaction().execute(async () => {
     if (!user || !user.host_club)
       throwNotFoundError('User or host club not found')
 

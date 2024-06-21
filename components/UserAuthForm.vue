@@ -13,14 +13,19 @@ const supabaseOptions = { redirectTo }
 const router = useRouter()
 const isSignupPage = computed(() => router.currentRoute.value.path === '/sign-up').value
 const showPassword = ref(false)
+const inviteToken = useCookie('invite-token')
+
 const buttonClass = 'u-py-3 u-px-4 u-rounded u-w-full u-my-6 btn-hover-gradient'
 const redirectLinkClass = 'u-text-blue-500 hover:u-text-blue-400'
 
 const validationSchema = toTypedSchema(getUserValidator(isSignupPage))
 
 const { values, handleSubmit } = useForm<UserValidator>({ validationSchema })
+const { query } = router.currentRoute.value
 
 // TODO: get access token and stuff, make sure to send query
+if (query.token)
+  inviteToken.value = query.token as string
 
 const onSubmit = handleSubmit(async () => {
   NProgress.start()

@@ -7,6 +7,7 @@ const { user: piniaUser } = storeToRefs(useUserStore())
 
 // TODO: sort rows by role
 // TODO: soft delete invited user
+// TODO: move table to end after inviting user
 
 const loadingHostClubs = ref(true)
 const loadingInvite = ref (false)
@@ -59,6 +60,7 @@ async function onSubmit() {
       email: invitedEmail.value,
       roleId: selectedRoleId.value,
     } }).then(async () => {
+      // TODO: use invited user response instead of making another request
       loadingHostClubs.value = true
       setTimeout(async () => {
         await refresh()
