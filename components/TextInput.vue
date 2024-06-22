@@ -31,6 +31,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  readonly: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const name = toRef(props, 'name')
@@ -57,6 +61,7 @@ const hasError = errorMessage || meta.valid
       :value="inputValue"
       :placeholder="placeholder"
       :class="className"
+      :readonly="readonly"
       @change="handleChange"
       @blur="handleBlur"
     >

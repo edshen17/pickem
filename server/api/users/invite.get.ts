@@ -6,9 +6,9 @@ import type { ISupabaseUserMetadata } from '~/server/api/users/invite.post'
 const accessTokenValidator = z.string().min(1)
 
 export default anonymous(async ({ event }) => {
-  const { accessToken } = getQuery(event)
+  const { inviteToken } = getQuery(event)
 
-  const parsedToken = accessTokenValidator.parse(accessToken)
+  const parsedToken = accessTokenValidator.parse(inviteToken)
 
   const client = await serverSupabaseClient(event)
 
@@ -18,7 +18,7 @@ export default anonymous(async ({ event }) => {
   } = await client.auth.getUser(parsedToken)
 
   if (error || user === null)
-    throwNotFoundError()
+    throwNotFoundError('User not found')
 
   const { hostClubId } = user.user_metadata as ISupabaseUserMetadata
 

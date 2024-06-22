@@ -37,7 +37,6 @@ export function apiMiddleware<T>(apiMethod: ApiMethod<T>, requireAuthentication:
       return await apiMethod({ event, user, supabaseUser })
     }
     catch (e: any) {
-      console.log('caught here')
       console.error(e)
 
       if (e.statusCode) {
