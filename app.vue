@@ -12,8 +12,10 @@ useHead({
 const $q = useQuasar()
 const color = useColorMode()
 
+$q.dark.set(color.value === 'dark')
+
 watch(color, (newMode) => {
-  $q.dark.set(newMode.value !== 'light')
+  $q.dark.set(newMode.value === 'dark')
 })
 </script>
 

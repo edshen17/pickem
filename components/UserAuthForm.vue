@@ -3,7 +3,8 @@ import { toTypedSchema } from '@vee-validate/zod'
 import NProgress from 'nprogress'
 import { ErrorMessage, useForm } from 'vee-validate'
 import { type UserValidator, getUserValidator } from '~/validators/user'
-import { handleSignIn, handleSignup } from '~/services/auth'
+import type { ISupabaseToken } from '~/services/auth'
+import { handleSignIn, handleSignUp } from '~/services/auth'
 import type { IUser } from '~/view-models/user'
 
 const { auth } = useSupabaseClient()
@@ -15,8 +16,9 @@ const router = useRouter()
 const isSignupPage = computed(() => router.currentRoute.value.path === '/sign-up').value
 const showPassword = ref(false)
 const invitedUser = ref<IUser | null>(null)
+const isInvitation = ref(false)
 const isInviteExpired = ref(false)
-const inviteToken = useCookie('invite-token')
+const supabaseToken = reactive<ISupabaseToken>({ access_token: '', refresh_token: '' })
 
 const buttonClass = 'u-py-3 u-px-4 u-rounded u-w-full u-my-6 btn-hover-gradient'
 const redirectLinkClass = 'u-text-blue-500 hover:u-text-blue-400'
@@ -28,17 +30,21 @@ const { hash } = router.currentRoute.value
 
 if (hash) {
   const params = new URLSearchParams(hash.substring(1))
-  inviteToken.value = params.get('access_token')
+  supabaseToken.access_token = params.get('access_token') ?? ``
+  supabaseToken.refresh_token = params.get('refresh_token') ?? ``
   isInviteExpired.value = Boolean(params.get('error'))
-  if (inviteToken.value) {
-    const invited = await $fetch('/api/users/invite', { query: { inviteToken: inviteToken.value } })
+
+  if (supabaseToken.access_token) {
+    const invited = await $fetch('/api/users/invite', { query: { inviteToken: supabaseToken.access_token } })
     invitedUser.value = JSON.parse(JSON.stringify(invited))
   }
 }
 
 onMounted(async () => {
-  if (invitedUser.value)
+  if (invitedUser.value) {
     setFieldValue('email', invitedUser.value.email)
+    isInvitation.value = true
+  }
 })
 
 const onSubmit = handleSubmit(async () => {
@@ -55,7 +61,7 @@ async function _handleLogin(): Promise<void> {
   const { email, password } = values
 
   const { error } = isSignupPage
-    ? await handleSignup(email, password)
+    ? await handleSignUp(email, password, supabaseToken)
     : await handleSignIn(email, password)
 
   if (error)
@@ -82,7 +88,7 @@ async function _handleLogin(): Promise<void> {
         <div v-else>
           <form class="q-gutter-y-lg u-mb-0">
             <!-- can add additional fields for sign up if needed -->
-            <TextInput :readonly="Boolean(invitedUser)" name="email" type="email" placeholder="Email address" :focused="!isSignupPage" @keyup.enter="onSubmit" />
+            <TextInput :readonly="isInvitation" name="email" type="email" placeholder="Email address" :focused="!isSignupPage" @keyup.enter="onSubmit" />
             <div class="u-flex">
               <TextInput name="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" :show-error-message="false" class-name="u-border-r-none! u-rounded-r-0! u-border-2 u-border-gray-300 u-rounded-md" @keyup.enter="onSubmit" />
               <button

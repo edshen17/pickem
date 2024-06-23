@@ -2,6 +2,7 @@ import type { User } from '@supabase/supabase-js'
 import { userRepository } from '~/repositories/user-repository'
 import { authenticated } from '~/server/utils/middleware/auth'
 
+// used for google login
 export async function createUserFromSupabase(supabaseUser: User) {
   if (!supabaseUser.email)
     throwError('Email required')
