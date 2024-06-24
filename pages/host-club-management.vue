@@ -3,6 +3,7 @@ import { hostClubManagementColumns as columns } from '~/components/data-table/co
 import { NotificationManager } from '~/utils/formatter/notification-manager'
 import { emailValidator } from '~/validators/user'
 import { isOwner } from '~/view-models/role'
+import type { ITeamMember } from '~/view-models/user'
 
 const { user: piniaUser } = storeToRefs(useUserStore())
 
@@ -12,6 +13,7 @@ const { user: piniaUser } = storeToRefs(useUserStore())
 
 const loadingHostClubs = ref(true)
 const loadingInvite = ref (false)
+const loadingDeactivate = ref(false)
 const isInviteModalOpen = ref(false)
 const invitedEmail = ref('')
 const isValidEmail = ref<boolean | null>(null)
@@ -19,6 +21,7 @@ const emailErrorMessage = ref('')
 const selectedRoleId = ref<string | null>(null)
 const isValidRole = ref<boolean | null>(null)
 const isDeactivateModalOpen = ref(false)
+const userIdToDeactivate = ref('')
 const initialPagination = {
   rowsPerPage: 10,
 }
@@ -78,12 +81,31 @@ async function onInvite() {
   }
 }
 
+async function onDeactivate() {
+  loadingDeactivate.value = true
+  $fetch('/api/host-club-members/delete', { method: 'POST', body: {
+    userId: userIdToDeactivate.value,
+  } }).then(async () => {
+    NotificationManager.success('User deactivated')
+  }).catch(() => {
+    NotificationManager.error()
+  }).finally(() => {
+    loadingDeactivate.value = false
+    isDeactivateModalOpen.value = false
+  })
+}
+
 function resetModal() {
   invitedEmail.value = ''
   isValidEmail.value = null
   emailErrorMessage.value = ''
   isValidRole.value = null
   selectedRoleId.value = null
+}
+
+function prepareDeactivateUser({ id }: ITeamMember) {
+  isDeactivateModalOpen.value = true
+  userIdToDeactivate.value = id
 }
 </script>
 
@@ -112,7 +134,7 @@ function resetModal() {
       </template>
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn v-if="!isOwner(props.row.role)" flat icon="delete" @click="isDeactivateModalOpen = true" />
+          <q-btn v-if="!isOwner(props.row.role)" flat icon="delete" @click="prepareDeactivateUser(props.row)" />
         </q-td>
       </template>
     </q-table>
@@ -148,7 +170,7 @@ function resetModal() {
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup flat label="Cancel" color="primary" />
-          <q-btn v-close-popup flat label="Confirm" color="primary" />
+          <q-btn flat label="Confirm" color="primary" :loading="loadingDeactivate" @click="onDeactivate" />
         </q-card-actions>
       </q-card>
     </q-dialog>

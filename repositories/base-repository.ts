@@ -50,7 +50,8 @@ export class BaseRepository<T extends { id: Generated<string> }> {
       .updateTable(this.tableName)
       .set(fullAudit(update, user))
       .where('id', '=', id)
-      .execute()
+      .returningAll()
+      .executeTakeFirst()
 
     await db
       .insertInto('audit_log')
