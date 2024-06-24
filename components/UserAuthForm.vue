@@ -58,10 +58,10 @@ function togglePasswordView() {
 }
 
 async function _handleLogin(): Promise<void> {
-  const { email, password } = values
+  const { name, email, password } = values
 
   const { error } = isSignupPage
-    ? await handleSignUp(email, password, supabaseToken)
+    ? await handleSignUp(name, email, password, supabaseToken)
     : await handleSignIn(email, password)
 
   if (error)
@@ -88,6 +88,7 @@ async function _handleLogin(): Promise<void> {
         <div v-else>
           <form class="q-gutter-y-lg u-mb-0">
             <!-- can add additional fields for sign up if needed -->
+            <TextInput v-if="isSignupPage" name="name" type="name" placeholder="Name" :focused="true" @keyup.enter="onSubmit" />
             <TextInput :readonly="isInvitation" name="email" type="email" placeholder="Email address" :focused="!isSignupPage" @keyup.enter="onSubmit" />
             <div class="u-flex">
               <TextInput name="password" :type="showPassword ? 'text' : 'password'" placeholder="Password" :show-error-message="false" class-name="u-border-r-none! u-rounded-r-0! u-border-2 u-border-gray-300 u-rounded-md" @keyup.enter="onSubmit" />

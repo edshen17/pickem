@@ -24,6 +24,8 @@ export default authenticated(async ({ user, event }) => {
     if (!user || !user.host_club)
       throwNotFoundError('User or host club not found')
 
+    // TODO: check supabase user by email and then if doesn't exist, invite
+    // this implementation would fail if user already in supabase
     const {
       data: { user: invitedSupabaseUser },
       error,

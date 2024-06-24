@@ -8,3 +8,11 @@ export enum Role {
 }
 
 export const adminRoles = [Role.OWNER, Role.ADMIN, Role.CLUB_DIRECTOR]
+
+export function isAdmin(role: Role) {
+  return adminRoles.includes(role)
+}
+
+export function isOwner(role: Role) {
+  return role === Role.OWNER
+}

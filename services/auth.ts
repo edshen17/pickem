@@ -5,14 +5,16 @@ export interface ISupabaseToken {
 
 export const accessTokenCookieKey = 'sb-access-token'
 
-export async function handleSignUp(email: string, password: string, supabaseToken: ISupabaseToken) {
+export async function handleSignUp(name: string, email: string, password: string, supabaseToken: ISupabaseToken) {
   const { auth } = useSupabaseClient()
   if (supabaseToken.access_token && supabaseToken.refresh_token) {
     await auth.setSession(supabaseToken)
     return await auth.updateUser({ password })
   }
   else {
-    return await auth.signUp({ email, password })
+    return await auth.signUp({ email, password, options: {
+      data: { name },
+    } })
   }
 }
 

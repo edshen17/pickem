@@ -98,6 +98,6 @@ export class BaseRepository<T extends { id: Generated<string> }> {
       .deleteFrom(this.tableName)
       .where('id', '=', id)
       .returningAll()
-      .executeTakeFirst()
+      .executeTakeFirstOrThrow()
   }
 }

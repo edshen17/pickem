@@ -1,19 +1,17 @@
 import { type SelectQueryBuilder, type Selectable, sql } from 'kysely'
 import type { DB, HostClubs, Users } from 'kysely-codegen'
-import { db } from '~/db/kysely'
 import { BaseRepository } from '~/repositories/base-repository'
 import type { IUser } from '~/view-models/user'
 
 export class UserRepository extends BaseRepository<Users> {
-  declare query: SelectQueryBuilder<DB, 'users', any>
+  declare query: SelectQueryBuilder<DB, 'users', Users>
 
   constructor() {
     super('users')
   }
 
   async findByIdWithHostClub(userId: string, hostClubId?: string): Promise<IUser | null> {
-    const result = await db
-      .selectFrom('users')
+    const result = await this.query
       .where('users.id', '=', userId)
       .leftJoin('host_club_members', 'host_club_members.user_id', 'users.id')
       .leftJoin('host_clubs', 'host_clubs.id', 'host_club_members.host_club_id')

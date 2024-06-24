@@ -2,6 +2,7 @@
 import { hostClubManagementColumns as columns } from '~/components/data-table/columns'
 import { NotificationManager } from '~/utils/formatter/notification-manager'
 import { emailValidator } from '~/validators/user'
+import { isOwner } from '~/view-models/role'
 
 const { user: piniaUser } = storeToRefs(useUserStore())
 
@@ -17,6 +18,7 @@ const isValidEmail = ref<boolean | null>(null)
 const emailErrorMessage = ref('')
 const selectedRoleId = ref<string | null>(null)
 const isValidRole = ref<boolean | null>(null)
+const isDeactivateModalOpen = ref(false)
 const initialPagination = {
   rowsPerPage: 10,
 }
@@ -53,7 +55,7 @@ function hasError(v: boolean | null) {
   return v !== null && !v
 }
 
-async function onSubmit() {
+async function onInvite() {
   if (isValidEmail.value && isValidRole.value) {
     loadingInvite.value = true
     $fetch('/api/users/invite', { method: 'POST', body: {
@@ -108,6 +110,11 @@ function resetModal() {
         <q-space />
         <q-btn color="primary" icon="person_add_alt" label="Invite" @click="isInviteModalOpen = true" />
       </template>
+      <template #body-cell-actions="props">
+        <q-td :props="props">
+          <q-btn v-if="!isOwner(props.row.role)" flat icon="delete" @click="isDeactivateModalOpen = true" />
+        </q-td>
+      </template>
     </q-table>
     <q-dialog
       v-model="isInviteModalOpen"
@@ -130,7 +137,18 @@ function resetModal() {
         </q-card-section>
         <q-card-actions align="right" class="text-primary">
           <q-btn v-close-popup flat label="Cancel" />
-          <q-btn flat label="Send invite" :loading="loadingInvite" @click="onSubmit" />
+          <q-btn flat label="Send invite" :loading="loadingInvite" @click="onInvite" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="isDeactivateModalOpen">
+      <q-card>
+        <q-card-section class="row items-center q-my-md">
+          <span class="q-ml-sm">Are you sure you want to de-activate this user?</span>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn v-close-popup flat label="Cancel" color="primary" />
+          <q-btn v-close-popup flat label="Confirm" color="primary" />
         </q-card-actions>
       </q-card>
     </q-dialog>

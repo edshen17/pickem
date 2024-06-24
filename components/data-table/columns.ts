@@ -24,4 +24,5 @@ export const hostClubManagementColumns: QTableProps['columns'] = [
     field: 'email',
     sortable: true,
   },
+  { name: 'actions', label: '', field: 'actions' },
 ]

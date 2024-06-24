@@ -4,13 +4,14 @@ import { authenticated } from '~/server/utils/middleware/auth'
 
 // used for google login
 export async function createUserFromSupabase(supabaseUser: User) {
-  if (!supabaseUser.email)
+  const { id, email, user_metadata } = supabaseUser
+  if (!email)
     throwError('Email required')
 
   return await userRepository.insert({
-    id: supabaseUser.id,
-    name: supabaseUser.user_metadata.full_name ?? supabaseUser.email.split('@')[0],
-    email: supabaseUser.email,
+    id,
+    name: user_metadata.name ?? user_metadata.full_name ?? email.split('@')[0],
+    email,
   }, supabaseUser)
 }
 

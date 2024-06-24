@@ -3,6 +3,7 @@ import { z } from 'zod'
 export const emailValidator = z.string().min(1, 'Please enter an email').email('Please enter a valid email')
 
 export const userValidator = z.object({
+  name: z.string().min(1, 'Please enter a name'),
   email: emailValidator,
   password: z.string().min(8, 'Please enter a password with at least 8 characters'),
 })
@@ -12,9 +13,8 @@ export const inviteUserValidator = z.object({
   roleId: z.string().uuid(),
 })
 
-// can update to use name:
-// firstName: z.string().required()
-export const logInUserValidator = userValidator.extend({})
+export const logInUserValidator = userValidator.extend({
+})
 
 export function getUserValidator(isSignupPage: boolean) {
   return isSignupPage ? userValidator : logInUserValidator
