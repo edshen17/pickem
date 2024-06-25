@@ -8,6 +8,7 @@ export interface IUser extends Selectable<Users> {
 }
 
 export interface ITeamMember {
+  deletedAt: Date | null
   id: string
   name: string
   email: string

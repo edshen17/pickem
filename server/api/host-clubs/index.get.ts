@@ -27,7 +27,8 @@ export default authenticated(async ({ user }) => {
         'id', users.id,
         'name', users.name,
         'email', users.email,
-        'role', roles.name
+        'role', roles.name,
+        'deletedAt', host_club_members.deleted_at
       )
     )`.as('host_club_members'),
     ])

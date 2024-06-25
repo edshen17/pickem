@@ -8,7 +8,6 @@ import type { ITeamMember } from '~/view-models/user'
 const { user: piniaUser } = storeToRefs(useUserStore())
 
 // TODO: sort rows by role
-// TODO: soft delete invited user
 // TODO: move table to end after inviting user
 
 const loadingHostClubs = ref(true)
@@ -21,7 +20,7 @@ const emailErrorMessage = ref('')
 const selectedRoleId = ref<string | null>(null)
 const isValidRole = ref<boolean | null>(null)
 const isDeactivateModalOpen = ref(false)
-const userIdToDeactivate = ref('')
+const selectedUser = ref<ITeamMember | null>(null)
 const initialPagination = {
   rowsPerPage: 10,
 }
@@ -58,6 +57,14 @@ function hasError(v: boolean | null) {
   return v !== null && !v
 }
 
+async function refreshHostClubTable() {
+  loadingHostClubs.value = true
+  setTimeout(async () => {
+    await refresh()
+    loadingHostClubs.value = false
+  }, 2000)
+}
+
 async function onInvite() {
   if (isValidEmail.value && isValidRole.value) {
     loadingInvite.value = true
@@ -66,12 +73,8 @@ async function onInvite() {
       roleId: selectedRoleId.value,
     } }).then(async () => {
       // TODO: use invited user response instead of making another request
-      loadingHostClubs.value = true
-      setTimeout(async () => {
-        await refresh()
-        loadingHostClubs.value = false
-      }, 2000)
       NotificationManager.success('User invited')
+      await refreshHostClubTable()
     }).catch(() => {
       NotificationManager.error()
     }).finally(() => {
@@ -81,12 +84,13 @@ async function onInvite() {
   }
 }
 
-async function onDeactivate() {
+async function onToggleDeactivate() {
   loadingDeactivate.value = true
   $fetch('/api/host-club-members/delete', { method: 'POST', body: {
-    userId: userIdToDeactivate.value,
+    userId: selectedUser.value?.id,
   } }).then(async () => {
     NotificationManager.success('User deactivated')
+    await refreshHostClubTable()
   }).catch(() => {
     NotificationManager.error()
   }).finally(() => {
@@ -103,9 +107,9 @@ function resetModal() {
   selectedRoleId.value = null
 }
 
-function prepareDeactivateUser({ id }: ITeamMember) {
+function prepareDeactivateUser(user: ITeamMember) {
   isDeactivateModalOpen.value = true
-  userIdToDeactivate.value = id
+  selectedUser.value = user
 }
 </script>
 
@@ -134,7 +138,15 @@ function prepareDeactivateUser({ id }: ITeamMember) {
       </template>
       <template #body-cell-actions="props">
         <q-td :props="props">
-          <q-btn v-if="!isOwner(props.row.role)" flat icon="delete" @click="prepareDeactivateUser(props.row)" />
+          <q-btn v-if="!isOwner(props.row.role)" flat :icon="props.row.deletedAt === null ? 'delete' : 'undo'" @click="prepareDeactivateUser(props.row)" />
+        </q-td>
+      </template>
+      <template #body-cell="props">
+        <q-td
+          :props="props"
+          :class="props.row.deletedAt !== null ? 'u-text-gray-300 dark:u-text-gray-500' : ''"
+        >
+          {{ props.value }}
         </q-td>
       </template>
     </q-table>
@@ -166,11 +178,11 @@ function prepareDeactivateUser({ id }: ITeamMember) {
     <q-dialog v-model="isDeactivateModalOpen">
       <q-card>
         <q-card-section class="row items-center q-my-md">
-          <span class="q-ml-sm">Are you sure you want to de-activate this user?</span>
+          <span class="q-ml-sm">{{ selectedUser?.deletedAt === null ? 'Are you sure you want to de-activate this user?' : 'Are you sure you want to re-activate this user?' }}</span>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup flat label="Cancel" color="primary" />
-          <q-btn flat label="Confirm" color="primary" :loading="loadingDeactivate" @click="onDeactivate" />
+          <q-btn flat label="Confirm" color="primary" :loading="loadingDeactivate" @click="onToggleDeactivate" />
         </q-card-actions>
       </q-card>
     </q-dialog>
