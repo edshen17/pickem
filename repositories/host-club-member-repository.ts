@@ -13,10 +13,10 @@ export class HostClubMemberRepository extends BaseRepository<HostClubMembers> {
     return await this.query.where('host_club_id', '=', hostClubId).where('user_id', '=', userId).selectAll().executeTakeFirstOrThrow()
   }
 
-  async deleteByUserId(userId: string, hostClubId: string, user: IAuditUser) {
+  async toggleDeleteByUserId(userId: string, hostClubId: string, user: IAuditUser) {
     const hostClubMember = await this.query.where('user_id', '=', userId)
       .where('host_club_id', '=', hostClubId).selectAll().executeTakeFirstOrThrow()
-    await this.updateById(hostClubMember.id, { deleted_at: new Date() }, user)
+    await this.updateById(hostClubMember.id, { deleted_at: hostClubMember.deleted_at === null ? new Date() : null }, user)
   }
 }
 

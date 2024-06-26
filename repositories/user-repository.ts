@@ -26,6 +26,7 @@ export class UserRepository extends BaseRepository<Users> {
         'role', roles.name
       ))`.as('host_clubs_with_roles'),
       ])
+      .where('host_club_members.deleted_at', 'is', null)
       .groupBy('users.id')
       .executeTakeFirst()
 

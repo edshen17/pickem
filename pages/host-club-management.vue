@@ -178,7 +178,7 @@ function prepareDeactivateUser(user: ITeamMember) {
     <q-dialog v-model="isDeactivateModalOpen">
       <q-card>
         <q-card-section class="row items-center q-my-md">
-          <span class="q-ml-sm">{{ selectedUser?.deletedAt === null ? 'Are you sure you want to de-activate this user?' : 'Are you sure you want to re-activate this user?' }}</span>
+          <span class="q-ml-sm">{{ selectedUser?.deletedAt === null ? `Are you sure you want to deactivate ${selectedUser.name}?` : `Are you sure you want to reactivate ${selectedUser?.name}?` }}</span>
         </q-card-section>
         <q-card-actions align="right">
           <q-btn v-close-popup flat label="Cancel" color="primary" />
