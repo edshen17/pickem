@@ -5,32 +5,22 @@ import { baseSchema, schemaWithAudit, uuid } from '~/db/util'
 export async function up(db: Kysely<any>): Promise<void> {
   await schemaWithAudit(db.schema
     .createTable('users')
-    .addColumn('id', 'uuid', uuid)
     .addColumn('name', 'text', col => col.notNull())
     .addColumn('email', 'text', col => col.notNull())
     .addColumn('permissions', 'jsonb', col => col.defaultTo('[]')))
 
   await baseSchema(db.schema
     .createTable('roles')
-    .addColumn('id', 'uuid', uuid)
     .addColumn('name', sql`text check (name in ('OWNER', 'ADMIN', 'MEMBER', 'NATION', 'CLUB_DIRECTOR', 'FAN'))`))
 
   await db.insertInto('roles').values(['OWNER', 'ADMIN', 'MEMBER', 'NATION', 'CLUB_DIRECTOR', 'FAN'].map((v) => { return { id: sql`gen_random_uuid()`, name: v } })).execute()
 
   await schemaWithAudit(db.schema
     .createTable('host_clubs')
-    .addColumn('id', 'uuid', uuid)
     .addColumn('name', 'text', col => col.notNull()))
 
   await schemaWithAudit(db.schema
-    .createTable('tournaments')
-    .addColumn('id', 'uuid', uuid)
-    .addColumn('name', 'text', col => col.notNull())
-    .addColumn('host_club_id', 'uuid', col => col.notNull().references('host_clubs.id')))
-
-  await schemaWithAudit(db.schema
     .createTable('host_club_members')
-    .addColumn('id', 'uuid', uuid)
     .addColumn('host_club_id', 'uuid', col => col.notNull().references('host_clubs.id'))
     .addColumn('user_id', 'uuid', col => col.notNull().references('users.id'))
     .addColumn('role_id', 'uuid', col => col.notNull().references('roles.id'))
@@ -84,16 +74,6 @@ export async function up(db: Kysely<any>): Promise<void> {
       WHERE user_id = auth.uid()
     )
   );`.execute(db)
-
-  await sql`ALTER TABLE tournaments ENABLE ROW LEVEL SECURITY;`.execute(db)
-  await sql`CREATE POLICY tournaments_members_policy ON tournaments
-  USING (
-    host_club_id IN (
-      SELECT host_club_id FROM host_club_members
-      WHERE user_id = auth.uid()
-    )
-  );`.execute(db)
-
   await sql`ALTER TABLE host_club_members ENABLE ROW LEVEL SECURITY;`.execute(db)
   await sql`CREATE POLICY host_club_members_policy ON host_club_members
   USING (
@@ -108,7 +88,6 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropIndex('idx_host_club_members_query').execute()
 
   await db.schema.dropTable('audit_log').execute()
-  await db.schema.dropTable('tournaments').cascade().execute()
   await db.schema.dropTable('host_club_members').cascade().execute()
   await db.schema.dropTable('host_clubs').cascade().execute()
   await db.schema.dropTable('roles').execute()

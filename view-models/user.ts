@@ -3,7 +3,7 @@ import type { HostClubs, Users } from 'kysely-codegen'
 import type { Role } from './role'
 
 export interface IUser extends Selectable<Users> {
-  role?: string | null
+  role?: Role | null
   host_club?: Selectable<HostClubs> | null
 }
 
