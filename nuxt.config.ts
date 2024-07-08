@@ -5,6 +5,14 @@ import { appDescription } from './constants/index'
 export default defineNuxtConfig({
   quasar: {
     plugins: ['Notify'],
+    components: {
+      defaults: {
+        QInput: {
+          filled: true,
+          dense: true,
+        },
+      },
+    },
   },
   modules: [
     '@vueuse/nuxt',

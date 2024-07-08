@@ -163,7 +163,7 @@ function prepareDeactivateUser(user: ITeamMember) {
         <q-card-section class="q-pt-sm">
           <q-input
             v-model="invitedEmail"
-            class="q-mb-sm" filled dense label="Email address" :error="hasError(isValidEmail)"
+            class="q-mb-sm" label="Email address" :error="hasError(isValidEmail)"
             :error-message="emailErrorMessage"
             @blur="validateEmail"
           />
