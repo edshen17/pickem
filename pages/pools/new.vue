@@ -7,6 +7,9 @@ definePageMeta({
 const isPrivateLeague = ref(false)
 // row items-center q-gutter-x-lg u-justify-between lg:u-justify-initial
 const parentClass = 'row items-center u-justify-between lg:u-flex-row lg:u-justify-initial'
+
+const $q = useQuasar()
+console.log($q.dark.isActive)
 </script>
 
 <template>

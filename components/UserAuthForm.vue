@@ -61,7 +61,7 @@ async function _handleLogin(): Promise<void> {
   const { name, email, password } = values
 
   const { error } = isSignupPage
-    ? await handleSignUp(name, email, password, supabaseToken)
+    ? await handleSignUp(name!, email, password, supabaseToken)
     : await handleSignIn(email, password)
 
   if (error)

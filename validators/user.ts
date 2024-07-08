@@ -14,6 +14,7 @@ export const inviteUserValidator = z.object({
 })
 
 export const logInUserValidator = userValidator.extend({
+  name: z.string().optional(),
 })
 
 export function getUserValidator(isSignupPage: boolean) {
