@@ -11,14 +11,16 @@ function resetError() {
 </script>
 
 <template>
-  <div class="dark:u-dark-text">
-    <Navbar />
-    <main class="u-relative u-flex-grow">
-      <PopupAlert v-show="error" @popup-close="resetError">
-        {{ error?.message }}
-      </PopupAlert>
-      <RouterView />
-    </main>
-    <Footer />
-  </div>
+  <ColorScheme placeholder="" tag="span">
+    <div class="dark:u-dark-text">
+      <Navbar />
+      <main class="u-relative u-flex-grow">
+        <PopupAlert v-show="error" @popup-close="resetError">
+          {{ error?.message }}
+        </PopupAlert>
+        <RouterView />
+      </main>
+      <Footer />
+    </div>
+  </ColorScheme>
 </template>

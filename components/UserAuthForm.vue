@@ -87,7 +87,6 @@ async function _handleLogin(): Promise<void> {
         </div>
         <div v-else>
           <form class="q-gutter-y-lg u-mb-0">
-            <!-- can add additional fields for sign up if needed -->
             <TextInput v-if="isSignupPage" name="name" type="name" placeholder="Name" :focused="true" @keyup.enter="onSubmit" />
             <TextInput :readonly="isInvitation" name="email" type="email" placeholder="Email address" :focused="!isSignupPage" @keyup.enter="onSubmit" />
             <div class="u-flex">

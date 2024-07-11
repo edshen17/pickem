@@ -10,10 +10,24 @@ export default defineNuxtConfig({
         QInput: {
           filled: true,
           dense: true,
+          hideBottomSpace: true,
+          noErrorIcon: true,
+        },
+        QSelect: {
+          filled: true,
+          dense: true,
+          hideBottomSpace: true,
+          noErrorIcon: true,
         },
       },
     },
   },
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
   modules: [
     '@vueuse/nuxt',
     '@unocss/nuxt',

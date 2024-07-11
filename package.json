@@ -32,6 +32,7 @@
     "quasar": "^2.16.3",
     "ts-node": "^10.9.2",
     "vee-validate": "^4.12.8",
+    "vue-currency-input": "^3.1.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

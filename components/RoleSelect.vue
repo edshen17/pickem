@@ -45,7 +45,8 @@ onMounted(() => {
       v-model="selectedRole"
       :options="roles"
       :option-label="(role) => formatRole(role.name)"
-      option-value="id" filled dense emit-value
+      option-value="id"
+      emit-value
       map-options
       label="Role"
       :error="error"

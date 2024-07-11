@@ -51,7 +51,7 @@ const usefulLinkData = computed(() => {
 </script>
 
 <template>
-  <div class="u-border-t-2 u-border-gray-200 dark:u-border-transparent">
+  <div class="u-border-t-2 u-border-gray-200 dark:u-border-gray-700">
     <footer class="u-relative u-mx-auto u-w-11/12 u-pb-6 u-pt-6 lg:u-pt-5">
       <div
         class="u-pointer-events-none u-absolute u-bottom-auto u-left-0 u-right-0 u-top-0 u-w-full u-overflow-hidden"

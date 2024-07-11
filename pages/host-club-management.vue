@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { hostClubManagementColumns as columns } from '~/components/data-table/columns'
-import { NotificationManager } from '~/utils/formatter/notification-manager'
 import { emailValidator } from '~/validators/user'
 import { isOwner } from '~/view-models/role'
 import type { ITeamMember } from '~/view-models/user'

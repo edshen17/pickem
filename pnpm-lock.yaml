@@ -50,6 +50,9 @@ importers:
       vee-validate:
         specifier: ^4.12.8
         version: 4.12.8(vue@3.4.27(typescript@5.4.5))
+      vue-currency-input:
+        specifier: ^3.1.0
+        version: 3.1.0(vue@3.4.27(typescript@5.4.5))
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -6030,6 +6033,11 @@ packages:
 
   vue-bundle-renderer@2.1.0:
     resolution: {integrity: sha512-uZ+5ZJdZ/b43gMblWtcpikY6spJd0nERaM/1RtgioXNfWFbjKlUwrS8HlrddN6T2xtptmOouWclxLUkpgcVX3Q==}
+
+  vue-currency-input@3.1.0:
+    resolution: {integrity: sha512-XZ8bg61zRNJjRDo7I4K0UAah9qtkipexRcn/h9MzEqZQ9gVZWABObgN+042UchmCTiwSfsjGOd6DZGzd/TUUMA==}
+    peerDependencies:
+      vue: ^2.7 || ^3.0.0
 
   vue-demi@0.14.7:
     resolution: {integrity: sha512-EOG8KXDQNwkJILkx/gPcoL/7vH+hORoBaKgGe+6W7VFMvCYJfmF2dGbvgDroVnI8LU7/kTu8mbjRZGBU1z9NTA==}
@@ -13390,6 +13398,10 @@ snapshots:
   vue-bundle-renderer@2.1.0:
     dependencies:
       ufo: 1.5.3
+
+  vue-currency-input@3.1.0(vue@3.4.27(typescript@5.4.5)):
+    dependencies:
+      vue: 3.4.27(typescript@5.4.5)
 
   vue-demi@0.14.7(vue@3.4.27(typescript@5.4.5)):
     dependencies:
