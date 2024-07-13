@@ -1,6 +1,7 @@
 import { type SelectQueryBuilder, type Selectable, sql } from 'kysely'
 import type { DB, HostClubs, Users } from 'kysely-codegen'
 import { BaseRepository } from '~/repositories/base-repository'
+import type { Role } from '~/view-models/role'
 import type { IUser } from '~/view-models/user'
 
 export class UserRepository extends BaseRepository<Users> {
@@ -20,7 +21,7 @@ export class UserRepository extends BaseRepository<Users> {
         sql<Selectable<Users>>`to_jsonb(users.*)`.as('user'),
         sql<{
           host_club: Selectable<HostClubs> | null
-          role: string | null
+          role: Role | null
         }[]>`jsonb_agg(jsonb_build_object(
         'host_club', to_jsonb(host_clubs.*),
         'role', roles.name

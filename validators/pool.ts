@@ -1,16 +1,26 @@
 import { z } from 'zod'
 
 export const poolValidator = z.object({
-  isPrivateLeague: z.boolean().default(false),
-  password: z.string().min(5, 'Please enter a password with at least 5 characters').default(''),
+  auth: z.object({
+    isPrivateLeague: z.boolean(),
+    password: z.string().optional(),
+  }).refine(({ isPrivateLeague, password }) => {
+    if (isPrivateLeague)
+      return password && password.length >= 5 && password.length <= 20
+
+    return true
+  }, {
+    message: 'Password must be between 5 and 20 characters',
+    path: ['password'],
+  }).default({ isPrivateLeague: false, password: '' }),
   isPubliclyWatchable: z.boolean().default(true),
-  maxNumberOfPlayers: z.coerce.number().int().positive().default(1000),
-  numberOfPicks: z.coerce.number().int().positive().nullable().default(null),
+  maxNumberOfPlayers: z.coerce.number().int().positive().max(1000).default(1000),
+  numberOfPicks: z.coerce.number().int().positive().max(100).default(5),
   entryFee: z.coerce.number().nonnegative().default(20),
-  currency: z.string().default('USD'),
-  numberOfWinners: z.coerce.number().int().positive().default(3),
-  prizeAllocation: z.object({}).catchall(z.coerce.number().positive()).refine(
-    data => Object.values(data).reduce((sum, value) => sum + value, 0) === 100,
+  currency: z.string().min(3).max(3).default('USD'),
+  numberOfWinners: z.coerce.number().int().positive().max(100).default(3),
+  prizeAllocation: z.object({}).catchall(z.coerce.number().positive().optional()).refine(
+    data => Object.values(data).reduce((sum, value) => sum! + value!, 0) === 100,
     { message: 'Prize allocation must sum up to 100%' },
   ).default({} as { [key: number]: number }),
   poolAllocation: z.object({

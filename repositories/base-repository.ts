@@ -9,8 +9,8 @@ export interface IAuditUser {
 
 type FullAuditFields = 'updated_by' | 'created_by' | 'updated_at' | 'created_at'
 
-export function fullAudit(v: Record<string, any>, user: IAuditUser | null) {
-  return { updated_by: user?.id, created_by: user?.id, updated_at: new Date(), created_at: new Date(), ...v }
+export function fullAudit(v: Record<string, any>, user: IAuditUser) {
+  return { updated_by: user.id, created_by: user.id, updated_at: new Date(), created_at: new Date(), ...v }
 }
 
 export class BaseRepository<T extends { id: Generated<string> }> {
@@ -39,7 +39,7 @@ export class BaseRepository<T extends { id: Generated<string> }> {
     return await this.query.selectAll().execute()
   }
 
-  async updateById(id: string, update: Omit<Updateable<T>, FullAuditFields>, user: IAuditUser | null) {
+  async updateById(id: string, update: Omit<Updateable<T>, FullAuditFields>, user: IAuditUser) {
     const originalEntity = await db
       .selectFrom(this.tableName)
       .where('id', '=', id)
@@ -68,7 +68,7 @@ export class BaseRepository<T extends { id: Generated<string> }> {
     return updatedEntity
   }
 
-  async insert(entity: Omit<Insertable<T>, FullAuditFields>, user: IAuditUser | null) {
+  async insert(entity: Omit<Insertable<T>, FullAuditFields>, user: IAuditUser) {
     const insertedEntity = await db
       .insertInto(this.tableName)
       .values(fullAudit(entity, user))

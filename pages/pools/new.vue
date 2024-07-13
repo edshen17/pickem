@@ -15,12 +15,13 @@ const titleClass = `u-pt-4 u-text-xl u-font-bold`
 const inlineParentClass = 'u-ml-10 items-center u-hidden! lg:u-inline-flex!'
 const inlineChildClass = 'u-mr-8 u-w-18'
 
-const { defineField, handleSubmit, resetForm, values } = useForm<PoolValidator>({
+const { handleSubmit, values, setFieldValue, defineField } = useForm<PoolValidator>({
+  // TODO: set initialValues from saved pool
   validationSchema: toTypedSchema(poolValidator),
 })
 
-const [isPrivateLeague, isPrivateLeagueProps] = defineField('isPrivateLeague', quasarConfig)
-const [password, passwordProps] = defineField('password', quasarConfig)
+const [isPrivateLeague, isPrivateLeagueProps] = defineField('auth.isPrivateLeague', quasarConfig)
+const [password, passwordProps] = defineField('auth.password', quasarConfig)
 const [isPubliclyWatchable, isPubliclyWatchableProps] = defineField('isPubliclyWatchable', quasarConfig)
 const [maxNumberOfPlayers, maxNumberOfPlayersProps] = defineField('maxNumberOfPlayers', quasarConfig)
 const [numberOfPicks, numberOfPicksProps] = defineField('numberOfPicks', quasarConfig)
@@ -29,6 +30,8 @@ const [currency, currencyProps] = defineField('currency', quasarConfig)
 const [numberOfWinners, numberOfWinnersProps] = defineField('numberOfWinners', quasarConfig)
 const [prizeAllocation, prizeAllocationProps] = defineField('prizeAllocation', quasarConfig)
 const [poolAllocation] = defineField('poolAllocation', quasarConfig)
+
+const isSaving = ref(false)
 
 const winnerRange = computed(() => {
   return Array.from({ length: numberOfWinners.value }, (_, i) => i + 1)
@@ -41,7 +44,25 @@ function getOrdinal(n: number) {
 }
 
 const onSubmit = handleSubmit((values) => {
-  console.log('Submitted with', values)
+  isSaving.value = true
+  $fetch('/api/pools/add', { method: 'POST', body: values }).then(async () => {
+    NotificationManager.success('Pool saved')
+    // redirect to id if new
+  }).catch(() => {
+    NotificationManager.error()
+  }).finally(() => {
+    isSaving.value = false
+  })
+})
+
+watch(numberOfWinners, (newValue) => {
+  const newAllocation = Object.fromEntries(
+    Array.from({ length: newValue }, (_, index) => {
+      const position = index + 1
+      return [position, prizeAllocation.value[position]]
+    }),
+  )
+  setFieldValue('prizeAllocation', newAllocation)
 })
 </script>
 
@@ -144,7 +165,7 @@ const onSubmit = handleSubmit((values) => {
         </div>
         <!-- TODO: make sticky and float right -->
         <div>
-          <q-btn label="Submit" type="submit" color="primary" />
+          <q-btn label="Save" type="submit" color="primary" />
         </div>
       </q-form>
     </div>

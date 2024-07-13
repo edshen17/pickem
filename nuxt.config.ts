@@ -38,6 +38,7 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     'nuxt-quasar-ui',
     '@pinia-plugin-persistedstate/nuxt',
+    'nuxt-lodash',
   ],
   runtimeConfig: {
     public: {
