@@ -15,7 +15,7 @@ const titleClass = `u-pt-4 u-text-xl u-font-bold`
 const inlineParentClass = 'u-ml-10 items-center u-hidden! lg:u-inline-flex!'
 const inlineChildClass = 'u-mr-8 u-w-18'
 
-const { handleSubmit, values, setFieldValue, defineField } = useForm<PoolValidator>({
+const { handleSubmit, values, setFieldValue, defineField, errors } = useForm<PoolValidator>({
   // TODO: set initialValues from saved pool
   validationSchema: toTypedSchema(poolValidator),
 })
@@ -29,7 +29,8 @@ const [entryFee, entryFeeProps] = defineField('entryFee', quasarConfig)
 const [currency, currencyProps] = defineField('currency', quasarConfig)
 const [numberOfWinners, numberOfWinnersProps] = defineField('numberOfWinners', quasarConfig)
 const [prizeAllocation, prizeAllocationProps] = defineField('prizeAllocation', quasarConfig)
-const [poolAllocation] = defineField('poolAllocation', quasarConfig)
+const [ownerAllocation, ownerAllocationProps] = defineField('poolAllocation.owner', quasarConfig)
+const [adminAllocation, adminAllocationProps] = defineField('poolAllocation.admin', quasarConfig)
 
 const isSaving = ref(false)
 
@@ -154,14 +155,13 @@ watch(numberOfWinners, (newValue) => {
           <div :class="textClass">
             Owner allocation to prizes (%)
           </div>
-          <!-- TODO: use zod validator by separating owner and admin into separate fields -->
-          <q-input v-model="poolAllocation.owner" />
+          <q-input v-model="ownerAllocation" v-bind="ownerAllocationProps" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Admin allocation to prizes (%)
           </div>
-          <q-input v-model="poolAllocation.admin" :rules="[val => val <= 7.5 && val >= 0 || 'Must be less than or equal to 7.5%', val => val >= 0 || 'Must be greater than or equal to 0%']" />
+          <q-input v-model="adminAllocation" v-bind="adminAllocationProps" :rules="[val => val <= 7.5 && val >= 0 || 'Must be less than or equal to 7.5%', val => val >= 0 || 'Must be greater than or equal to 0%']" />
         </div>
         <!-- TODO: make sticky and float right -->
         <div>
