@@ -148,14 +148,14 @@ watch(numberOfWinners, (newValue) => {
           <div :class="textClass">
             Prize {{ n }}{{ getOrdinal(n) }} Place (%)
           </div>
-          <q-input v-model="prizeAllocation[n]" type="number" v-bind="prizeAllocationProps" :rules="[val => !!val && val > 0 || 'Must be greater than 0%']" />
+          <q-input v-model="prizeAllocation[n]" type="number" v-bind="prizeAllocationProps" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Owner allocation to prizes (%)
           </div>
           <!-- TODO: use zod validator by separating owner and admin into separate fields -->
-          <q-input v-model="poolAllocation.owner" :rules="[val => val <= 5 || 'Must be less than or equal to 5%', val => val >= 0 || 'Must be greater than or equal to 0%']" />
+          <q-input v-model="poolAllocation.owner" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
