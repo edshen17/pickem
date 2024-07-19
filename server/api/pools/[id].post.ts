@@ -1,8 +1,10 @@
+import process from 'node:process'
 import { AuthGuard } from '~/server/utils/auth-guards'
 import { authenticated } from '~/server/utils/middleware/auth'
 import { adminRoles } from '~/view-models/role'
 import { poolValidator } from '~/validators/pool'
 import { poolRepository } from '~/repositories/pool-repository'
+import { encrypt } from '~/utils/encrypt'
 
 export default authenticated(async ({ user, event }) => {
   AuthGuard.availableFor(user, adminRoles)
@@ -21,7 +23,9 @@ export default authenticated(async ({ user, event }) => {
     is_publicly_watchable: isPubliclyWatchable,
     max_players: maxNumberOfPlayers,
     number_of_picks: numberOfPicks,
-    password: isPrivateLeague ? password : null,
+    password: isPrivateLeague
+      ? encrypt(password ?? throwError('Password required'), process.env.CRYPTO_SECRET_KEY ?? throwError('Secret key required'))
+      : null,
     pool_allocation: poolAllocation,
     prize_allocation: prizeAllocation,
     name: '', // TODO: fill name + description?
@@ -30,8 +34,7 @@ export default authenticated(async ({ user, event }) => {
   if (!user)
     throwUnauthorizedError('User required')
 
-  if (poolId && poolId !== 'new')
-    await poolRepository.updateById(poolId, values, user)
-  else
-    await poolRepository.insert(values, user)
+  const { id } = poolId && poolId !== 'new' ? await poolRepository.updateById(poolId, values, user) : await poolRepository.insert(values, user)
+
+  return id
 })

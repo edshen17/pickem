@@ -8,10 +8,10 @@ async function revertLastMigration() {
 
   results?.forEach((it) => {
     if (it.status === 'Success')
-      console.log(`Migration "${it.migrationName}" was reverted successfully`)
+      console.info(`Migration "${it.migrationName}" was reverted successfully`)
     else if (it.status === 'Error')
       console.error(`Failed to revert migration "${it.migrationName}"`)
-    else console.log('--- ~ results?.forEach ~ it.status:', it.status)
+    else console.info('--- ~ results?.forEach ~ it.status:', it.status)
   })
 
   if (error) {

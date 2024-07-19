@@ -7,6 +7,7 @@ import type { ITeamMember } from '~/view-models/user'
 
 export default authenticated(async ({ user }) => {
   // TODO: check user permissions (host clubs)
+  // TODO: double check this works for multiple host clubs...
   AuthGuard.availableFor(user, adminRoles)
 
   const data = await db

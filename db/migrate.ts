@@ -8,10 +8,10 @@ async function migrateToLatest() {
 
   results?.forEach((it) => {
     if (it.status === 'Success')
-      console.log(`Migration "${it.migrationName}" was executed successfully`)
+      console.info(`Migration "${it.migrationName}" was executed successfully`)
     else if (it.status === 'Error')
       console.error(`Failed to execute migration "${it.migrationName}"`)
-    else console.log('--- ~ results?.forEach ~ it.status:', it.status)
+    else console.info('--- ~ results?.forEach ~ it.status:', it.status)
   })
 
   if (error) {

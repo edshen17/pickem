@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import type { IPrizeAllocation } from '~/view-models/pool'
 
 export const poolValidator = z.object({
   auth: z.object({
@@ -22,7 +23,7 @@ export const poolValidator = z.object({
   prizeAllocation: z.object({}).catchall(z.coerce.number().positive().optional()).refine(
     data => Object.values(data).reduce((sum, value) => sum! + value!, 0) === 100,
     { message: 'Prize allocation must sum up to 100%' },
-  ).default({ 1: 50, 2: 30, 3: 20 } as { [key: number]: number }),
+  ).default({ 1: 50, 2: 30, 3: 20 } as IPrizeAllocation),
   poolAllocation: z.object({
     owner: z.coerce.number().nonnegative().max(5, 'Must be less than or equal to 5%'),
     admin: z.coerce.number().nonnegative().max(7.5, 'Must be less than or equal to 7.5%'),

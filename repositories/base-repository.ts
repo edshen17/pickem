@@ -27,7 +27,7 @@ export class BaseRepository<T extends { id: Generated<string> }> {
     return await this.query
       .where('id', '=', id)
       .selectAll()
-      .executeTakeFirst() as Selectable<T>
+      .executeTakeFirst() as Selectable<T> | undefined
   }
 
   async find(criteria: Partial<T>) {
@@ -65,7 +65,7 @@ export class BaseRepository<T extends { id: Generated<string> }> {
       })
       .execute()
 
-    return updatedEntity
+    return updatedEntity as T
   }
 
   async insert(entity: Omit<Insertable<T>, FullAuditFields>, user: IAuditUser) {

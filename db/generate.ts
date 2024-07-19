@@ -32,4 +32,4 @@ export async function down(db: Kysely<any>): Promise<void> {
 `
 
 fs.writeFileSync(migrationFilePath, migrationTemplate, 'utf-8')
-console.log(`Migration file created: ${migrationFilePath}`)
+console.info(`Migration file created: ${migrationFilePath}`)
