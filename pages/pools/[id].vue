@@ -5,18 +5,19 @@ definePageMeta({
   requiresAuth: true,
 })
 
-const { id } = useRoute('pools-id').params
+const route = useRouter().currentRoute.value
 
-console.log(useRoute(), 'here')
+const id = (route.params as any).id
 
-const loadingPool = ref(true)
+const loading = ref(true)
 
 const { data } = await useFetchApi<IPoolView>(`/api/pools/${id}`).then((res) => {
-  loadingPool.value = false
   return res
+}).finally(() => {
+  loading.value = false
 })
 </script>
 
 <template>
-  <Pool v-if="data" :pool="data" />
+  <Pool v-if="data" :pool="data" :loading="loading" />
 </template>

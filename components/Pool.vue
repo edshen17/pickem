@@ -8,6 +8,8 @@ import { poolValidator } from '~/validators/pool'
 
 const { pool } = defineProps<{
   pool?: IPoolView
+  // TODO: use loading/skeletons
+  loading?: boolean
 }>()
 
 const route = useRoute('pools-id')
@@ -58,7 +60,7 @@ const onSubmit = handleSubmit(async (values) => {
   isSaving.value = true
   const path = route.path.includes('new') ? 'new' : route.params.id
   await $fetch(`/api/pools/${path}`, { method: 'POST', body: values }).then(async (id) => {
-    router.push({ name: 'pools-id', params: { id }, force: true })
+    router.replace({ path: `/pools/${id}` })
     NotificationManager.success('Pool saved')
   }).catch(() => {
     NotificationManager.error()
