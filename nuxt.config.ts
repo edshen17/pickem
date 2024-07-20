@@ -19,6 +19,10 @@ export default defineNuxtConfig({
           hideBottomSpace: true,
           noErrorIcon: true,
         },
+        QTable: {
+          flat: true,
+          bordered: true,
+        },
       },
     },
   },
@@ -38,7 +42,6 @@ export default defineNuxtConfig({
     '@nuxtjs/supabase',
     'nuxt-quasar-ui',
     '@pinia-plugin-persistedstate/nuxt',
-    'nuxt-lodash',
   ],
   runtimeConfig: {
     public: {

@@ -1,6 +1,7 @@
 import type { QTableProps } from 'quasar'
 import { formatRole } from '~/utils/formatter/role'
 
+// TODO: make a formatting function that always applies align left to array
 export const hostClubManagementColumns: QTableProps['columns'] = [
   {
     name: 'name',

@@ -7,14 +7,17 @@ import type { ITeamMember } from '~/view-models/user'
 
 export default authenticated(async ({ user }) => {
   // TODO: check user permissions (host clubs)
-  // TODO: double check this works for multiple host clubs...
   AuthGuard.availableFor(user, adminRoles)
+
+  if (!user?.host_club)
+    throwError('User does not have a host club')
 
   const data = await db
     .selectFrom('host_clubs')
     .leftJoin('host_club_members', 'host_club_members.host_club_id', 'host_clubs.id')
     .leftJoin('users', 'host_club_members.user_id', 'users.id')
     .leftJoin('roles', 'host_club_members.role_id', 'roles.id')
+    .where('host_clubs.id', '=', user.host_club.id)
     .select([
       'host_clubs.id',
       'host_clubs.name',

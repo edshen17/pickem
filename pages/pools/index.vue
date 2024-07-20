@@ -2,12 +2,8 @@
 definePageMeta({
   requiresAuth: true,
 })
-
-// const { user: piniaUser } = storeToRefs(useUserStore())
 </script>
 
 <template>
-  <div>
-    test
-  </div>
+  <PoolTable />
 </template>

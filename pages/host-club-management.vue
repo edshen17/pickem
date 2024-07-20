@@ -123,7 +123,6 @@ function prepareDeactivateUser(user: ITeamMember) {
     <q-table
       :loading="loadingHostClubs"
       :dense="$q.screen.lt.md"
-      flat bordered
       title="Members"
       :rows="rows"
       :columns="columns"
