@@ -20,6 +20,7 @@
   "dependencies": {
     "@nuxtjs/supabase": "^1.2.2",
     "@quasar/extras": "^1.16.11",
+    "@types/lodash": "^4.17.7",
     "@types/nprogress": "^0.2.3",
     "@vee-validate/zod": "^4.12.8",
     "dayjs": "^1.11.11",
@@ -27,6 +28,7 @@
     "http-status": "^1.7.4",
     "http-status-codes": "^2.3.0",
     "kysely": "^0.27.3",
+    "lodash": "^4.17.21",
     "nprogress": "^0.2.0",
     "pg": "^8.11.5",
     "quasar": "^2.16.3",

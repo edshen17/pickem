@@ -14,6 +14,9 @@ importers:
       '@quasar/extras':
         specifier: ^1.16.11
         version: 1.16.11
+      '@types/lodash':
+        specifier: ^4.17.7
+        version: 4.17.7
       '@types/nprogress':
         specifier: ^0.2.3
         version: 0.2.3
@@ -35,6 +38,9 @@ importers:
       kysely:
         specifier: ^0.27.3
         version: 0.27.3
+      lodash:
+        specifier: ^4.17.21
+        version: 4.17.21
       nprogress:
         specifier: ^0.2.0
         version: 0.2.0
@@ -1750,6 +1756,9 @@ packages:
 
   '@types/json-schema@7.0.15':
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
+
+  '@types/lodash@4.17.7':
+    resolution: {integrity: sha512-8wTvZawATi/lsmNu10/j2hk1KEP0IvjubqPE3cu1Xz7xfXXt5oCq3SNUz4fMIP4XGF9Ky+Ue2tBA3hcS7LSBlA==}
 
   '@types/mdast@3.0.15':
     resolution: {integrity: sha512-LnwD+mUEfxWMa1QpDraczIn6k0Ee3SMicuYSSzS6ZYl2gKS09EClnJYGd8Du6rfc5r/GZEk5o1mRb8TaTj03sQ==}
@@ -8349,6 +8358,8 @@ snapshots:
       '@types/node': 20.12.12
 
   '@types/json-schema@7.0.15': {}
+
+  '@types/lodash@4.17.7': {}
 
   '@types/mdast@3.0.15':
     dependencies:

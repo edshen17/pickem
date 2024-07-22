@@ -7,6 +7,7 @@ definePageMeta({
 
 const route = useRouter().currentRoute.value
 
+// TODO: type
 const id = (route.params as any).id
 
 const loading = ref(true)

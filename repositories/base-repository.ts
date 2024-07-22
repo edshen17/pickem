@@ -30,13 +30,13 @@ export class BaseRepository<T extends { id: Generated<string> }> {
       .executeTakeFirst() as Selectable<T> | undefined
   }
 
-  async find(criteria: Partial<T>) {
+  async find(criteria: Partial<T>): Promise<Selectable<T>[]> {
     for (const [key, value] of Object.entries(criteria)) {
       if (value !== undefined)
         this.query = this.query.where(key as ReferenceExpression<DB, keyof DB>, value === null ? 'is' : '=', value)
     }
 
-    return await this.query.selectAll().execute()
+    return await this.query.selectAll().execute() as Selectable<T>[]
   }
 
   async updateById(id: string, update: Omit<Updateable<T>, FullAuditFields>, user: IAuditUser) {

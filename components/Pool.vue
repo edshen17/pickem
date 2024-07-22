@@ -12,7 +12,6 @@ const { pool } = defineProps<{
   loading?: boolean
 }>()
 
-const route = useRoute('pools-id')
 const router = useRouter()
 
 const parentClass = 'row items-center u-justify-between lg:u-flex-row lg:u-justify-initial'
@@ -58,7 +57,9 @@ function getOrdinal(n: number) {
 
 const onSubmit = handleSubmit(async (values) => {
   isSaving.value = true
-  const path = route.path.includes('new') ? 'new' : route.params.id
+  const { path: routePath, params } = router.currentRoute.value
+  // TODO: correctly type params
+  const path = routePath.includes('new') ? 'new' : (params as any).id
   await $fetch(`/api/pools/${path}`, { method: 'POST', body: values }).then(async (id) => {
     router.replace({ path: `/pools/${id}` })
     NotificationManager.success('Pool saved')

@@ -2,8 +2,12 @@
 definePageMeta({
   requiresAuth: true,
 })
+
+const { data } = await useFetchApi('/api/pools').then((res) => {
+  return res
+})
 </script>
 
 <template>
-  <PoolTable />
+  <PoolTable v-if="data" />
 </template>
