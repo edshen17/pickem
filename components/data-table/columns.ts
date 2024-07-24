@@ -1,4 +1,5 @@
 import type { QTableProps } from 'quasar'
+import { formatDate } from '~/utils/formatter/date'
 import { formatRole } from '~/utils/formatter/role'
 
 // TODO: make a formatting function that always applies align left to array
@@ -33,9 +34,9 @@ export const poolColumns: QTableProps['columns'] = [
   { name: 'name', align: 'left', label: 'Name', field: 'name' },
   { name: 'host', align: 'left', label: 'Host', field: 'host' },
   { name: 'admin', align: 'left', label: 'Admin', field: 'admin' },
-  { name: 'entries', align: 'left', label: 'Entries', field: 'entries' },
-  { name: 'donations', align: 'left', label: 'Donations', field: 'donations' },
+  { name: 'numberOfEntries', align: 'left', label: 'Entries', field: 'numberOfEntries' },
+  { name: 'donationAmount', align: 'left', label: 'Donations', field: 'donationAmount' },
   { name: 'numberOfWinners', align: 'left', label: '# Winners', field: 'numberOfWinners' },
-  { name: 'openDate', align: 'left', label: 'Opens', field: 'openDate' },
-  { name: 'closeDate', align: 'left', label: 'Closes', field: 'closeDate' },
+  { name: 'openDate', align: 'left', label: 'Opens', field: 'openDate', format: (v) => { return formatDate(v) } },
+  { name: 'closeDate', align: 'left', label: 'Closes', field: 'closeDate', format: (v) => { return formatDate(v) } },
 ]

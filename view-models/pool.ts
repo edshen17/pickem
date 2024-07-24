@@ -5,7 +5,6 @@ export interface IPoolAllocation {
 
 export interface IPrizeAllocation { [key: string]: number }
 
-// TODO: add name + description?
 export interface IPoolView {
   currency: string
   entryFee: number
@@ -17,4 +16,17 @@ export interface IPoolView {
   poolAllocation: IPoolAllocation
   prizeAllocation: IPrizeAllocation
   name: string
+  description: string
+}
+
+export interface IPoolListView {
+  status: string
+  name: string
+  host: string
+  admin: string
+  numberOfEntries: number
+  donationAmount: number
+  numberOfWinners: number
+  openDate: string
+  closeDate: string
 }

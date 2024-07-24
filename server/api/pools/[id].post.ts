@@ -28,7 +28,9 @@ export default authenticated(async ({ user, event }) => {
       : null,
     pool_allocation: poolAllocation,
     prize_allocation: prizeAllocation,
-    name: '', // TODO: fill name + description?
+    // TODO: fill out
+    name: '',
+    description: '',
   }
 
   if (!user)

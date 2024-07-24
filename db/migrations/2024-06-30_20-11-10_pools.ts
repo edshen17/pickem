@@ -7,7 +7,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await schemaWithAudit(db.schema
     .createTable('pools')
     .addColumn('name', 'text', col => col.notNull())
-    .addColumn('description', 'text')
+    .addColumn('description', 'text', col => col.notNull())
     .addColumn('is_private', 'boolean', col => col.notNull())
     .addColumn('password', 'text')
     .addColumn('is_publicly_watchable', 'boolean', col => col.notNull())

@@ -1,105 +1,20 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import type { SerializeObject } from 'nitropack'
 import { toTitleCase } from '~/utils/formatter/string'
 import { poolColumns as columns } from '~/components/data-table/columns'
+import type { IPoolListView } from '~/view-models/pool'
+
+const { rows } = defineProps<{
+  rows: SerializeObject<IPoolListView>[]
+}>()
 
 const expanded = ref(['scheduled', 'started', 'live', 'completed'])
-
-const rows = [
-  {
-    status: 'scheduled',
-    name: 'PPWC SOS',
-    host: 'Fronton, MX',
-    admin: 'Steve',
-    entries: 0,
-    donations: 0,
-    numberOfWinners: 3,
-    openDate: '1-Dec-24',
-    closeDate: '1-Jan-25',
-  },
-  {
-    status: 'scheduled',
-    name: 'PPWC HOS',
-    host: 'Brazil',
-    admin: 'Edwin',
-    entries: 0,
-    donations: 0,
-    numberOfWinners: 3,
-    openDate: '2-Dec-24',
-    closeDate: '2-Jan-25',
-  },
-  {
-    status: 'started',
-    name: 'PPWC SOS',
-    host: 'Miami',
-    admin: 'Bill',
-    entries: 50,
-    donations: 1000,
-    numberOfWinners: 2,
-    openDate: '1-Feb-24',
-    closeDate: '5-Mar-24',
-  },
-  {
-    status: 'started',
-    name: 'PPWC HOS',
-    host: 'New York',
-    admin: 'Bill',
-    entries: 100,
-    donations: 2000,
-    numberOfWinners: 1,
-    openDate: '1-Feb-24',
-    closeDate: '7-Mar-24',
-  },
-  {
-    status: 'live',
-    name: 'PPWC SOS',
-    host: 'Fronton, MX',
-    admin: 'Steve',
-    entries: 200,
-    donations: 4000,
-    numberOfWinners: 4,
-    openDate: '1-Feb-24',
-    closeDate: '29-Feb-24',
-  },
-  {
-    status: 'live',
-    name: 'PPWC HOS',
-    host: 'Fronton, MX',
-    admin: 'Steve',
-    entries: 300,
-    donations: 6000,
-    numberOfWinners: 5,
-    openDate: '1-Feb-24',
-    closeDate: '29-Feb-24',
-  },
-  {
-    status: 'completed',
-    name: 'PPWC SOS',
-    host: 'Fronton, MX',
-    admin: 'Steve',
-    entries: 100,
-    donations: 2000,
-    numberOfWinners: 3,
-    openDate: '1-Feb-24',
-    closeDate: '29-Feb-24',
-  },
-  {
-    status: 'completed',
-    name: 'PPWC HOS',
-    host: 'Fronton, MX',
-    admin: 'Steve',
-    entries: 500,
-    donations: 10000,
-    numberOfWinners: 1,
-    openDate: '1-Feb-24',
-    closeDate: '29-Feb-24',
-  },
-]
 
 const groupedRows = computed(() => {
   // TODO: type items as row
   const groups: { [key: string]: { status: string, items: any[] } } = {}
-  rows.forEach((row) => {
+  rows?.forEach((row) => {
     if (!groups[row.status]) {
       groups[row.status] = {
         status: row.status,
@@ -137,7 +52,7 @@ function toggleExpand(status: string) {
     >
       <template #top>
         <q-space />
-        <q-btn color="primary" icon="add" label="New pool" @click="$router.push('/pools/new')" />
+        <q-btn v-if="$router.currentRoute.value.name !== 'public-pools'" color="primary" icon="add" label="New pool" @click="$router.push('/pools/new')" />
       </template>
       <template #body="props">
         <q-tr :props="props">

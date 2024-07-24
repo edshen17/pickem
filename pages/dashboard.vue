@@ -9,7 +9,11 @@ const { user: piniaUser } = storeToRefs(useUserStore())
 
 <template>
   <div class="u-m-5 u-space-y-3">
-    <p>Play</p>
+    <p>
+      <router-link to="/public/pools" class="u-text-blue-600">
+        Play
+      </router-link>
+    </p>
     <div v-if="isAdmin(piniaUser?.role)">
       <p>
         <router-link to="/pools" class="u-text-blue-600">

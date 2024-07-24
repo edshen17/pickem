@@ -1,12 +1,12 @@
 import { authenticated } from '~/server/utils/middleware/auth'
 import { poolRepository } from '~/repositories/pool-repository'
-import { toPoolView } from '~/server/api/pools/conversion'
-import { adminRoles } from '~/view-models/role'
+import { toPoolListView } from '~/server/api/pools/conversion'
 
-export default authenticated(async ({ user }) => {
-  // TODO: add pagination
-  const filter = user && hasRoles(user, adminRoles) ? {} : { is_publicly_watchable: true }
+export default authenticated(async () => {
+  // TODO: filter + add pagination
+  // const filter = user && hasRoles(user, adminRoles) ? {} : { is_publicly_watchable: true }
+  const filter = {}
   const pools = await poolRepository.find(filter)
-  const poolViews = pools.map(toPoolView)
+  const poolViews = pools.map(toPoolListView)
   return poolViews
 })
