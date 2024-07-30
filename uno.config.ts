@@ -15,6 +15,7 @@ export default defineConfig({
     'u-dark-title': 'u-text-gray-300',
     'u-nav-link': 'u-text-gray-500 hover:u-text-black dark:u-text-gray-400 dark:hover:u-text-gray-300',
     'u-icon-btn': 'u-cursor-pointer u-select-none u-opacity-75 u-transition u-duration-200 u-ease-in-out hover:u-opacity-100 hover:u-text-teal-600',
+    'u-link': 'u-text-blue-500 hover:u-text-blue-400',
   }],
   presets: [
     presetUno({

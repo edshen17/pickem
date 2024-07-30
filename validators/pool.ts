@@ -1,4 +1,5 @@
 import { z } from 'zod'
+import sanitizeHtml from 'sanitize-html'
 import type { IPrizeAllocation } from '~/view-models/pool'
 
 export const poolValidator = z.object({
@@ -31,6 +32,7 @@ export const poolValidator = z.object({
     owner: 0,
     admin: 0,
   }),
+  description: z.string().max(63000).default('').transform(v => sanitizeHtml(v)),
 })
 
 export type PoolValidator = z.infer<typeof poolValidator>

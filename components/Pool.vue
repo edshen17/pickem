@@ -42,6 +42,7 @@ const [numberOfWinners, numberOfWinnersProps] = defineField('numberOfWinners', q
 const [prizeAllocation, prizeAllocationProps] = defineField('prizeAllocation', quasarConfig)
 const [ownerAllocation, ownerAllocationProps] = defineField('poolAllocation.owner', quasarConfig)
 const [adminAllocation, adminAllocationProps] = defineField('poolAllocation.admin', quasarConfig)
+const [description] = defineField('description', quasarConfig)
 
 const isSaving = ref(false)
 
@@ -82,8 +83,13 @@ watch(numberOfWinners, (newValue) => {
 </script>
 
 <template>
+  <!-- TODO: add loading state? -->
   <div class="u-mx-auto u-w-11/12 u-pb-6">
     <div class="u-mx-auto u-px-4 u-pt-4 u-container">
+      <p :class="titleClass">
+        [Pool name here]
+      </p>
+      <q-editor v-model="description" min-height="7rem" />
       <p :class="titleClass">
         Pool settings
       </p>

@@ -20,6 +20,5 @@ const { data } = await useFetchApi<IPoolView>(`/api/pools/${id}`).then((res) => 
 </script>
 
 <template>
-  <!-- TODO: add loading state? -->
   <Pool v-if="data" :pool="data" :loading="loading" />
 </template>

@@ -6,6 +6,7 @@ export interface IPoolAllocation {
 export interface IPrizeAllocation { [key: string]: number }
 
 export interface IPoolView {
+  id: string
   currency: string
   entryFee: number
   isPrivateLeague: boolean
@@ -20,6 +21,7 @@ export interface IPoolView {
 }
 
 export interface IPoolListView {
+  id: string
   status: string
   name: string
   host: string

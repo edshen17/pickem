@@ -21,7 +21,7 @@ const isInviteExpired = ref(false)
 const supabaseToken = reactive<ISupabaseToken>({ access_token: '', refresh_token: '' })
 
 const buttonClass = 'u-py-3 u-px-4 u-rounded u-w-full u-my-6 btn-hover-gradient'
-const redirectLinkClass = 'u-text-blue-500 hover:u-text-blue-400'
+const redirectLinkClass = 'u-link'
 
 const validationSchema = toTypedSchema(getUserValidator(isSignupPage))
 

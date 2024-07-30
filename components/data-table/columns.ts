@@ -40,3 +40,36 @@ export const poolColumns: QTableProps['columns'] = [
   { name: 'openDate', align: 'left', label: 'Opens', field: 'openDate', format: (v) => { return formatDate(v) } },
   { name: 'closeDate', align: 'left', label: 'Closes', field: 'closeDate', format: (v) => { return formatDate(v) } },
 ]
+
+export const playerColumns: QTableProps['columns'] = [
+  {
+    name: 'firstName',
+    required: true,
+    label: 'First',
+    align: 'left',
+    field: 'firstName',
+    sortable: true,
+  },
+  {
+    name: 'lastName',
+    required: true,
+    label: 'Last',
+    align: 'left',
+    field: 'lastName',
+    sortable: true,
+  },
+  {
+    name: 'rank',
+    label: 'Rank',
+    align: 'left',
+    field: 'rank',
+    sortable: true,
+  },
+  {
+    name: 'rating',
+    label: 'Rating',
+    align: 'left',
+    field: 'rating',
+    sortable: true,
+  },
+]

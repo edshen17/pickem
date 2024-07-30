@@ -9,5 +9,5 @@ const { data } = await useFetchApi('/api/pools').then((res) => {
 </script>
 
 <template>
-  <PoolTable v-if="data" />
+  <PoolTable v-if="data" :rows="data ?? []" />
 </template>

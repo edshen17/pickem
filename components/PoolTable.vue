@@ -9,7 +9,17 @@ const { rows } = defineProps<{
   rows: SerializeObject<IPoolListView>[]
 }>()
 
+const currentRoute = useCurrentRoute()
+
 const expanded = ref(['scheduled', 'started', 'live', 'completed'])
+
+const initialPagination = {
+  rowsPerPage: 50,
+}
+
+const isPublic = computed(() => {
+  return currentRoute.value.fullPath.includes('public')
+})
 
 const groupedRows = computed(() => {
   // TODO: type items as row
@@ -41,7 +51,7 @@ function toggleExpand(status: string) {
   <div class="lg:py-8 u-mx-auto u-w-11/12 u-min-h-screen-md u-py-6 lg:u-w-10/12 u-space-y-6 md:u-pb-8">
     <div class="u-flex u-items-center u-justify-between">
       <p class="u-text-xl u-font-bold">
-        PickEm Pools
+        {{ isPublic ? 'PickEm Pools' : 'Pool Management' }}
       </p>
     </div>
     <q-table
@@ -49,6 +59,7 @@ function toggleExpand(status: string) {
       :columns="columns"
       row-key="status"
       :dense="$q.screen.lt.md"
+      :pagination="initialPagination"
     >
       <template #top>
         <q-space />
@@ -73,7 +84,14 @@ function toggleExpand(status: string) {
           <q-tr v-for="item in props.row.items" :key="item.name">
             <q-td auto-width />
             <q-td v-for="col in props.cols.slice(1)" :key="col.name" :props="props">
-              {{ col.field !== undefined ? item[col.field] : '' }}
+              <template v-if="col.name === 'name'">
+                <NuxtLink :to="`${isPublic ? '/public' : ''}/pools/${item.id}`" class="u-link">
+                  {{ item[col.field] }}
+                </NuxtLink>
+              </template>
+              <template v-else>
+                {{ col.field !== undefined ? item[col.field] : '' }}
+              </template>
             </q-td>
           </q-tr>
         </template>

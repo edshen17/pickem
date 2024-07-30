@@ -32,9 +32,11 @@
     "nprogress": "^0.2.0",
     "pg": "^8.11.5",
     "quasar": "^2.16.3",
+    "sanitize-html": "^2.13.0",
     "ts-node": "^10.9.2",
     "vee-validate": "^4.12.8",
     "vue-currency-input": "^3.1.0",
+    "vue-draggable-next": "^2.2.1",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -49,6 +51,7 @@
     "@pinia/nuxt": "^0.5.1",
     "@types/crypto-js": "^4.2.2",
     "@types/pg": "^8.11.6",
+    "@types/sanitize-html": "^2.11.0",
     "@unocss/eslint-config": "^0.58.9",
     "@unocss/nuxt": "^0.58.9",
     "@vite-pwa/nuxt": "^0.6.0",

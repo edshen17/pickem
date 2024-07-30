@@ -6,8 +6,9 @@ import type { IPoolAllocation, IPoolListView, IPoolView, IPrizeAllocation } from
 import { decrypt } from '~/utils/encrypt'
 import { formatDate } from '~/utils/formatter/date'
 
-export function toPoolView({ currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, name, description }: Selectable<Pools>): IPoolView {
+export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, name, description }: Selectable<Pools>): IPoolView {
   return {
+    id,
     currency,
     entryFee: Number(entry_fee),
     isPrivateLeague: is_private,
@@ -25,9 +26,10 @@ export function toPoolView({ currency, entry_fee, is_private, is_publicly_watcha
   }
 }
 
-export function toPoolListView({ pool_allocation }: Selectable<Pools>): IPoolListView {
+export function toPoolListView({ id, pool_allocation }: Selectable<Pools>): IPoolListView {
   // TODO: fill these out from AMIBO API, maybe remove name field from pools?
   return {
+    id,
     status: 'scheduled',
     name: 'test name',
     host: 'test host',
