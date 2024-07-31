@@ -4,4 +4,5 @@ export interface IPlayerView {
   lastName: string
   rank: number
   rating: number
+  [key: string]: string | number
 }

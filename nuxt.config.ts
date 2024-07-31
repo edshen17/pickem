@@ -23,6 +23,10 @@ export default defineNuxtConfig({
           flat: true,
           bordered: true,
         },
+        QMarkupTable: {
+          flat: true,
+          bordered: true,
+        },
       },
     },
   },

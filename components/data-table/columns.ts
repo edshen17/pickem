@@ -48,7 +48,7 @@ export const playerColumns: QTableProps['columns'] = [
     label: 'First',
     align: 'left',
     field: 'firstName',
-    sortable: true,
+    // sortable: true,
   },
   {
     name: 'lastName',
@@ -56,20 +56,20 @@ export const playerColumns: QTableProps['columns'] = [
     label: 'Last',
     align: 'left',
     field: 'lastName',
-    sortable: true,
+    // sortable: true,
   },
   {
     name: 'rank',
     label: 'Rank',
     align: 'left',
     field: 'rank',
-    sortable: true,
+    // sortable: true,
   },
   {
     name: 'rating',
     label: 'Rating',
     align: 'left',
     field: 'rating',
-    sortable: true,
+    // sortable: true,
   },
 ]

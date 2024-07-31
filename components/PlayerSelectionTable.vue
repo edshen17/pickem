@@ -38,28 +38,22 @@ function toggleSelection(row: IPlayerView) {
 </script>
 
 <template>
-  <div>
-    <p class="q-mb-md u-text-lg u-font-bold">
-      Remaining picks: {{ numberOfSelections - selected.length }}
-    </p>
-    <q-table
-      :dense="$q.screen.lt.md"
-      :pagination="initialPagination"
-      title="Players"
-      :rows="rows"
-      :columns="columns"
-      row-key="id"
-      :selected="selected"
-      selection="multiple"
-    >
-      <template #header-selection />
-      <template #body-selection="scope">
-        <q-checkbox
-          :model-value="selected.some(item => item.id === scope.row.id)"
-          :disable="isSelectionDisabled && !selected.some(item => item.id === scope.row.id)"
-          @update:model-value="toggleSelection(scope.row)"
-        />
-      </template>
-    </q-table>
-  </div>
+  <q-table
+    :dense="$q.screen.lt.md"
+    :pagination="initialPagination"
+    :rows="rows"
+    :columns="columns"
+    row-key="id"
+    :selected="selected"
+    selection="multiple"
+  >
+    <template #header-selection />
+    <template #body-selection="scope">
+      <q-checkbox
+        :model-value="selected.some(item => item.id === scope.row.id)"
+        :disable="isSelectionDisabled && !selected.some(item => item.id === scope.row.id)"
+        @update:model-value="toggleSelection(scope.row)"
+      />
+    </template>
+  </q-table>
 </template>
