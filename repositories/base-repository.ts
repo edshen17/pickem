@@ -59,7 +59,7 @@ export class BaseRepository<T extends { id: Generated<string> }> {
         table_name: this.tableName,
         record_id: id,
         operation_type: 'UPDATE',
-        updated_by: user?.id || null,
+        updated_by: user?.id,
         original_values: JSON.stringify(originalEntity),
         new_values: JSON.stringify(updatedEntity),
       })
@@ -84,7 +84,7 @@ export class BaseRepository<T extends { id: Generated<string> }> {
         table_name: this.tableName,
         record_id: insertedEntity.id?.toString(),
         operation_type: 'INSERT',
-        updated_by: user?.id || null,
+        updated_by: user?.id,
         original_values: null,
         new_values: JSON.stringify(entity),
       })

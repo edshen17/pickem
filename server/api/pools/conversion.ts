@@ -2,11 +2,13 @@ import process from 'node:process'
 import type { Selectable } from 'kysely'
 import type { Pools } from 'kysely-codegen'
 import dayjs from 'dayjs'
-import type { IPoolAllocation, IPoolListView, IPoolView, IPrizeAllocation } from '~/view-models/pool'
+import { type IPoolAllocation, type IPoolListView, type IPoolView, type IPrizeAllocation, PoolStatus } from '~/view-models/pool'
 import { decrypt } from '~/utils/encrypt'
 import { formatDate } from '~/utils/formatter/date'
 
-export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, name, description }: Selectable<Pools>): IPoolView {
+// get tournament details...
+
+export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id }: Selectable<Pools>): IPoolView {
   return {
     id,
     currency,
@@ -21,16 +23,15 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
       : null,
     poolAllocation: pool_allocation as unknown as IPoolAllocation,
     prizeAllocation: prize_allocation as unknown as IPrizeAllocation,
-    name,
-    description,
+    tournamentId: tournament_id,
+    eventId: event_id,
   }
 }
 
 export function toPoolListView({ id, pool_allocation }: Selectable<Pools>): IPoolListView {
-  // TODO: fill these out from AMIBO API, maybe remove name field from pools?
   return {
     id,
-    status: 'scheduled',
+    status: PoolStatus.SCHEDULED,
     name: 'test name',
     host: 'test host',
     admin: 'test admin',

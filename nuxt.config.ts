@@ -45,7 +45,6 @@ export default defineNuxtConfig({
     '@nuxt/eslint',
     '@nuxtjs/supabase',
     'nuxt-quasar-ui',
-    '@pinia-plugin-persistedstate/nuxt',
   ],
   runtimeConfig: {
     public: {

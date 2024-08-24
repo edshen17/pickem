@@ -32,7 +32,8 @@ export const poolValidator = z.object({
     owner: 0,
     admin: 0,
   }),
-  description: z.string().max(63000).default('').transform(v => sanitizeHtml(v)),
+  tournamentId: z.string().max(100),
+  eventId: z.string().max(100),
 })
 
 export type PoolValidator = z.infer<typeof poolValidator>

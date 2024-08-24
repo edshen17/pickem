@@ -13,6 +13,7 @@
     "lint": "eslint .",
     "typecheck": "vue-tsc --noEmit",
     "db:types": "npx kysely-codegen",
+    "db:start": "supabase start",
     "db:generate": "npx tsx db/generate.ts",
     "db:migrate": "npx tsx db/migrate.ts",
     "db:revert": "npx tsx db/revert.ts"
@@ -47,7 +48,6 @@
     "@iconify-json/twemoji": "^1.1.15",
     "@nuxt/eslint": "^0.3.12",
     "@nuxtjs/color-mode": "^3.4.1",
-    "@pinia-plugin-persistedstate/nuxt": "^1.2.0",
     "@pinia/nuxt": "^0.5.1",
     "@types/crypto-js": "^4.2.2",
     "@types/pg": "^8.11.6",

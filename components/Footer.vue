@@ -36,18 +36,18 @@ const iconData = computed(() => {
   ]
 })
 
-const usefulLinkData = computed(() => {
-  return [
-    {
-      link: '/',
-      title: 'test',
-    },
-    {
-      link: '/',
-      title: 'test',
-    },
-  ]
-})
+// const usefulLinkData = computed(() => {
+//   return [
+//     {
+//       link: '/',
+//       title: 'test',
+//     },
+//     {
+//       link: '/',
+//       title: 'test',
+//     },
+//   ]
+// })
 </script>
 
 <template>
@@ -75,14 +75,14 @@ const usefulLinkData = computed(() => {
             </div>
           </div>
           <div class="u-col-span-12 u-my-2 lg:u-col-span-3">
-            <span class="u-block dark:u-dark-title u-font-semibold u-uppercase">Useful links</span>
+            <!-- <span class="u-block dark:u-dark-title u-font-semibold u-uppercase">Useful links</span>
             <ul v-for="usefulLink in usefulLinkData" :key="usefulLink.title">
               <li class="u-my-2">
                 <router-link :to="usefulLink.link" class="u-nav-link">
                   {{ usefulLink.title }}
                 </router-link>
               </li>
-            </ul>
+            </ul> -->
           </div>
           <div class="u-col-span-12 u-my-2 lg:u-col-span-3 lg:u-mt-0">
             <div class="u-mt-0 u-mt-4 u-w-full u-flex u-justify-end">

@@ -9,7 +9,7 @@ import { encrypt } from '~/utils/encrypt'
 export default authenticated(async ({ user, event }) => {
   AuthGuard.availableFor(user, adminRoles)
 
-  const { currency, entryFee, auth, isPubliclyWatchable, maxNumberOfPlayers, numberOfPicks, poolAllocation, prizeAllocation, description }
+  const { currency, entryFee, auth, isPubliclyWatchable, maxNumberOfPlayers, numberOfPicks, poolAllocation, prizeAllocation, tournamentId, eventId }
     = await readValidatedBody(event, body => poolValidator.parse(body))
 
   const { isPrivateLeague, password } = auth
@@ -28,9 +28,8 @@ export default authenticated(async ({ user, event }) => {
       : null,
     pool_allocation: poolAllocation,
     prize_allocation: prizeAllocation,
-    // TODO: fill out
-    name: '',
-    description,
+    tournament_id: tournamentId,
+    event_id: eventId,
   }
 
   if (!user)

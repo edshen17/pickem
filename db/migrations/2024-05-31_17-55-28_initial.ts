@@ -34,7 +34,6 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await baseSchema(db.schema
     .createTable('audit_log')
-    .addColumn('id', 'uuid', uuid)
     .addColumn('table_name', 'text')
     .addColumn('record_id', 'uuid')
     .addColumn('operation_type', sql`text check (operation_type in ('INSERT', 'UPDATE', 'DELETE'))`)

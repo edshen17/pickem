@@ -3,7 +3,7 @@ import { computed, ref } from 'vue'
 import type { SerializeObject } from 'nitropack'
 import { toTitleCase } from '~/utils/formatter/string'
 import { poolColumns as columns } from '~/components/data-table/columns'
-import type { IPoolListView } from '~/view-models/pool'
+import { type IPoolListView, PoolStatus } from '~/view-models/pool'
 
 const { rows } = defineProps<{
   rows: SerializeObject<IPoolListView>[]
@@ -11,7 +11,7 @@ const { rows } = defineProps<{
 
 const currentRoute = useCurrentRoute()
 
-const expanded = ref(['scheduled', 'started', 'live', 'completed'])
+const expanded = ref(Object.values(PoolStatus))
 
 const initialPagination = {
   rowsPerPage: 50,
@@ -36,9 +36,9 @@ const groupedRows = computed(() => {
   return Object.values(groups)
 })
 
-const isExpanded = (status: string) => expanded.value.includes(status)
+const isExpanded = (status: PoolStatus) => expanded.value.includes(status)
 
-function toggleExpand(status: string) {
+function toggleExpand(status: PoolStatus) {
   const index = expanded.value.indexOf(status)
   if (index === -1)
     expanded.value.push(status)

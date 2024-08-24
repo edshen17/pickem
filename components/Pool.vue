@@ -5,6 +5,7 @@ import type { IPoolView } from '~/view-models/pool'
 
 import type { PoolValidator } from '~/validators/pool'
 import { poolValidator } from '~/validators/pool'
+import type { ICTTFTournament } from '~/view-models/tournament'
 
 const { pool } = defineProps<{
   pool?: IPoolView
@@ -19,16 +20,25 @@ const textClass = 'u-w-44 lg:u-w-64'
 const titleClass = `u-pt-4 u-text-xl u-font-bold`
 const inlineParentClass = 'u-ml-10 items-center u-hidden! lg:u-inline-flex!'
 const inlineChildClass = 'u-mr-8 u-w-18'
+const inputWidth = 'u-w-50 lg:u-w-64'
+
+const loadingTournaments = ref(true)
+const isSaving = ref(false)
 
 const { handleSubmit, values, setFieldValue, defineField, setValues } = useForm<PoolValidator>({
   validationSchema: toTypedSchema(poolValidator),
 })
 
-onMounted(() => {
+onMounted(async () => {
   if (pool) {
     const { isPrivateLeague, password, ...rest } = pool
     setValues({ ...rest, auth: { isPrivateLeague, password: password ?? `` } })
   }
+})
+
+const { data: tournaments } = await useFetchApi('/api/tournaments').then((res) => {
+  loadingTournaments.value = false
+  return res
 })
 
 const [isPrivateLeague, isPrivateLeagueProps] = defineField('auth.isPrivateLeague', quasarConfig)
@@ -42,9 +52,12 @@ const [numberOfWinners, numberOfWinnersProps] = defineField('numberOfWinners', q
 const [prizeAllocation, prizeAllocationProps] = defineField('prizeAllocation', quasarConfig)
 const [ownerAllocation, ownerAllocationProps] = defineField('poolAllocation.owner', quasarConfig)
 const [adminAllocation, adminAllocationProps] = defineField('poolAllocation.admin', quasarConfig)
-const [description] = defineField('description', quasarConfig)
+const [tournamentId, tournamentIdProps] = defineField('tournamentId', quasarConfig)
+const [eventId, eventIdProps] = defineField('eventId', quasarConfig)
 
-const isSaving = ref(false)
+const events = computed(() => {
+  return tournaments.value?.find(t => t.id === tournamentId.value)?.events ?? []
+})
 
 const winnerRange = computed(() => {
   return Array.from({ length: numberOfWinners.value }, (_, i) => i + 1)
@@ -86,14 +99,44 @@ watch(numberOfWinners, (newValue) => {
   <!-- TODO: add loading state? -->
   <div class="u-mx-auto u-w-11/12 u-pb-6">
     <div class="u-mx-auto u-px-4 u-pt-4 u-container">
-      <p :class="titleClass">
-        [Pool name here]
-      </p>
-      <q-editor v-model="description" min-height="7rem" />
-      <p :class="titleClass">
-        Pool settings
-      </p>
       <q-form class="u-w-full u-space-y-4" @submit="onSubmit">
+        <p :class="titleClass">
+          Tournament & Event settings
+        </p>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Tournament
+          </div>
+          <q-select
+            v-model="tournamentId"
+            option-value="id"
+            option-label="title"
+            emit-value
+            map-options
+            :class="inputWidth"
+            :options="tournaments as ICTTFTournament[]"
+            :loading="loadingTournaments"
+            v-bind="tournamentIdProps"
+          />
+        </div>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Event
+          </div>
+          <q-select
+            v-model="eventId"
+            option-value="id"
+            option-label="title"
+            emit-value
+            map-options
+            :class="inputWidth"
+            :options="events"
+            v-bind="eventIdProps"
+          />
+        </div>
+        <p :class="titleClass">
+          Pool settings
+        </p>
         <div :class="parentClass">
           <div :class="textClass">
             Private League
@@ -106,7 +149,7 @@ watch(numberOfWinners, (newValue) => {
             <div :class="inlineChildClass">
               Password
             </div>
-            <q-input v-model="password" v-bind="passwordProps" class="u-w-50" />
+            <q-input v-model="password" v-bind="passwordProps" :class="inputWidth" />
           </div>
         </div>
         <div v-if="isPrivateLeague" :class="`${parentClass} lg:u-hidden!`">
@@ -128,20 +171,20 @@ watch(numberOfWinners, (newValue) => {
           <div :class="textClass">
             Max number of players
           </div>
-          <q-input v-model="maxNumberOfPlayers" v-bind="maxNumberOfPlayersProps" />
+          <q-input v-model="maxNumberOfPlayers" v-bind="maxNumberOfPlayersProps" :class="inputWidth" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Number of picks
           </div>
-          <q-input v-model="numberOfPicks" v-bind="numberOfPicksProps" />
+          <q-input v-model="numberOfPicks" v-bind="numberOfPicksProps" :class="inputWidth" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Entry fee
           </div>
           <div :class="parentClass">
-            <currency-input :model-value="entryFee" :currency="values.currency" v-bind="entryFeeProps" @update:model-value="(v) => { setFieldValue('entryFee', v) }" />
+            <currency-input :class="inputWidth" :model-value="entryFee" :currency="values.currency" v-bind="entryFeeProps" @update:model-value="(v) => { setFieldValue('entryFee', v) }" />
           </div>
           <div :class="inlineParentClass">
             <div :class="inlineChildClass">
@@ -154,7 +197,7 @@ watch(numberOfWinners, (newValue) => {
           <div :class="textClass">
             Currency
           </div>
-          <q-select v-model="currency" class="u-w-50" :options="supportedCurrencies" v-bind="currencyProps" />
+          <q-select v-model="currency" :class="inputWidth" :options="supportedCurrencies" v-bind="currencyProps" />
         </div>
         <p :class="titleClass">
           Prize settings
@@ -163,25 +206,25 @@ watch(numberOfWinners, (newValue) => {
           <div :class="textClass">
             Number of winners
           </div>
-          <q-input v-model="numberOfWinners" v-bind="numberOfWinnersProps" type="number" />
+          <q-input v-model="numberOfWinners" :class="inputWidth" v-bind="numberOfWinnersProps" type="number" />
         </div>
         <div v-for="n in winnerRange" :key="n" :class="parentClass">
           <div :class="textClass">
             Prize {{ n }}{{ getOrdinal(n) }} Place (%)
           </div>
-          <q-input v-model="prizeAllocation[n]" type="number" v-bind="prizeAllocationProps" />
+          <q-input v-model="prizeAllocation[n]" :class="inputWidth" type="number" v-bind="prizeAllocationProps" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Owner allocation to prizes (%)
           </div>
-          <q-input v-model="ownerAllocation" v-bind="ownerAllocationProps" />
+          <q-input v-model="ownerAllocation" :class="inputWidth" v-bind="ownerAllocationProps" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Admin allocation to prizes (%)
           </div>
-          <q-input v-model="adminAllocation" v-bind="adminAllocationProps" :rules="[val => val <= 7.5 && val >= 0 || 'Must be less than or equal to 7.5%', val => val >= 0 || 'Must be greater than or equal to 0%']" />
+          <q-input v-model="adminAllocation" :class="inputWidth" v-bind="adminAllocationProps" :rules="[val => val <= 7.5 && val >= 0 || 'Must be less than or equal to 7.5%', val => val >= 0 || 'Must be greater than or equal to 0%']" />
         </div>
         <!-- TODO: make sticky and float right -->
         <div>

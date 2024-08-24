@@ -6,10 +6,10 @@ import { baseSchema, schemaWithAudit } from '~/db/util'
 export async function up(db: Kysely<any>): Promise<void> {
   await schemaWithAudit(db.schema
     .createTable('pools')
-    .addColumn('name', 'text', col => col.notNull())
-    .addColumn('description', 'text', col => col.notNull())
+    .addColumn('tournament_id', 'varchar(30)', col => col.notNull())
+    .addColumn('event_id', 'varchar(30)', col => col.notNull())
     .addColumn('is_private', 'boolean', col => col.notNull())
-    .addColumn('password', 'text')
+    .addColumn('password', 'varchar(20)')
     .addColumn('is_publicly_watchable', 'boolean', col => col.notNull())
     .addColumn('max_players', 'numeric', col => col.notNull())
     .addColumn('number_of_picks', 'numeric', col => col.notNull())
