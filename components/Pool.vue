@@ -31,8 +31,8 @@ const { handleSubmit, values, setFieldValue, defineField, setValues } = useForm<
 
 onMounted(async () => {
   if (pool) {
-    const { isPrivateLeague, password, ...rest } = pool
-    setValues({ ...rest, auth: { isPrivateLeague, password: password ?? `` } })
+    const { isPrivateLeague, prizeAllocation, password, ...rest } = pool
+    setValues({ ...rest, auth: { isPrivateLeague, password: password ?? `` }, numberOfWinners: getObjectLength(prizeAllocation), prizeAllocation })
   }
 })
 
