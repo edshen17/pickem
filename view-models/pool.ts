@@ -1,3 +1,7 @@
+import type { ICTTFEvent } from '~/view-models/event'
+import type { ICTTFPlayer } from '~/view-models/player'
+import type { ICTTFTournament } from '~/view-models/tournament'
+
 export interface IPoolView {
   id: string
   currency: string
@@ -11,6 +15,24 @@ export interface IPoolView {
   prizeAllocation: IPrizeAllocation
   tournamentId: string
   eventId: string
+}
+
+export interface IPoolWithTournament {
+  id: string
+  currency: string
+  entryFee: number
+  numberOfPicks: number
+  prizeAllocation: IPrizeAllocation
+  tournament: ICTTFTournament
+  event: IPoolEvent
+}
+
+export interface IPoolEvent extends Omit<ICTTFEvent, 'players'> {
+  players: IPoolPlayer[]
+}
+
+export interface IPoolPlayer extends Omit<ICTTFPlayer, 'elo_hardbat' | 'elo_sandpaper' | 'elo_wood'> {
+  rating: string | null
 }
 
 export interface IPoolAllocation {

@@ -2,10 +2,13 @@ import process from 'node:process'
 import type { Selectable } from 'kysely'
 import type { Pools } from 'kysely-codegen'
 import dayjs from 'dayjs'
-import { type IPoolAllocation, type IPoolListView, type IPoolView, type IPrizeAllocation, PoolStatus } from '~/view-models/pool'
 import { decrypt } from '~/utils/encrypt'
 import { formatDate } from '~/utils/formatter/date'
 import { getTournamentById } from '~/server/api/tournaments'
+import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournament, IPrizeAllocation } from '~/view-models/pool'
+import { PoolStatus } from '~/view-models/pool'
+import type { ICTTFPlayer } from '~/view-models/player'
+import type { EventType } from '~/view-models/event'
 
 export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id }: Selectable<Pools>): IPoolView {
   return {
@@ -28,14 +31,16 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
 }
 
 // TODO: maybe join pool with player entries?
-export async function toPoolListView({ id, prize_allocation, tournament_id }: Selectable<Pools>): Promise<IPoolListView> {
+export async function toPoolListView({ id, prize_allocation, tournament_id, event_id }: Selectable<Pools>): Promise<IPoolListView> {
   // TODO: get number of entries and donation amount
-  const { title, venue, contact_name, start_date, end_date } = await getTournamentById(tournament_id)
+  const tournament = await getTournamentById(tournament_id)
+  const { title, venue, contact_name, start_date, end_date } = tournament
+  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
 
   return {
     id,
     status: PoolStatus.SCHEDULED, // TODO: calculate based off start date??
-    name: title,
+    name: `${title} - ${selectedEvent.title}`, // TODO: create pool name formatter
     host: venue,
     admin: contact_name,
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
@@ -44,4 +49,28 @@ export async function toPoolListView({ id, prize_allocation, tournament_id }: Se
     openDate: formatDate(dayjs(start_date).toDate()),
     closeDate: formatDate(dayjs(end_date).toDate()),
   }
+}
+
+function getRating({ elo_hardbat, elo_sandpaper, elo_wood }: ICTTFPlayer, eventType: EventType) {
+  switch (eventType) {
+    case 'H':
+      return elo_hardbat
+    case 'S':
+      return elo_sandpaper
+    case 'W':
+      return elo_wood
+    default:
+      return null
+  }
+}
+
+export async function toPoolWithTournamentView({ id, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>): Promise<IPoolWithTournament> {
+  const tournament = await getTournamentById(tournament_id)
+  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
+  const players = selectedEvent.players.map((p) => {
+    const { elo_hardbat, elo_sandpaper, elo_wood, ...rest } = p
+    return { ...rest, rating: getRating(p, selectedEvent.type) }
+  })
+
+  return { id, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players } }
 }

@@ -1,31 +1,31 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { playerColumns as columns } from '~/components/data-table/columns'
-import type { IPlayerView } from '~/view-models/player'
+import type { ICTTFPlayer } from '~/view-models/player'
 
 const props = defineProps<{
-  rows: IPlayerView[]
-  numberOfSelections: number
+  rows: ICTTFPlayer[]
+  numberOfPicks: number
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:selected', value: IPlayerView[]): void
+  (e: 'update:selected', value: ICTTFPlayer[]): void
 }>()
 
 const initialPagination = {
   rowsPerPage: 100,
 }
 
-const selected = ref<IPlayerView[]>([])
+const selected = ref<ICTTFPlayer[]>([])
 
 const isSelectionDisabled = computed(() => {
-  return selected.value.length >= props.numberOfSelections
+  return selected.value.length >= props.numberOfPicks
 })
 
-function toggleSelection(row: IPlayerView) {
+function toggleSelection(row: ICTTFPlayer) {
   const index = selected.value.findIndex(item => item.id === row.id)
   if (index === -1) {
-    if (selected.value.length < props.numberOfSelections) {
+    if (selected.value.length < props.numberOfPicks) {
       selected.value.push(row)
       emit('update:selected', selected.value)
     }

@@ -1,54 +1,15 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { IPlayerView } from '~/view-models/player'
+import type { ICTTFPlayer } from '~/view-models/player'
 import { playerColumns as columns } from '~/components/data-table/columns'
 
-const selected = ref<IPlayerView[]>([])
-const numberOfSelections = 3
-const page = ref(0)
+const currentRoute = useCurrentRoute()
 
-const rows: Ref<IPlayerView[]> = ref([
-  {
-    id: '1',
-    lastName: 'CLAFLIN',
-    firstName: 'STEVE',
-    rank: 1,
-    rating: 2000,
-    order: 1,
-  },
-  {
-    id: '2',
-    lastName: 'FLEMMING',
-    firstName: 'FLASH',
-    rank: 2,
-    rating: 2100,
-    order: 2,
-  },
-  {
-    id: '3',
-    lastName: 'SHEN',
-    firstName: 'EDWIN',
-    rank: 3,
-    rating: 1900,
-    order: 3,
-  },
-  {
-    id: '4',
-    lastName: 'BAGGALEY',
-    firstName: 'ANDREW',
-    rank: 4,
-    rating: 1800,
-    order: 4,
-  },
-  {
-    id: '5',
-    lastName: 'A',
-    firstName: 'X',
-    rank: 5,
-    rating: 10,
-    order: 5,
-  },
-])
+// TODO: type
+const { data } = await useFetchApi(`/api/pools/${(currentRoute.value.params as any).id}/tournament`)
+
+const selected = ref<ICTTFPlayer[]>([])
+const page = ref(0)
 
 function onSubmit() {
   page.value += 1
@@ -62,23 +23,23 @@ const isDragging = ref(false)
 </script>
 
 <template>
-  <div class="q-pa-md">
-    <!-- add pool description, prizes, etc -->
-    <div class="q-mb-md u-text-lg u-font-bold">
-      <p v-if="page === 0">
-        Remaining picks: {{ numberOfSelections - selected.length }}
-      </p>
-      <p v-else>
-        Picks in order
-      </p>
+  <div v-if="data" class="lg:py-8 u-mx-auto u-w-11/12 u-min-h-screen-md u-py-6 lg:u-w-10/12 u-space-y-6 md:u-pb-8">
+    <div class="u-flex u-items-center u-justify-between">
+      <div class="u-font-bold">
+        <p class="u-text-xl">
+          {{ data.tournament.title }} - {{ data.event.title }}
+        </p>
+        <p class="u-text-lg">
+          {{ page === 0 ? `Remaining picks: ${data.numberOfPicks - selected.length}` : 'Picks in order' }}
+        </p>
+      </div>
     </div>
     <PlayerSelectionTable
       v-show="page === 0"
       v-model:selected="selected"
-      :rows="rows"
-      :number-of-selections="numberOfSelections"
+      :rows="data.event.players as ICTTFPlayer[]"
+      :number-of-picks="data.numberOfPicks"
     />
-    <!-- TODO: refactor into own component -->
     <q-markup-table v-show="page === 1">
       <thead>
         <tr>
@@ -86,7 +47,7 @@ const isDragging = ref(false)
           <th
             v-for="column in columns"
             :key="column.name"
-            :class="column.classes || 'text-left'"
+            :class="column.classes ?? 'text-left'"
           >
             {{ column.label }}
           </th>
@@ -121,7 +82,7 @@ const isDragging = ref(false)
     <div class="flex u-my-5">
       <q-space />
       <q-btn v-show="page === 1" color="primary" label="Back" @click="onBack" />
-      <q-btn v-show="page === 0" :class="{ invisible: numberOfSelections !== selected.length }" color="primary" label="Submit" @click="onSubmit" />
+      <q-btn v-show="page === 0" :class="{ invisible: data.numberOfPicks !== selected.length }" color="primary" label="Submit" @click="onSubmit" />
     </div>
   </div>
 </template>

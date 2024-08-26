@@ -43,33 +43,25 @@ export const poolColumns: QTableProps['columns'] = [
 
 export const playerColumns: QTableProps['columns'] = [
   {
-    name: 'firstName',
+    name: 'name',
     required: true,
-    label: 'First',
+    label: 'Name',
     align: 'left',
-    field: 'firstName',
-    // sortable: true,
-  },
-  {
-    name: 'lastName',
-    required: true,
-    label: 'Last',
-    align: 'left',
-    field: 'lastName',
-    // sortable: true,
+    field: 'name',
+    sortable: true,
   },
   {
     name: 'rank',
     label: 'Rank',
     align: 'left',
     field: 'rank',
-    // sortable: true,
+    sortable: true,
   },
   {
     name: 'rating',
     label: 'Rating',
     align: 'left',
     field: 'rating',
-    // sortable: true,
+    sortable: true,
   },
 ]
