@@ -8,11 +8,15 @@ const currentRoute = useCurrentRoute()
 // TODO: type
 const { data } = await useFetchApi(`/api/pools/${(currentRoute.value.params as any).id}/tournament`)
 
-const selected = ref<ICTTFPlayer[]>([])
+const selectedPlayers = ref<ICTTFPlayer[]>([])
 const page = ref(0)
+const isSubmittingPicks = ref(false)
 
-function onNext() {
-  page.value += 1
+async function onNext() {
+  if (page.value === 0)
+    page.value += 1
+  else
+    await onSubmit()
 }
 
 function onBack() {
@@ -20,7 +24,17 @@ function onBack() {
 }
 
 async function onSubmit() {
-
+  isSubmittingPicks.value = true
+  $fetch('/api/picks', { method: 'POST', body: {
+    poolId: (currentRoute.value.params as any).id,
+    playerIds: selectedPlayers.value.map(p => p.id),
+  } }).then(async () => {
+    NotificationManager.success('Picks submitted')
+  }).catch(() => {
+    NotificationManager.error()
+  }).finally(() => {
+    isSubmittingPicks.value = false
+  })
 }
 
 const isDragging = ref(false)
@@ -34,13 +48,13 @@ const isDragging = ref(false)
           {{ data.tournament.title }} - {{ data.event.title }}
         </p>
         <p class="u-text-lg">
-          {{ page === 0 ? `Remaining picks: ${data.numberOfPicks - selected.length}` : 'Picks in order' }}
+          {{ page === 0 ? `Remaining picks: ${data.numberOfPicks - selectedPlayers.length}` : 'Picks in order' }}
         </p>
       </div>
     </div>
     <PlayerSelectionTable
       v-show="page === 0"
-      v-model:selected="selected"
+      v-model:selected="selectedPlayers"
       :rows="data.event.players as ICTTFPlayer[]"
       :number-of-picks="data.numberOfPicks"
     />
@@ -58,7 +72,7 @@ const isDragging = ref(false)
         </tr>
       </thead>
       <draggable
-        v-model="selected"
+        v-model="selectedPlayers"
         tag="tbody"
         class="u-cursor-move"
         @start="isDragging = true"
@@ -66,7 +80,7 @@ const isDragging = ref(false)
       >
         <transition-group type="transition" name="flip-list">
           <tr
-            v-for="row in selected"
+            v-for="row in selectedPlayers"
             :key="row.id"
           >
             <td class="u-w-16 u-text-center lg:u-w-18">
@@ -86,7 +100,7 @@ const isDragging = ref(false)
     <div class="flex u-my-5 u-space-x-3">
       <q-space />
       <q-btn v-show="page === 1" color="secondary" flat label="Back" @click="onBack" />
-      <q-btn :class="{ invisible: data.numberOfPicks !== selected.length }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" @click="onNext" />
+      <q-btn :class="{ invisible: data.numberOfPicks !== selectedPlayers.length }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" :loading="isSubmittingPicks" @click="onNext" />
     </div>
   </div>
 </template>

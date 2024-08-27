@@ -5,10 +5,12 @@ import dayjs from 'dayjs'
 import { decrypt } from '~/utils/encrypt'
 import { formatDate } from '~/utils/formatter/date'
 import { getTournamentById } from '~/server/api/tournaments'
-import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournament, IPrizeAllocation } from '~/view-models/pool'
+import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournamentAndPicks, IPrizeAllocation } from '~/view-models/pool'
 import { PoolStatus } from '~/view-models/pool'
 import type { ICTTFPlayer } from '~/view-models/player'
 import type { EventType } from '~/view-models/event'
+import { pickRepository } from '~/repositories/pick-repository'
+import type { IUser } from '~/view-models/user'
 
 export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id }: Selectable<Pools>): IPoolView {
   return {
@@ -64,7 +66,8 @@ function getRating({ elo_hardbat, elo_sandpaper, elo_wood }: ICTTFPlayer, eventT
   }
 }
 
-export async function toPoolWithTournamentView({ id, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>): Promise<IPoolWithTournament> {
+export async function toPoolWithTournamentAndPicksView({ id, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
+  const pick = user ? await pickRepository.findByPoolAndUser(id, user.id) : null
   const tournament = await getTournamentById(tournament_id)
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
   const players = selectedEvent.players.map((p) => {
@@ -72,5 +75,5 @@ export async function toPoolWithTournamentView({ id, tournament_id, event_id, cu
     return { ...rest, rating: getRating(p, selectedEvent.type) }
   })
 
-  return { id, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players } }
+  return { id, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: pick?.player_ids as string[] ?? null }
 }

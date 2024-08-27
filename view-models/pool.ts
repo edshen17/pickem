@@ -17,7 +17,7 @@ export interface IPoolView {
   eventId: string
 }
 
-export interface IPoolWithTournament {
+export interface IPoolWithTournamentAndPicks {
   id: string
   currency: string
   entryFee: number
@@ -25,6 +25,7 @@ export interface IPoolWithTournament {
   prizeAllocation: IPrizeAllocation
   tournament: ICTTFTournament
   event: IPoolEvent
+  picks: string[] | null
 }
 
 export interface IPoolEvent extends Omit<ICTTFEvent, 'players'> {

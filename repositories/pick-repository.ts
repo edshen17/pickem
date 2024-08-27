@@ -1,5 +1,5 @@
-import type { SelectQueryBuilder } from 'kysely'
-import type { DB, Picks } from 'kysely-codegen'
+import { type SelectQueryBuilder, type Selectable, sql } from 'kysely'
+import type { DB, Picks, Pools } from 'kysely-codegen'
 import { BaseRepository } from '~/repositories/base-repository'
 
 export class PickRepository extends BaseRepository<Picks> {
@@ -10,7 +10,7 @@ export class PickRepository extends BaseRepository<Picks> {
   }
 
   async findByPoolAndUser(poolId: string, userId: string) {
-    return await this.query.where('pool_id', '=', poolId).where('user_id', '=', userId).selectAll().executeTakeFirst()
+    return await this.query.where('pool_id', '=', poolId).where('user_id', '=', userId).selectAll().executeTakeFirst() ?? null
   }
 }
 
