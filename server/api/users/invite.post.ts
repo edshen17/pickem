@@ -21,7 +21,7 @@ export default authenticated(async ({ user, event }) => {
   const client = serverSupabaseServiceRole(event)
 
   await db.transaction().execute(async () => {
-    if (!user || !user.host_club)
+    if (!user.host_club)
       throwNotFoundError('User or host club not found')
 
     // TODO: check supabase user by email and then if doesn't exist, invite

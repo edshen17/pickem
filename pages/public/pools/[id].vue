@@ -11,12 +11,16 @@ const { data } = await useFetchApi(`/api/pools/${(currentRoute.value.params as a
 const selected = ref<ICTTFPlayer[]>([])
 const page = ref(0)
 
-function onSubmit() {
+function onNext() {
   page.value += 1
 }
 
 function onBack() {
   page.value -= 1
+}
+
+async function onSubmit() {
+
 }
 
 const isDragging = ref(false)
@@ -79,10 +83,10 @@ const isDragging = ref(false)
         </transition-group>
       </draggable>
     </q-markup-table>
-    <div class="flex u-my-5">
+    <div class="flex u-my-5 u-space-x-3">
       <q-space />
-      <q-btn v-show="page === 1" color="primary" label="Back" @click="onBack" />
-      <q-btn v-show="page === 0" :class="{ invisible: data.numberOfPicks !== selected.length }" color="primary" label="Submit" @click="onSubmit" />
+      <q-btn v-show="page === 1" color="secondary" flat label="Back" @click="onBack" />
+      <q-btn :class="{ invisible: data.numberOfPicks !== selected.length }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" @click="onNext" />
     </div>
   </div>
 </template>

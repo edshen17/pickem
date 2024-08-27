@@ -14,5 +14,5 @@ export default authenticated(async ({ user, event }) => {
   // TODO: add more permission checks (who can delete who)
   const { userId } = await readValidatedBody(event, body => validator.parse(body))
 
-  await hostClubMemberRepository.toggleDeleteByUserId(userId, user?.host_club?.id ?? throwUnauthorizedError('Host club id required'), user ?? throwUnauthorizedError('User required'))
+  await hostClubMemberRepository.toggleDeleteByUserId(userId, user.host_club?.id ?? throwUnauthorizedError('Host club id required'), user)
 })

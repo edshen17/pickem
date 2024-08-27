@@ -32,9 +32,6 @@ export default authenticated(async ({ user, event }) => {
     event_id: eventId,
   }
 
-  if (!user)
-    throwUnauthorizedError('User required')
-
   const { id } = poolId && poolId !== 'new' ? await poolRepository.updateById(poolId, values, user) : await poolRepository.insert(values, user)
 
   return id

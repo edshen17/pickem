@@ -9,7 +9,7 @@ export default authenticated(async ({ user }) => {
   // TODO: check user permissions (host clubs)
   AuthGuard.availableFor(user, adminRoles)
 
-  if (!user?.host_club)
+  if (!user.host_club)
     throwError('User does not have a host club')
 
   const data = await db

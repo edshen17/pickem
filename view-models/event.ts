@@ -1,8 +1,8 @@
 import type { ICTTFPlayer } from '~/view-models/player'
 
 export enum EventType {
-  HARDBAT = 'H',
-  SANDPAPER = 'S',
+  HARD_BAT = 'H',
+  SAND_PAPER = 'S',
   WOOD = 'W',
 }
 
