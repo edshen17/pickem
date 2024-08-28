@@ -1,7 +1,41 @@
+import process from 'node:process'
 import { pwa } from './config/pwa'
 import { appDescription } from './constants/index'
 
 export default defineNuxtConfig({
+  quasar: {
+    plugins: ['Notify'],
+    components: {
+      defaults: {
+        QInput: {
+          filled: true,
+          dense: true,
+          hideBottomSpace: true,
+          noErrorIcon: true,
+        },
+        QSelect: {
+          filled: true,
+          dense: true,
+          hideBottomSpace: true,
+          noErrorIcon: true,
+        },
+        QTable: {
+          flat: true,
+          bordered: true,
+        },
+        QMarkupTable: {
+          flat: true,
+          bordered: true,
+        },
+      },
+    },
+  },
+  components: [
+    {
+      path: '~/components',
+      pathPrefix: false,
+    },
+  ],
   modules: [
     '@vueuse/nuxt',
     '@unocss/nuxt',
@@ -9,7 +43,18 @@ export default defineNuxtConfig({
     '@nuxtjs/color-mode',
     '@vite-pwa/nuxt',
     '@nuxt/eslint',
+    '@nuxtjs/supabase',
+    'nuxt-quasar-ui',
   ],
+  runtimeConfig: {
+    public: {
+      baseUrl: process.env.BASE_URL || 'https://PingPongPickEm.com',
+    },
+  },
+
+  supabase: {
+    redirectOptions: { login: '/log-in', callback: '/confirm', exclude: ['/', '/log-in', '/sign-up'], cookieRedirect: true },
+  },
 
   experimental: {
     // when using generate, payload js assets included in sw precache manifest
@@ -35,8 +80,7 @@ export default defineNuxtConfig({
     },
     prerender: {
       crawlLinks: false,
-      routes: ['/'],
-      ignore: ['/hi'],
+      routes: ['/', '/log-in'],
     },
   },
 
@@ -65,7 +109,6 @@ export default defineNuxtConfig({
   },
 
   features: {
-    // For UnoCSS
     inlineStyles: false,
   },
 

@@ -1,0 +1,79 @@
+import process from 'node:process'
+import type { Selectable } from 'kysely'
+import type { Pools } from 'kysely-codegen'
+import dayjs from 'dayjs'
+import { decrypt } from '~/utils/encrypt'
+import { formatDate } from '~/utils/formatter/date'
+import { getTournamentById } from '~/server/api/tournaments'
+import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournamentAndPicks, IPrizeAllocation } from '~/view-models/pool'
+import { PoolStatus } from '~/view-models/pool'
+import type { ICTTFPlayer } from '~/view-models/player'
+import type { EventType } from '~/view-models/event'
+import { pickRepository } from '~/repositories/pick-repository'
+import type { IUser } from '~/view-models/user'
+
+export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id }: Selectable<Pools>): IPoolView {
+  return {
+    id,
+    currency,
+    entryFee: Number(entry_fee),
+    isPrivateLeague: is_private,
+    isPubliclyWatchable: is_publicly_watchable,
+    maxNumberOfPlayers: Number(max_players),
+    numberOfPicks: Number(number_of_picks),
+    password: is_private
+      ? decrypt(password ?? throwError('Password required'), process.env.CRYPTO_SECRET_KEY
+      ?? throwError('Secret key required'))
+      : null,
+    poolAllocation: pool_allocation as unknown as IPoolAllocation,
+    prizeAllocation: prize_allocation as unknown as IPrizeAllocation,
+    tournamentId: tournament_id,
+    eventId: event_id,
+  }
+}
+
+// TODO: maybe join pool with player entries?
+export async function toPoolListView({ id, prize_allocation, tournament_id, event_id }: Selectable<Pools>): Promise<IPoolListView> {
+  // TODO: get number of entries and donation amount
+  const tournament = await getTournamentById(tournament_id)
+  const { title, venue, contact_name, start_date, end_date } = tournament
+  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
+
+  return {
+    id,
+    status: PoolStatus.SCHEDULED, // TODO: calculate based off start date??
+    name: `${title} - ${selectedEvent.title}`, // TODO: create pool name formatter
+    host: venue,
+    admin: contact_name,
+    numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
+    numberOfEntries: 0,
+    donationAmount: 0,
+    openDate: formatDate(dayjs(start_date).toDate()),
+    closeDate: formatDate(dayjs(end_date).toDate()),
+  }
+}
+
+function getRating({ elo_hardbat, elo_sandpaper, elo_wood }: ICTTFPlayer, eventType: EventType) {
+  switch (eventType) {
+    case 'H':
+      return elo_hardbat
+    case 'S':
+      return elo_sandpaper
+    case 'W':
+      return elo_wood
+    default:
+      return null
+  }
+}
+
+export async function toPoolWithTournamentAndPicksView({ id, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
+  const pick = user ? await pickRepository.findByPoolAndUser(id, user.id) : null
+  const tournament = await getTournamentById(tournament_id)
+  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
+  const players = selectedEvent.players.map((p) => {
+    const { elo_hardbat, elo_sandpaper, elo_wood, ...rest } = p
+    return { ...rest, rating: getRating(p, selectedEvent.type) }
+  })
+
+  return { id, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: pick?.player_ids as string[] ?? null }
+}
