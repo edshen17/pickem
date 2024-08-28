@@ -48,7 +48,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      baseUrl: process.env.BASE_URL || 'https://PingPongPickEm.com',
+      baseUrl: process.env.DEPLOY_URL || process.env.BASE_URL || 'https://PingPongPickEm.com',
     },
   },
 
