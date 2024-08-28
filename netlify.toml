@@ -1,11 +1,11 @@
 [build]
 publish = "dist"
-command = "pnpm run build"
+command = "BASE_URL=$DEPLOY_URL pnpm run build"
 
 [build.environment]
-NODE_VERSION = "16"
+NODE_VERSION = "20"
 
 [[redirects]]
 from = "/*"
 to = "/index.html"
-status = 200
+status = 200  
