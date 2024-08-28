@@ -1,6 +1,6 @@
 import type { Kysely } from 'kysely'
 import { sql } from 'kysely'
-import { baseSchema, schemaWithAudit, uuid } from '~/db/util'
+import { baseSchema, schemaWithAudit } from '~/db/util'
 
 export async function up(db: Kysely<any>): Promise<void> {
   await schemaWithAudit(db.schema
@@ -13,7 +13,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .createTable('roles')
     .addColumn('name', sql`text check (name in ('OWNER', 'ADMIN', 'MEMBER', 'NATION', 'CLUB_DIRECTOR', 'FAN'))`))
 
-  await db.insertInto('roles').values(['OWNER', 'ADMIN', 'MEMBER', 'NATION', 'CLUB_DIRECTOR', 'FAN'].map((v) => { return { id: sql`gen_random_uuid()`, name: v } })).execute()
+  await db.insertInto('roles').values(['OWNER', 'ADMIN', 'MEMBER', 'NATION', 'CLUB_DIRECTOR', 'FAN'].map(v => ({ id: sql`gen_random_uuid()`, name: v }))).execute()
 
   await schemaWithAudit(db.schema
     .createTable('host_clubs')

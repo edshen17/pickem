@@ -1,5 +1,4 @@
 import { z } from 'zod'
-import sanitizeHtml from 'sanitize-html'
 import type { IPrizeAllocation } from '~/view-models/pool'
 
 export const poolValidator = z.object({

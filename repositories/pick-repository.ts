@@ -1,5 +1,5 @@
-import { type SelectQueryBuilder, type Selectable, sql } from 'kysely'
-import type { DB, Picks, Pools } from 'kysely-codegen'
+import type { SelectQueryBuilder } from 'kysely'
+import type { DB, Picks } from 'kysely-codegen'
 import { BaseRepository } from '~/repositories/base-repository'
 
 export class PickRepository extends BaseRepository<Picks> {

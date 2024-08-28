@@ -7,7 +7,7 @@ export function hasRoles(user: IUser, roles: string[]) {
 
 export class AuthGuard {
   static availableFor(user: IUser | null, roles: string[]): asserts user is IUser {
-    if (user && !hasRoles(user, roles) || !user)
+    if ((user && !hasRoles(user, roles)) || !user)
       throwUnauthorizedError()
   }
 

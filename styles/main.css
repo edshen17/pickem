@@ -10,7 +10,8 @@ body,
   font-family: 'Noto Sans JP', sans-serif;
 }
 
-html.dark, body.body--dark {
+html.dark,
+body.body--dark {
   background: #222;
   color-scheme: dark;
 }
@@ -20,7 +21,7 @@ html.dark, body.body--dark {
 }
 
 #nprogress .bar {
-  background: rgb(13,148,136);
+  background: rgb(13, 148, 136);
   opacity: 0.75;
   position: fixed;
   z-index: 1031;
@@ -35,23 +36,39 @@ html.dark, body.body--dark {
 }
 
 .font-sans {
-  font-family: ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,Helvetica Neue,Arial,Noto Sans,sans-serif,Apple Color Emoji,Segoe UI Emoji,Segoe UI Symbol,Noto Color Emoji
+  font-family:
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    Segoe UI,
+    Roboto,
+    Helvetica Neue,
+    Arial,
+    Noto Sans,
+    sans-serif,
+    Apple Color Emoji,
+    Segoe UI Emoji,
+    Segoe UI Symbol,
+    Noto Color Emoji;
 }
 
-.auth input, select, .form-border {
-  @apply u-block u-border-2 u-border-gray-300 disabled:u-border-gray-200 u-rounded-md u-border-solid disabled:u-bg-gray-50 disabled:u-text-gray-500 disabled:u-shadow-none disabled:u-cursor-not-allowed u-w-full u-py-2 u-px-3 dark:u-bg-dark dark:u-text-white dark:u-border-gray-500 dark:u-text-gray-300
+.auth input,
+select,
+.form-border {
+  @apply u-block u-border-2 u-border-gray-300 disabled:u-border-gray-200 u-rounded-md u-border-solid disabled:u-bg-gray-50 disabled:u-text-gray-500 disabled:u-shadow-none disabled:u-cursor-not-allowed u-w-full u-py-2 u-px-3 dark:u-bg-dark dark:u-text-white dark:u-border-gray-500 dark:u-text-gray-300;
 }
 
 .time-hover {
-  @apply hover:u-bg-gray-100 dark:hover:u-bg-gray-700 u-p-1 u-rounded-sm
+  @apply hover:u-bg-gray-100 dark:hover:u-bg-gray-700 u-p-1 u-rounded-sm;
 }
 
 .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 /* Hide scrollbar for IE, Edge and Firefox */
 .no-scrollbar {
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

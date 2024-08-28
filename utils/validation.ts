@@ -1,5 +1,3 @@
-import { z } from 'zod'
-
 export function quasarConfig(state: any) {
   return {
     props: {
