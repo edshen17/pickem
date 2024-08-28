@@ -6,5 +6,4 @@ export interface ICTTFPlayer {
   elo_hardbat: string | null
   elo_sandpaper: string | null
   elo_wood: string | null
-  [key: string]: string | number | null
 }

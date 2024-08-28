@@ -1,16 +1,21 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import type { ICTTFPlayer } from '~/view-models/player'
 import { playerColumns as columns } from '~/components/data-table/columns'
+import type { IPoolPlayer, IPoolWithTournamentAndPicks } from '~/view-models/pool'
 
 const currentRoute = useCurrentRoute()
 
-// TODO: type
-const { data } = await useFetchApi(`/api/pools/${(currentRoute.value.params as any).id}/tournament`)
+const poolWithTournamentAndPicks = ref<IPoolWithTournamentAndPicks>()
 
-const selectedPlayers = ref<ICTTFPlayer[]>([])
+const selectedPlayers = ref<IPoolPlayer[]>([])
 const page = ref(0)
 const isSubmittingPicks = ref(false)
+
+onMounted(async () => {
+  const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`)
+  poolWithTournamentAndPicks.value = data
+  selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => data.picks?.includes(p.id)) ?? []
+})
 
 async function onNext() {
   if (page.value === 0)
@@ -41,22 +46,22 @@ const isDragging = ref(false)
 </script>
 
 <template>
-  <div v-if="data" class="lg:py-8 u-mx-auto u-w-11/12 u-min-h-screen-md u-py-6 lg:u-w-10/12 u-space-y-6 md:u-pb-8">
+  <div v-if="poolWithTournamentAndPicks" class="lg:py-8 u-mx-auto u-w-11/12 u-min-h-screen-md u-py-6 lg:u-w-10/12 u-space-y-6 md:u-pb-8">
     <div class="u-flex u-items-center u-justify-between">
       <div class="u-font-bold">
         <p class="u-text-xl">
-          {{ data.tournament.title }} - {{ data.event.title }}
+          {{ poolWithTournamentAndPicks.tournament.title }} - {{ poolWithTournamentAndPicks.event.title }}
         </p>
         <p class="u-text-lg">
-          {{ page === 0 ? `Remaining picks: ${data.numberOfPicks - selectedPlayers.length}` : 'Picks in order' }}
+          {{ page === 0 ? `Remaining picks: ${poolWithTournamentAndPicks.numberOfPicks - selectedPlayers.length}` : 'Picks in order' }}
         </p>
       </div>
     </div>
     <PlayerSelectionTable
       v-show="page === 0"
-      v-model:selected="selectedPlayers"
-      :rows="data.event.players as ICTTFPlayer[]"
-      :number-of-picks="data.numberOfPicks"
+      :initial-selected="selectedPlayers"
+      :rows="poolWithTournamentAndPicks.event.players"
+      :number-of-picks="poolWithTournamentAndPicks.numberOfPicks"
     />
     <q-markup-table v-show="page === 1">
       <thead>
@@ -91,7 +96,7 @@ const isDragging = ref(false)
               :key="column.name"
               class="text-left"
             >
-              {{ row[column.field as string] }}
+              {{ (row as any)[column.field as string] }}
             </td>
           </tr>
         </transition-group>
@@ -100,7 +105,7 @@ const isDragging = ref(false)
     <div class="flex u-my-5 u-space-x-3">
       <q-space />
       <q-btn v-show="page === 1" color="secondary" flat label="Back" @click="onBack" />
-      <q-btn :class="{ invisible: data.numberOfPicks !== selectedPlayers.length }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" :loading="isSubmittingPicks" @click="onNext" />
+      <q-btn :class="{ invisible: poolWithTournamentAndPicks.numberOfPicks !== selectedPlayers.length }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" :loading="isSubmittingPicks" @click="onNext" />
     </div>
   </div>
 </template>

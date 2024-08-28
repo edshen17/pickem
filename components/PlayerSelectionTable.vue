@@ -1,28 +1,34 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { playerColumns as columns } from '~/components/data-table/columns'
-import type { ICTTFPlayer } from '~/view-models/player'
+import type { IPoolPlayer } from '~/view-models/pool'
 
 const props = defineProps<{
-  rows: ICTTFPlayer[]
+  rows: IPoolPlayer[]
   numberOfPicks: number
+  initialSelected: IPoolPlayer[]
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:selected', value: ICTTFPlayer[]): void
+  (e: 'update:selected', value: IPoolPlayer[]): void
 }>()
 
 const initialPagination = {
   rowsPerPage: 100,
 }
 
-const selected = ref<ICTTFPlayer[]>([])
+const selected = ref<IPoolPlayer[]>(props.initialSelected)
+
+// Watch for changes in initialSelected prop
+watch(() => props.initialSelected, (newValue) => {
+  selected.value = newValue
+}, { immediate: true })
 
 const isSelectionDisabled = computed(() => {
   return selected.value.length >= props.numberOfPicks
 })
 
-function toggleSelection(row: ICTTFPlayer) {
+function toggleSelection(row: IPoolPlayer) {
   const index = selected.value.findIndex(item => item.id === row.id)
   if (index === -1) {
     if (selected.value.length < props.numberOfPicks) {
@@ -50,8 +56,8 @@ function toggleSelection(row: ICTTFPlayer) {
     <template #header-selection />
     <template #body-selection="scope">
       <q-checkbox
-        :model-value="selected.some(item => item.id === scope.row.id)"
-        :disable="isSelectionDisabled && !selected.some(item => item.id === scope.row.id)"
+        :model-value="scope.selected"
+        :disable="isSelectionDisabled && !scope.selected"
         @update:model-value="toggleSelection(scope.row)"
       />
     </template>
