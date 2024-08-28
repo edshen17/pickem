@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
@@ -19,14 +18,12 @@ jobs:
         with:
           node-version: lts/*
           cache: pnpm
-
       - name: Install
         run: pnpm install
-
       - name: Lint
         run: pnpm run lint
 
-  typecheck:
+  generate-db-types:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -35,9 +32,32 @@ jobs:
         with:
           node-version: lts/*
           cache: pnpm
-
       - name: Install
         run: pnpm install
+      - name: Generate DB Types
+        run: npx kysely-codegen
+      - name: Upload DB Types
+        uses: actions/upload-artifact@v3
+        with:
+          name: db-types
+          path: path/to/generated/types.ts
 
+  typecheck:
+    needs: generate-db-types
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - uses: actions/setup-node@v3
+        with:
+          node-version: lts/*
+          cache: pnpm
+      - name: Install
+        run: pnpm install
+      - name: Download DB Types
+        uses: actions/download-artifact@v3
+        with:
+          name: db-types
+          path: path/to/generated/
       - name: Typecheck
         run: pnpm run typecheck
