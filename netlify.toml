@@ -4,6 +4,7 @@ command = "pnpm run build"
 
 [build.environment]
 NODE_VERSION = "20"
+BASE_URL = "$DEPLOY_URL"
 
 [[redirects]]
 from = "/*"
