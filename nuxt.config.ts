@@ -3,6 +3,17 @@ import { pwa } from './config/pwa'
 import { appDescription } from './constants/index'
 
 export default defineNuxtConfig({
+  modules: [
+    '@vueuse/nuxt',
+    '@unocss/nuxt',
+    '@pinia/nuxt',
+    '@nuxtjs/color-mode',
+    '@vite-pwa/nuxt',
+    '@nuxt/eslint',
+    '@nuxtjs/supabase',
+    'nuxt-quasar-ui',
+  ],
+
   quasar: {
     plugins: ['Notify'],
     components: {
@@ -36,19 +47,9 @@ export default defineNuxtConfig({
       pathPrefix: false,
     },
   ],
-  modules: [
-    '@vueuse/nuxt',
-    '@unocss/nuxt',
-    '@pinia/nuxt',
-    '@nuxtjs/color-mode',
-    '@vite-pwa/nuxt',
-    '@nuxt/eslint',
-    '@nuxtjs/supabase',
-    'nuxt-quasar-ui',
-  ],
   runtimeConfig: {
     public: {
-      baseUrl: `https://${process.env.VERCEL_URL}` || process.env.BASE_URL || 'https://PingPongPickEm.com',
+      baseUrl: process.env.BASE_URL || 'https://PingPongPickEm.com',
     },
   },
 
@@ -80,7 +81,6 @@ export default defineNuxtConfig({
     },
     prerender: {
       crawlLinks: false,
-      routes: ['/', '/log-in'],
     },
   },
 
