@@ -67,8 +67,5 @@
     "supabase": "^1.165.0",
     "typescript": "^5.5.4",
     "vue-tsc": "^2.0.17"
-  },
-  "resolutions": {
-    "@typescript-eslint/utils": "^8.2.0"
   }
 }
