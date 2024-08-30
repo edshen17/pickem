@@ -1,4 +1,3 @@
-import process from 'node:process'
 import pg from 'pg'
 import { Kysely, Migrator, PostgresDialect } from 'kysely'
 import type { DB } from 'kysely-codegen'
@@ -11,7 +10,7 @@ const { Pool } = pg
 export const db = new Kysely<DB>({
   dialect: new PostgresDialect({
     pool: new Pool({
-      connectionString: process.env.DATABASE_URL ?? ``,
+      connectionString: import.meta.env.DATABASE_URL ?? ``,
     }),
   }),
 })

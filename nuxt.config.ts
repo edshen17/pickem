@@ -49,7 +49,7 @@ export default defineNuxtConfig({
   ],
   runtimeConfig: {
     public: {
-      baseUrl: process.env.BASE_URL || 'https://PingPongPickEm.com',
+      baseUrl: import.meta.env.BASE_URL || 'https://PingPongPickEm.com',
     },
   },
 
