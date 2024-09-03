@@ -33,7 +33,7 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
 }
 
 // TODO: maybe join pool with player entries?
-export async function toPoolListView({ id, prize_allocation, tournament_id, event_id }: Selectable<Pools>): Promise<IPoolListView> {
+export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries }: Selectable<Pools & { number_of_entries: number }>): Promise<IPoolListView> {
   // TODO: get number of entries and donation amount
   const tournament = await getTournamentById(tournament_id)
   const { title, venue, contact_name, start_date, end_date } = tournament
@@ -46,8 +46,8 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
     host: venue,
     admin: contact_name,
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
-    numberOfEntries: 0,
-    donationAmount: 0,
+    numberOfEntries: number_of_entries,
+    donationAmount: 0, // TODO: fill out
     openDate: formatDate(dayjs(start_date).toDate()),
     closeDate: formatDate(dayjs(end_date).toDate()),
   }

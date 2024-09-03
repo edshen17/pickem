@@ -6,7 +6,6 @@
     "build": "nuxi build",
     "dev:pwa": "VITE_PLUGIN_PWA=true nuxi dev",
     "dev": "nuxi dev --host 127.0.0.1",
-    "generate": "nuxi generate",
     "prepare": "nuxi prepare",
     "start": "node .output/server/index.mjs",
     "start:generate": "npx serve .output/public",

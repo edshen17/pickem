@@ -91,31 +91,29 @@ onUnmounted(() => {
           <img :src="userProfileImg" class="u-h-full u-w-full u-object-cover">
         </button>
         <button v-if="showDropdownMenu" class="u-fixed u-inset-0 u-h-full u-w-full u-cursor-default" tabindex="-1" @click="showDropdownMenu = false" />
-        <FadeInOut>
-          <div v-if="showDropdownMenu" class="u-absolute u-right-0 u-m-3 u-w-80 u-rounded-md u-bg-gray-800 u-shadow-xl">
-            <div class="u-mx-auto u-w-full u-px-3 lg:u-text-white">
-              <div class="u-my-6 lg:u-my-2" />
-              <hr class="u-mx-auto u-border-gray-400 lg:u-hidden">
-              <div class="u-grid u-grid-flow-col u-grid-cols-12">
-                <img :src="userProfileImg" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2"><div class="font-semi-bold u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
-                  <p class="u-text-lg">
-                    {{ piniaUser?.name }}
-                  </p>
-                </div>
+        <div v-if="showDropdownMenu" class="u-absolute u-right-0 u-m-3 u-w-80 u-rounded-md u-bg-gray-800 u-shadow-xl">
+          <div class="u-mx-auto u-w-full u-px-3 lg:u-text-white">
+            <div class="u-my-6 lg:u-my-2" />
+            <hr class="u-mx-auto u-border-gray-400 lg:u-hidden">
+            <div class="u-grid u-grid-flow-col u-grid-cols-12">
+              <img :src="userProfileImg" class="u-z-10 u-col-span-3 u-mx-4 u-my-4 u-block u-h-16 u-w-16 u-rounded-full u-object-cover lg:u-col-span-4 md:u-col-span-2"><div class="font-semi-bold u-col-span-9 u-mx-6 u-my-3 md:u-mx-0">
+                <p class="u-text-lg">
+                  {{ piniaUser?.name }}
+                </p>
               </div>
-              <hr class="u-mx-auto u-border-gray-400">
-              <div class="u-mt-6 lg:u-my-2">
-                <div v-for="link in innerRouterLinks" :key="link.path" class="u-inline-block u-h-full u-w-full u-py-4 u-text-gray-500 u-no-underline lg:u-px-3 lg:u-py-3">
-                  <RouterLink v-if="link.isShowing" :to="link.path" class="u-inline-block u-h-full u-w-full u-py-4 u-text-white u-no-underline lg:u-rounded-md lg:u-px-4 lg:u-py-2 lg:hover:u-bg-gray-600">
-                    {{ link.title }}
-                  </RouterLink>
-                </div>
+            </div>
+            <hr class="u-mx-auto u-border-gray-400">
+            <div class="u-mt-6 lg:u-my-2">
+              <div v-for="link in innerRouterLinks" :key="link.path" class="u-inline-block u-h-full u-w-full u-py-4 u-text-gray-500 u-no-underline lg:u-px-3 lg:u-py-3">
+                <RouterLink v-if="link.isShowing" :to="link.path" class="u-inline-block u-h-full u-w-full u-py-4 u-text-white u-no-underline lg:u-rounded-md lg:u-px-4 lg:u-py-2 lg:hover:u-bg-gray-600">
+                  {{ link.title }}
+                </RouterLink>
               </div>
             </div>
           </div>
-        </FadeInOut>
+        </div>
       </div>
-      <div class="u-mx-auto u-mt-4 u-h-2/6 u-w-full u-px-3 u-text-gray-500 lg:u-hidden lg:u-text-white">
+      <div v-if="isLoggedIn" class="u-mx-auto u-mt-4 u-h-2/6 u-w-full u-px-3 u-text-gray-500 lg:u-hidden lg:u-text-white">
         <!-- refactor this component as it's the same as above -->
         <div class="u-my-6 lg:u-my-2" />
         <hr class="u-mx-auto u-border-gray-400 lg:u-hidden">
