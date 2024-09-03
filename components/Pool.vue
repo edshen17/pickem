@@ -16,11 +16,11 @@ const { pool } = defineProps<{
 const router = useRouter()
 
 const parentClass = 'row items-center u-justify-between lg:u-flex-row lg:u-justify-initial'
-const textClass = 'u-w-44 lg:u-w-64'
+const textClass = 'u-w-full u-mb-2 lg:u-w-64 lg:u-mb-0'
 const titleClass = `u-pt-4 u-text-xl u-font-bold`
 const inlineParentClass = 'u-ml-10 items-center u-hidden! lg:u-inline-flex!'
 const inlineChildClass = 'u-mr-8 u-w-18'
-const inputWidth = 'u-w-50 lg:u-w-64'
+const inputWidth = 'u-w-full lg:u-w-64'
 
 const loadingTournaments = ref(true)
 const isSaving = ref(false)
