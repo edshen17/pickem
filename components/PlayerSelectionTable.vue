@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { QTableProps } from 'quasar'
 import { computed, ref, watch } from 'vue'
 import { playerColumns as columns } from '~/components/data-table/columns'
 import type { IPoolPlayer } from '~/view-models/pool'
@@ -13,8 +14,10 @@ const emit = defineEmits<{
   (e: 'update:selected', value: IPoolPlayer[]): void
 }>()
 
-const initialPagination = {
+const initialPagination: QTableProps['pagination'] = {
   rowsPerPage: 100,
+  sortBy: 'rating',
+  descending: true,
 }
 
 const selected = ref<IPoolPlayer[]>(props.initialSelected)

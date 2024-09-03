@@ -51,17 +51,17 @@ export const playerColumns: QTableProps['columns'] = [
     sortable: true,
   },
   {
-    name: 'rank',
-    label: 'Rank',
-    align: 'left',
-    field: 'rank',
-    sortable: true,
-  },
-  {
     name: 'rating',
     label: 'Rating',
     align: 'left',
     field: 'rating',
+    sortable: true,
+  },
+  {
+    name: 'rank',
+    label: 'Rank',
+    align: 'left',
+    field: 'rank',
     sortable: true,
   },
 ]
