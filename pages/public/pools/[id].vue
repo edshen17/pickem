@@ -13,7 +13,13 @@ const isSubmittingPicks = ref(false)
 
 onMounted(async () => {
   const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`)
-  poolWithTournamentAndPicks.value = data
+  const { event } = data
+  const { players } = event
+  poolWithTournamentAndPicks.value = { ...data, event: { ...event, players: players.sort((a, b) => Number(b.rating) - Number(a.rating))
+    .map((player, index) => ({
+      ...player,
+      rank: index + 1,
+    })) } }
   selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => data.picks?.includes(p.id)) ?? []
 })
 
