@@ -6,6 +6,8 @@ export async function up(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('pools')
     .addColumn('entry_start_date', 'timestamp', col => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
+    .addColumn('points_per_win', 'integer', col => col.notNull().defaultTo(5))
+    .addColumn('name', 'varchar(100)')
     .execute()
 }
 
@@ -22,5 +24,7 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('pools')
     .dropColumn('entry_start_date')
+    .dropColumn('points_per_win')
+    .dropColumn('name')
     .execute()
 }

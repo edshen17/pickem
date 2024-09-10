@@ -1,4 +1,6 @@
+import dayjs from 'dayjs'
 import { z } from 'zod'
+import { formatDate } from '~/utils/formatter/date'
 import type { IPrizeAllocation } from '~/view-models/pool'
 
 export const poolValidator = z.object({
@@ -18,6 +20,7 @@ export const poolValidator = z.object({
   maxNumberOfPlayers: z.coerce.number().int().positive().max(1000).default(1000),
   numberOfPicks: z.coerce.number().int().positive().max(100).default(5),
   entryFee: z.coerce.number().nonnegative().default(20),
+  entryStartDate: z.string().min(1, 'Please input a date').default(() => formatDate(new Date(), 'YYYY/MM/DD')),
   currency: z.string().min(3).max(3).default('USD'),
   numberOfWinners: z.coerce.number().int().positive().max(100).default(3),
   prizeAllocation: z.object({}).catchall(z.coerce.number().positive().optional()).refine(

@@ -15,6 +15,7 @@ export interface IPoolView {
   prizeAllocation: IPrizeAllocation
   tournamentId: string
   eventId: string
+  entryStartDate: Date
 }
 
 export interface IPoolWithTournamentAndPicks {

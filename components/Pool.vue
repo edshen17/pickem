@@ -6,6 +6,8 @@ import type { IPoolView } from '~/view-models/pool'
 import type { PoolValidator } from '~/validators/pool'
 import { poolValidator } from '~/validators/pool'
 import type { ICTTFTournament } from '~/view-models/tournament'
+import { supportedCurrencies } from '~/utils/currency'
+import { formatDate } from '~/utils/formatter/date'
 
 const { pool } = defineProps<{
   pool?: IPoolView
@@ -31,8 +33,8 @@ const { handleSubmit, values, setFieldValue, defineField, setValues } = useForm<
 
 onMounted(async () => {
   if (pool) {
-    const { isPrivateLeague, prizeAllocation, password, ...rest } = pool
-    setValues({ ...rest, auth: { isPrivateLeague, password: password ?? `` }, numberOfWinners: getObjectLength(prizeAllocation), prizeAllocation })
+    const { isPrivateLeague, prizeAllocation, password, entryStartDate, ...rest } = pool
+    setValues({ ...rest, auth: { isPrivateLeague, password: password ?? `` }, numberOfWinners: getObjectLength(prizeAllocation), prizeAllocation, entryStartDate: formatDate(entryStartDate, 'YYYY/MM/DD') })
   }
 })
 
@@ -54,9 +56,14 @@ const [ownerAllocation, ownerAllocationProps] = defineField('poolAllocation.owne
 const [adminAllocation, adminAllocationProps] = defineField('poolAllocation.admin', quasarConfig)
 const [tournamentId, tournamentIdProps] = defineField('tournamentId', quasarConfig)
 const [eventId, eventIdProps] = defineField('eventId', quasarConfig)
+const [entryStartDate, entryStartDateProps] = defineField('entryStartDate', quasarConfig)
 
 const events = computed(() => {
   return tournaments.value?.find(t => t.id === tournamentId.value)?.events ?? []
+})
+
+const entryEndDate = computed(() => {
+  return formatDate(events.value.find(e => e.id === eventId.value)?.start_date, 'YYYY/MM/DD')
 })
 
 const winnerRange = computed(() => {
@@ -198,6 +205,30 @@ watch(numberOfWinners, (newValue) => {
             Currency
           </div>
           <q-select v-model="currency" :class="inputWidth" :options="supportedCurrencies" v-bind="currencyProps" />
+        </div>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Entry start date
+          </div>
+          <q-input v-model="entryStartDate" filled mask="date" :rules="['date']" v-bind="entryStartDateProps" :class="inputWidth">
+            <template #append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
+                  <q-date v-model="entryStartDate">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </div>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Entry close date
+          </div>
+          <q-input v-model="entryEndDate" :class="inputWidth" disable readonly />
         </div>
         <p :class="titleClass">
           Prize settings
