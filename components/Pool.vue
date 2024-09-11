@@ -57,13 +57,23 @@ const [adminAllocation, adminAllocationProps] = defineField('poolAllocation.admi
 const [tournamentId, tournamentIdProps] = defineField('tournamentId', quasarConfig)
 const [eventId, eventIdProps] = defineField('eventId', quasarConfig)
 const [entryStartDate, entryStartDateProps] = defineField('entryStartDate', quasarConfig)
+const [name, nameProps] = defineField('name', quasarConfig)
+const [pointsPerWin, pointsPerWinProps] = defineField('pointsPerWin', quasarConfig)
+
+const selectedTournament = computed(() => {
+  return tournaments.value?.find(t => t.id === tournamentId.value)
+})
 
 const events = computed(() => {
-  return tournaments.value?.find(t => t.id === tournamentId.value)?.events ?? []
+  return selectedTournament.value?.events ?? []
+})
+
+const selectedEvent = computed(() => {
+  return events.value.find(e => e.id === eventId.value)!
 })
 
 const entryEndDate = computed(() => {
-  return formatDate(events.value.find(e => e.id === eventId.value)?.start_date, 'YYYY/MM/DD')
+  return formatDate(selectedEvent.value?.start_date, 'YYYY/MM/DD')
 })
 
 const winnerRange = computed(() => {
@@ -100,6 +110,11 @@ watch(numberOfWinners, (newValue) => {
   )
   setFieldValue('prizeAllocation', newAllocation)
 })
+
+watch(tournamentId, () => {
+  const newEvent = events.value?.[0]
+  setFieldValue('eventId', newEvent.id)
+})
 </script>
 
 <template>
@@ -112,7 +127,7 @@ watch(numberOfWinners, (newValue) => {
         </p>
         <div :class="parentClass">
           <div :class="textClass">
-            Tournament
+            ICTTF tournament
           </div>
           <q-select
             v-model="tournamentId"
@@ -128,7 +143,7 @@ watch(numberOfWinners, (newValue) => {
         </div>
         <div :class="parentClass">
           <div :class="textClass">
-            Event
+            ICTTF event
           </div>
           <q-select
             v-model="eventId"
@@ -144,6 +159,12 @@ watch(numberOfWinners, (newValue) => {
         <p :class="titleClass">
           Pool settings
         </p>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Name
+          </div>
+          <q-input v-model="name" v-bind="nameProps" :class="inputWidth" />
+        </div>
         <div :class="parentClass">
           <div :class="textClass">
             Private League
@@ -185,6 +206,12 @@ watch(numberOfWinners, (newValue) => {
             Number of picks
           </div>
           <q-input v-model="numberOfPicks" v-bind="numberOfPicksProps" :class="inputWidth" />
+        </div>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Points per player win
+          </div>
+          <q-input v-model="pointsPerWin" v-bind="pointsPerWinProps" :class="inputWidth" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">

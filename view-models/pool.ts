@@ -16,6 +16,8 @@ export interface IPoolView {
   tournamentId: string
   eventId: string
   entryStartDate: Date
+  pointsPerWin: number
+  name: string | null
 }
 
 export interface IPoolWithTournamentAndPicks {

@@ -12,7 +12,7 @@ import type { EventType } from '~/view-models/event'
 import { pickRepository } from '~/repositories/pick-repository'
 import type { IUser } from '~/view-models/user'
 
-export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id, entry_start_date }: Selectable<Pools>): IPoolView {
+export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id, entry_start_date, name, points_per_win }: Selectable<Pools>): IPoolView {
   return {
     id,
     currency,
@@ -30,6 +30,8 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
     tournamentId: tournament_id,
     eventId: event_id,
     entryStartDate: entry_start_date,
+    name,
+    pointsPerWin: points_per_win,
   }
 }
 

@@ -1,4 +1,3 @@
-import dayjs from 'dayjs'
 import { z } from 'zod'
 import { formatDate } from '~/utils/formatter/date'
 import type { IPrizeAllocation } from '~/view-models/pool'
@@ -16,6 +15,8 @@ export const poolValidator = z.object({
     message: 'Password must be between 5 and 20 characters',
     path: ['password'],
   }).default({ isPrivateLeague: false, password: '' }),
+  name: z.string().nullable(),
+  pointsPerWin: z.coerce.number().int().positive().default(5),
   isPubliclyWatchable: z.boolean().default(true),
   maxNumberOfPlayers: z.coerce.number().int().positive().max(1000).default(1000),
   numberOfPicks: z.coerce.number().int().positive().max(100).default(5),
