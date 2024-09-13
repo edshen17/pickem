@@ -8,7 +8,7 @@ import { getTournamentById } from '~/server/api/tournaments'
 import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournamentAndPicks, IPrizeAllocation } from '~/view-models/pool'
 import { PoolStatus } from '~/view-models/pool'
 import type { ICTTFPlayer } from '~/view-models/player'
-import type { EventType } from '~/view-models/event'
+import type { EventType, ICTTFEvent } from '~/view-models/event'
 import { pickRepository } from '~/repositories/pick-repository'
 import type { IUser } from '~/view-models/user'
 
@@ -35,24 +35,43 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
   }
 }
 
-// TODO: maybe join pool with player entries?
-export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries }: Selectable<Pools & { number_of_entries: number }>): Promise<IPoolListView> {
-  // TODO: get number of entries and donation amount
-  const tournament = await getTournamentById(tournament_id)
-  const { title, venue, contact_name, start_date, end_date } = tournament
-  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
+function getPoolStatus({ start_date, end_date }: ICTTFEvent, entryStartDate: Date): PoolStatus {
+  const startDate = dayjs(entryStartDate)
+  const currentDate = dayjs()
+  const tournamentStartDate = dayjs(start_date)
+  const tournamentEndDate = dayjs(end_date)
 
+  if (currentDate.isBefore(startDate)) {
+    return PoolStatus.SCHEDULED
+  }
+
+  if (currentDate.isAfter(startDate) && currentDate.isBefore(tournamentStartDate)) {
+    return PoolStatus.STARTED
+  }
+
+  if (currentDate.isAfter(tournamentStartDate) && currentDate.isBefore(tournamentEndDate)) {
+    return PoolStatus.LIVE
+  }
+
+  return PoolStatus.FINISHED
+}
+
+// TODO: maybe join pool with player entries?
+export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries, entry_start_date }: Selectable<Pools & { number_of_entries: number }>): Promise<IPoolListView> {
+  const tournament = await getTournamentById(tournament_id)
+  const { title, venue, contact_name } = tournament
+  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
   return {
     id,
-    status: PoolStatus.SCHEDULED, // TODO: calculate based off start date??
+    status: getPoolStatus(selectedEvent, entry_start_date),
     name: `${title} - ${selectedEvent.title}`, // TODO: create pool name formatter
     host: venue,
     admin: contact_name,
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
     numberOfEntries: number_of_entries,
     donationAmount: 0, // TODO: fill out
-    openDate: formatDate(dayjs(start_date).toDate()),
-    closeDate: formatDate(dayjs(end_date).toDate()),
+    openDate: formatDate(dayjs(entry_start_date).toDate()),
+    closeDate: formatDate(dayjs(selectedEvent.end_date).toDate()), // TODO: need to update
   }
 }
 

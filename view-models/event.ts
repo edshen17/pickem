@@ -11,6 +11,7 @@ export interface ICTTFEvent {
   title: string
   short_name: string
   start_date: string
+  end_date: string // TODO: remove?
   type: EventType
   format: string
   max_players: string

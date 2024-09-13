@@ -5,16 +5,25 @@ import { adminRoles } from '~/view-models/role'
 import { poolValidator } from '~/validators/pool'
 import { poolRepository } from '~/repositories/pool-repository'
 import { encrypt } from '~/utils/encrypt'
+import { isDateBeforeToday } from '~/utils/date'
 
 export default authenticated(async ({ user, event }) => {
   AuthGuard.availableFor(user, adminRoles)
 
+  const poolId = event.context.params?.id ?? throwError('Pool id required')
+  const isNewPool = poolId === 'new'
+
   const { currency, entryFee, auth, isPubliclyWatchable, maxNumberOfPlayers, numberOfPicks, poolAllocation, prizeAllocation, tournamentId, eventId, entryStartDate, pointsPerWin, name }
     = await readValidatedBody(event, body => poolValidator.parse(body))
 
-  const { isPrivateLeague, password } = auth
+  if (!isNewPool) {
+    const { entry_start_date } = await poolRepository.findById(poolId) ?? throwError('Pool not found')
+    if (isDateBeforeToday(entry_start_date)) {
+      throwError('Cannot modify pool after entries have started')
+    }
+  }
 
-  const poolId = event.context.params?.id
+  const { isPrivateLeague, password } = auth
 
   const values = {
     name: name || null,
@@ -35,7 +44,7 @@ export default authenticated(async ({ user, event }) => {
     points_per_win: pointsPerWin,
   }
 
-  const { id } = poolId && poolId !== 'new' ? await poolRepository.updateById(poolId, values, user) : await poolRepository.insert(values, user)
+  const { id } = !isNewPool ? await poolRepository.updateById(poolId, values, user) : await poolRepository.insert(values, user)
 
   return id
 })
