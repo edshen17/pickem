@@ -79,6 +79,7 @@ async function _handleLogin(): Promise<void> {
         class="u-mt-3 u-h-28 u-w-full u-object-contain md:u-mt-10 2xl:u-h-44 md:u-h-36"
       >
     </div>
+    {{ redirectTo }}
     <div class="u-flex u-flex-wrap u-justify-center">
       <div class="u-mb-28 u-w-11/12 u-rounded-lg u-px-6 u-pt-10 2xl:u-w-3/12 md:u-w-6/12 xl:u-w-4/12">
         <div v-if="isInviteExpired" className="u-flex u-flex-col u-text-center u-gap-y-5">
