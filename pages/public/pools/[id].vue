@@ -12,7 +12,7 @@ const page = ref(0)
 const isSubmittingPicks = ref(false)
 
 onMounted(async () => {
-  const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`)
+  const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`) as IPoolWithTournamentAndPicks
   const { event } = data
   const { players } = event
   poolWithTournamentAndPicks.value = { ...data, event: { ...event, players: players.sort((a, b) => Number(b.rating) - Number(a.rating))
@@ -20,7 +20,8 @@ onMounted(async () => {
       ...player,
       rank: index + 1,
     })) } }
-  selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => data.picks?.includes(p.id)) ?? []
+  console.log(data)
+  // selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => data.picks?.includes(p.id)) ?? []
 })
 
 async function onNext() {
@@ -58,8 +59,23 @@ const isDragging = ref(false)
         <p class="u-text-xl">
           {{ poolWithTournamentAndPicks.tournament.title }} - {{ poolWithTournamentAndPicks.event.title }}
         </p>
+
         <p class="u-text-lg">
           {{ page === 0 ? `Remaining picks: ${poolWithTournamentAndPicks.numberOfPicks - selectedPlayers.length}` : 'Picks in order' }}
+        </p>
+      </div>
+    </div>
+    <div>
+      <p class="u-text-xl u-font-bold">
+        Your picks
+      </p>
+      <div class="u-flex u-items-center u-justify-between u-border-1 u-border-rounded">
+        <p class="u-m-3">
+          player 1, player 2
+        </p>
+        <p class="u-m-3 u-text-xl u-space-x-2">
+          <q-icon name="edit" />
+          <q-icon name="delete" />
         </p>
       </div>
     </div>

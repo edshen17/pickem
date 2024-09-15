@@ -10,7 +10,7 @@ export class PickRepository extends BaseRepository<Picks> {
   }
 
   async findByPoolAndUser(poolId: string, userId: string) {
-    return await this.query.where('pool_id', '=', poolId).where('user_id', '=', userId).selectAll().executeTakeFirst() ?? null
+    return await this.query.where('pool_id', '=', poolId).where('user_id', '=', userId).selectAll().execute() ?? null
   }
 }
 

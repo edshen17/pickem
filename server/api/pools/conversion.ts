@@ -1,6 +1,6 @@
 import process from 'node:process'
 import type { Selectable } from 'kysely'
-import type { Pools } from 'kysely-codegen'
+import type { Picks, Pools } from 'kysely-codegen'
 import dayjs from 'dayjs'
 import { decrypt } from '~/utils/encrypt'
 import { formatDate } from '~/utils/formatter/date'
@@ -52,7 +52,7 @@ function getPoolStatus({ start_date, end_date }: ICTTFEvent, entryStartDate: Dat
   if (currentDate.isAfter(tournamentStartDate) && currentDate.isBefore(tournamentEndDate)) {
     return PoolStatus.LIVE
   }
-
+  // TODO: check if results are in or not
   return PoolStatus.FINISHED
 }
 
@@ -71,7 +71,7 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
     numberOfEntries: number_of_entries,
     donationAmount: 0, // TODO: fill out
     openDate: formatDate(dayjs(entry_start_date).toDate()),
-    closeDate: formatDate(dayjs(selectedEvent.end_date).toDate()), // TODO: need to update
+    closeDate: 'To be determined', // TODO: need to update based on when results scored
   }
 }
 
@@ -88,8 +88,17 @@ function getRating({ elo_hardbat, elo_sandpaper, elo_wood }: ICTTFPlayer, eventT
   }
 }
 
+export function toPickView({ id, player_ids, created_at, updated_at }: Selectable<Picks>) {
+  return {
+    id,
+    playerIds: player_ids as string[],
+    createdAt: created_at,
+    updatedAt: updated_at,
+  }
+}
+
 export async function toPoolWithTournamentAndPicksView({ id, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
-  const pick = user ? await pickRepository.findByPoolAndUser(id, user.id) : null
+  const picks = user ? await pickRepository.findByPoolAndUser(id, user.id) : null
   const tournament = await getTournamentById(tournament_id)
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
   const players = selectedEvent.players.map((p) => {
@@ -97,5 +106,5 @@ export async function toPoolWithTournamentAndPicksView({ id, tournament_id, even
     return { ...rest, rating: getRating(p, selectedEvent.type) }
   })
 
-  return { id, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: pick?.player_ids as string[] ?? null }
+  return { id, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [] }
 }

@@ -28,7 +28,14 @@ export interface IPoolWithTournamentAndPicks {
   prizeAllocation: IPrizeAllocation
   tournament: ICTTFTournament
   event: IPoolEvent
-  picks: string[] | null
+  picks: IPickView[]
+}
+
+export interface IPickView {
+  id: string
+  playerIds: string[]
+  updatedAt: Date
+  createdAt: Date
 }
 
 export interface IPoolEvent extends Omit<ICTTFEvent, 'players'> {
