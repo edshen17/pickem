@@ -8,6 +8,7 @@ const currentRoute = useCurrentRoute()
 const poolWithTournamentAndPicks = ref<IPoolWithTournamentAndPicks>()
 
 const selectedPlayers = ref<IPoolPlayer[]>([])
+const selectedPickId = ref<string | null>(null)
 const submittedPicks = ref<IPickView[]>([])
 const page = ref(0)
 const isSubmittingPicks = ref(false)
@@ -42,30 +43,15 @@ function onBack() {
 async function onSubmit() {
   isSubmittingPicks.value = true
   try {
-    const pickToEdit = submittedPicks.value.find(pick =>
-      pick.playerIds.length === selectedPlayers.value.length
-      && pick.playerIds.every(id => selectedPlayers.value.some(p => p.id === id)),
-    )
-
     const response = await $fetch('/api/picks', {
       method: 'POST',
       body: {
-        id: pickToEdit?.id,
+        id: selectedPickId.value,
         poolId: (currentRoute.value.params as any).id,
         playerIds: selectedPlayers.value.map(p => p.id),
       },
     }) as IPickView
-
-    if (pickToEdit) {
-      const index = submittedPicks.value.findIndex(p => p.id === pickToEdit.id)
-      if (index !== -1) {
-        submittedPicks.value[index] = response
-      }
-    }
-    else {
-      submittedPicks.value.push(response)
-    }
-
+    submittedPicks.value.push(response)
     selectedPlayers.value = []
     NotificationManager.success('Picks submitted')
     page.value = 0
@@ -81,6 +67,7 @@ async function onSubmit() {
 function editPicks(pick: IPickView) {
   selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => pick.playerIds.includes(p.id)) ?? []
   submittedPicks.value = submittedPicks.value.filter(p => p.id !== pick.id)
+  selectedPickId.value = pick.id
   page.value = 0
 }
 

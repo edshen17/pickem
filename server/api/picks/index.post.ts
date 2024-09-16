@@ -5,7 +5,7 @@ import { AuthGuard } from '~/server/utils/auth-guards'
 import { authenticated } from '~/server/utils/middleware/auth'
 
 const validator = z.object({
-  id: z.string().uuid().optional(),
+  id: z.string().uuid().nullable().optional(),
   poolId: z.string().uuid(),
   playerIds: z.array(z.string()),
 })
