@@ -98,7 +98,7 @@ export function toPickView({ id, player_ids, created_at, updated_at }: Selectabl
 }
 
 export async function toPoolWithTournamentAndPicksView({ id, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
-  const picks = user ? await pickRepository.findByPoolAndUser(id, user.id) : null
+  const picks = user ? await pickRepository.findAllByPoolAndUser(id, user.id) : null
   const tournament = await getTournamentById(tournament_id)
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
   const players = selectedEvent.players.map((p) => {

@@ -1,18 +1,19 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { computed, ref } from 'vue'
 import { playerColumns as columns } from '~/components/data-table/columns'
-import type { IPoolPlayer, IPoolWithTournamentAndPicks } from '~/view-models/pool'
+import type { IPickView, IPoolPlayer, IPoolWithTournamentAndPicks } from '~/view-models/pool'
 
 const currentRoute = useCurrentRoute()
 
 const poolWithTournamentAndPicks = ref<IPoolWithTournamentAndPicks>()
 
 const selectedPlayers = ref<IPoolPlayer[]>([])
+const submittedPicks = ref<IPickView[]>([])
 const page = ref(0)
 const isSubmittingPicks = ref(false)
 
 onMounted(async () => {
-  const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`) as IPoolWithTournamentAndPicks
+  const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`) as unknown as IPoolWithTournamentAndPicks
   const { event } = data
   const { players } = event
   poolWithTournamentAndPicks.value = { ...data, event: { ...event, players: players.sort((a, b) => Number(b.rating) - Number(a.rating))
@@ -20,8 +21,11 @@ onMounted(async () => {
       ...player,
       rank: index + 1,
     })) } }
-  console.log(data)
-  // selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => data.picks?.includes(p.id)) ?? []
+  submittedPicks.value = poolWithTournamentAndPicks.value.picks
+})
+
+const remainingPicks = computed(() => {
+  return (poolWithTournamentAndPicks.value?.numberOfPicks ?? 0) - selectedPlayers.value.length
 })
 
 async function onNext() {
@@ -37,16 +41,60 @@ function onBack() {
 
 async function onSubmit() {
   isSubmittingPicks.value = true
-  $fetch('/api/picks', { method: 'POST', body: {
-    poolId: (currentRoute.value.params as any).id,
-    playerIds: selectedPlayers.value.map(p => p.id),
-  } }).then(async () => {
+  try {
+    const pickToEdit = submittedPicks.value.find(pick =>
+      pick.playerIds.length === selectedPlayers.value.length
+      && pick.playerIds.every(id => selectedPlayers.value.some(p => p.id === id)),
+    )
+
+    const response = await $fetch('/api/picks', {
+      method: 'POST',
+      body: {
+        id: pickToEdit?.id,
+        poolId: (currentRoute.value.params as any).id,
+        playerIds: selectedPlayers.value.map(p => p.id),
+      },
+    }) as IPickView
+
+    if (pickToEdit) {
+      const index = submittedPicks.value.findIndex(p => p.id === pickToEdit.id)
+      if (index !== -1) {
+        submittedPicks.value[index] = response
+      }
+    }
+    else {
+      submittedPicks.value.push(response)
+    }
+
+    selectedPlayers.value = []
     NotificationManager.success('Picks submitted')
-  }).catch(() => {
-    NotificationManager.error()
-  }).finally(() => {
+    page.value = 0
+  }
+  catch {
+    NotificationManager.error('Failed to submit picks')
+  }
+  finally {
     isSubmittingPicks.value = false
-  })
+  }
+}
+
+function editPicks(pick: IPickView) {
+  selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => pick.playerIds.includes(p.id)) ?? []
+  submittedPicks.value = submittedPicks.value.filter(p => p.id !== pick.id)
+  page.value = 0
+}
+
+async function deletePicks(pick: IPickView) {
+  try {
+    await $fetch(`/api/picks/${pick.id}`, {
+      method: 'DELETE',
+    })
+    submittedPicks.value = submittedPicks.value.filter(p => p.id !== pick.id)
+    NotificationManager.success('Pick deleted')
+  }
+  catch {
+    NotificationManager.error('Failed to delete pick')
+  }
 }
 
 const isDragging = ref(false)
@@ -61,21 +109,21 @@ const isDragging = ref(false)
         </p>
 
         <p class="u-text-lg">
-          {{ page === 0 ? `Remaining picks: ${poolWithTournamentAndPicks.numberOfPicks - selectedPlayers.length}` : 'Picks in order' }}
+          {{ page === 0 ? `Remaining picks: ${remainingPicks}` : 'Picks in order' }}
         </p>
       </div>
     </div>
-    <div>
+    <div v-if="submittedPicks.length > 0">
       <p class="u-text-xl u-font-bold">
         Your picks
       </p>
-      <div class="u-flex u-items-center u-justify-between u-border-1 u-border-rounded">
+      <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-2 u-flex u-items-center u-justify-between u-border-1 u-border-[rgba(255,255,255,0.28)] u-border-rounded">
         <p class="u-m-3">
-          player 1, player 2
+          {{ poolWithTournamentAndPicks.event.players.filter(p => pick.playerIds.includes(p.id)).map(player => player.name).join(', ') }}
         </p>
         <p class="u-m-3 u-text-xl u-space-x-2">
-          <q-icon name="edit" />
-          <q-icon name="delete" />
+          <q-icon name="edit" class="u-cursor-pointer" @click="editPicks(pick)" />
+          <q-icon name="delete" class="u-cursor-pointer" @click="deletePicks(pick)" />
         </p>
       </div>
     </div>
