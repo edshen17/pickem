@@ -31,14 +31,17 @@ export const hostClubManagementColumns: QTableProps['columns'] = [
 
 export const poolColumns: QTableProps['columns'] = [
   { name: 'status', required: true, label: 'Status', align: 'left', field: 'status' },
-  { name: 'name', align: 'left', label: 'Name', field: 'name' },
-  { name: 'host', align: 'left', label: 'Host', field: 'host' },
-  { name: 'admin', align: 'left', label: 'Admin', field: 'admin' },
+  { name: 'name', align: 'left', label: 'Pool Name', field: 'name' },
+  { name: 'date', required: true, label: 'Date', align: 'left', field: 'openDate', format: v => formatDate(v) },
+  { name: 'tournament', align: 'left', label: 'Tournament', field: 'tournament' },
+  { name: 'event', align: 'left', label: 'Event', field: 'event' },
+  { name: 'owner', align: 'left', label: 'Owner', field: 'owner' },
+  { name: 'director', align: 'left', label: 'Director', field: 'director' },
+  { name: 'openDate', align: 'left', label: 'Deadline', field: 'openDate', format: v => formatDate(v, 'h:mm A') },
   { name: 'numberOfEntries', align: 'left', label: 'Entries', field: 'numberOfEntries' },
   { name: 'donationAmount', align: 'left', label: 'Donations', field: 'donationAmount' },
   { name: 'numberOfWinners', align: 'left', label: '# Winners', field: 'numberOfWinners' },
-  { name: 'openDate', align: 'left', label: 'Opens', field: 'openDate', format: (v) => { return formatDate(v) } },
-  { name: 'closeDate', align: 'left', label: 'Closes', field: 'closeDate', format: (v) => { return formatDate(v) } },
+  { name: 'closeDate', align: 'left', label: 'Close Date', field: 'closeDate' },
 ]
 
 export const playerColumns: QTableProps['columns'] = [

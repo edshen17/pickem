@@ -90,7 +90,7 @@ function toggleExpand(status: PoolStatus) {
                 </NuxtLink>
               </template>
               <template v-else>
-                {{ col.field !== undefined ? item[col.field] : '' }}
+                {{ columns?.find((c) => c.name === col.name)?.format?.(item[col.field], props.row) ?? item[col.field] }}
               </template>
             </q-td>
           </q-tr>

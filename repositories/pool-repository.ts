@@ -14,17 +14,20 @@ export class PoolRepository extends BaseRepository<Pools> {
     const result = await this.db
       .selectFrom('pools')
       .leftJoin('picks', 'pools.id', 'picks.pool_id')
+      .leftJoin('users', 'pools.created_by', 'users.id')
       .select([
         sql<Selectable<Pools>>`to_jsonb(pools.*)`.as('pool'),
       ])
+      .select('users.name as director')
       .select(eb => [
         eb.fn.count('picks.id').as('number_of_entries'),
       ])
-      .groupBy('pools.id')
+      .groupBy(['pools.id', 'users.name'])
       .execute()
 
     return result.map(row => ({
       ...row.pool,
+      director: row.director,
       number_of_entries: Number(row.number_of_entries),
     }))
   }

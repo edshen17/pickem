@@ -75,12 +75,14 @@ export enum PoolStatus {
 export interface IPoolListView {
   id: string
   status: PoolStatus
+  tournament: string
+  event: string
+  owner: string
   name: string
-  host: string
-  admin: string
+  director: string
   numberOfEntries: number
   donationAmount: number
   numberOfWinners: number
-  openDate: string
+  openDate: Date
   closeDate: string
 }

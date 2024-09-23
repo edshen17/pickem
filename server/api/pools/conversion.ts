@@ -57,20 +57,22 @@ function getPoolStatus({ start_date, end_date }: ICTTFEvent, entryStartDate: Dat
 }
 
 // TODO: maybe join pool with player entries?
-export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries, entry_start_date }: Selectable<Pools & { number_of_entries: number }>): Promise<IPoolListView> {
+export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries, entry_start_date, name, director }: Selectable<Pools & { number_of_entries: number, director: string | null }>): Promise<IPoolListView> {
   const tournament = await getTournamentById(tournament_id)
-  const { title, venue, contact_name } = tournament
+  const { title, contact_name } = tournament
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
   return {
     id,
     status: getPoolStatus(selectedEvent, entry_start_date),
-    name: `${title} - ${selectedEvent.title}`, // TODO: create pool name formatter
-    host: venue,
-    admin: contact_name,
+    name: name ?? `${title} - ${selectedEvent.title}`,
+    event: selectedEvent.title,
+    owner: contact_name,
+    tournament: title,
+    director: director ?? ``,
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
     numberOfEntries: number_of_entries,
     donationAmount: 0, // TODO: fill out
-    openDate: formatDate(dayjs(entry_start_date).toDate()),
+    openDate: dayjs(entry_start_date).toDate(),
     closeDate: 'To be determined', // TODO: need to update based on when results scored
   }
 }
