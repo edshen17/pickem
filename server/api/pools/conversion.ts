@@ -73,7 +73,6 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
     numberOfEntries: number_of_entries,
     donationAmount: 0, // TODO: fill out
     openDate: dayjs(entry_start_date).toDate(),
-    closeDate: 'To be determined', // TODO: need to update based on when results scored
   }
 }
 

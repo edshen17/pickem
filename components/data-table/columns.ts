@@ -41,7 +41,6 @@ export const poolColumns: QTableProps['columns'] = [
   { name: 'numberOfEntries', align: 'left', label: 'Entries', field: 'numberOfEntries' },
   { name: 'donationAmount', align: 'left', label: 'Donations', field: 'donationAmount' },
   { name: 'numberOfWinners', align: 'left', label: '# Winners', field: 'numberOfWinners' },
-  { name: 'closeDate', align: 'left', label: 'Close Date', field: 'closeDate' },
 ]
 
 export const playerColumns: QTableProps['columns'] = [
