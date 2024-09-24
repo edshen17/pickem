@@ -3,7 +3,6 @@ import type { Selectable } from 'kysely'
 import type { Picks, Pools } from 'kysely-codegen'
 import dayjs from 'dayjs'
 import { decrypt } from '~/utils/encrypt'
-import { formatDate } from '~/utils/formatter/date'
 import { getTournamentById } from '~/server/api/tournaments'
 import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournamentAndPicks, IPrizeAllocation } from '~/view-models/pool'
 import { PoolStatus } from '~/view-models/pool'
@@ -72,7 +71,7 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
     numberOfEntries: number_of_entries,
     donationAmount: 0, // TODO: fill out
-    openDate: dayjs(entry_start_date).toDate(),
+    openDate: dayjs(selectedEvent.start_date).toDate(),
   }
 }
 
