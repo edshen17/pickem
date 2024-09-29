@@ -16,7 +16,6 @@ export const poolValidator = z.object({
     path: ['password'],
   }).default({ isPrivateLeague: false, password: '' }),
   name: z.string().nullable(),
-  pointsPerWin: z.coerce.number().int().positive().default(5),
   isPubliclyWatchable: z.boolean().default(true),
   maxNumberOfPlayers: z.coerce.number().int().positive().max(1000).default(1000),
   numberOfPicks: z.coerce.number().int().positive().max(100).default(5),

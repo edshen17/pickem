@@ -11,7 +11,7 @@ import type { EventType, ICTTFEvent } from '~/view-models/event'
 import { pickRepository } from '~/repositories/pick-repository'
 import type { IUser } from '~/view-models/user'
 
-export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id, entry_start_date, name, points_per_win }: Selectable<Pools>): IPoolView {
+export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id, entry_start_date, name }: Selectable<Pools>): IPoolView {
   return {
     id,
     currency,
@@ -30,7 +30,6 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
     eventId: event_id,
     entryStartDate: entry_start_date,
     name,
-    pointsPerWin: points_per_win,
   }
 }
 
@@ -97,7 +96,7 @@ export function toPickView({ id, player_ids, created_at, updated_at }: Selectabl
   }
 }
 
-export async function toPoolWithTournamentAndPicksView({ id, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
+export async function toPoolWithTournamentAndPicksView({ id, name, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
   const picks = user ? await pickRepository.findAllByPoolAndUser(id, user.id) : null
   const tournament = await getTournamentById(tournament_id)
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
@@ -106,5 +105,5 @@ export async function toPoolWithTournamentAndPicksView({ id, tournament_id, even
     return { ...rest, rating: getRating(p, selectedEvent.type) }
   })
 
-  return { id, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [] }
+  return { id, name, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [] }
 }

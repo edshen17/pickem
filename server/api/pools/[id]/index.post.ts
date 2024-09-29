@@ -13,7 +13,7 @@ export default authenticated(async ({ user, event }) => {
   const poolId = event.context.params?.id ?? throwError('Pool id required')
   const isNewPool = poolId === 'new'
 
-  const { currency, entryFee, auth, isPubliclyWatchable, maxNumberOfPlayers, numberOfPicks, poolAllocation, prizeAllocation, tournamentId, eventId, entryStartDate, pointsPerWin, name }
+  const { currency, entryFee, auth, isPubliclyWatchable, maxNumberOfPlayers, numberOfPicks, poolAllocation, prizeAllocation, tournamentId, eventId, entryStartDate, name }
     = await readValidatedBody(event, body => poolValidator.parse(body))
 
   if (!isNewPool) {
@@ -41,7 +41,6 @@ export default authenticated(async ({ user, event }) => {
     tournament_id: tournamentId,
     event_id: eventId,
     entry_start_date: entryStartDate,
-    points_per_win: pointsPerWin,
   }
 
   const { id } = !isNewPool ? await poolRepository.updateById(poolId, values, user) : await poolRepository.insert(values, user)

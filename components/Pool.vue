@@ -57,7 +57,6 @@ const [tournamentId, tournamentIdProps] = defineField('tournamentId', quasarConf
 const [eventId, eventIdProps] = defineField('eventId', quasarConfig)
 const [entryStartDate, entryStartDateProps] = defineField('entryStartDate', quasarConfig)
 const [name, nameProps] = defineField('name', quasarConfig)
-const [pointsPerWin, pointsPerWinProps] = defineField('pointsPerWin', quasarConfig)
 
 const selectedTournament = computed(() => {
   return tournaments.value?.find(t => t.id === tournamentId.value)
@@ -221,12 +220,6 @@ watch(tournamentId, () => {
             Number of picks
           </div>
           <q-input v-model="numberOfPicks" v-bind="numberOfPicksProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly" />
-        </div>
-        <div :class="parentClass">
-          <div :class="textClass">
-            Points per player win
-          </div>
-          <q-input v-model="pointsPerWin" v-bind="pointsPerWinProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">

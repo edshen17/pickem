@@ -12,6 +12,7 @@ const selectedPickId = ref<string | null>(null)
 const submittedPicks = ref<IPickView[]>([])
 const page = ref(0)
 const isSubmittingPicks = ref(false)
+const showPickTable = ref(false)
 
 onMounted(async () => {
   const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`) as unknown as IPoolWithTournamentAndPicks
@@ -54,13 +55,14 @@ async function onSubmit() {
     submittedPicks.value.push(response)
     selectedPlayers.value = []
     NotificationManager.success('Picks submitted')
-    page.value = 0
   }
   catch {
     NotificationManager.error('Failed to submit picks')
   }
   finally {
+    page.value = 0
     isSubmittingPicks.value = false
+    showPickTable.value = false
   }
 }
 
@@ -90,37 +92,43 @@ const isDragging = ref(false)
 <template>
   <div v-if="poolWithTournamentAndPicks" class="lg:py-8 u-mx-auto u-w-11/12 u-min-h-screen-md u-py-6 lg:u-w-10/12 u-space-y-6 md:u-pb-8">
     <div class="u-flex u-items-center u-justify-between">
-      <div class="u-font-bold">
-        <p class="u-text-xl">
+      <div>
+        <p class="u-text-xl u-font-bold">
           {{ poolWithTournamentAndPicks.tournament.title }} - {{ poolWithTournamentAndPicks.event.title }}
         </p>
-
-        <p class="u-text-lg">
+        <div v-show="submittedPicks.length > 0 && !showPickTable">
+          <p class="u-my-8 u-text-xl u-font-bold">
+            Your brackets
+          </p>
+          <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-2 u-flex u-items-center u-justify-between u-border-1 u-border-gray-200 u-border-rounded dark:u-border-[rgba(255,255,255,0.28)]">
+            <p class="u-m-3">
+              {{ poolWithTournamentAndPicks.event.players.filter(p => pick.playerIds.includes(p.id)).map(player => player.name).join(', ') }}
+            </p>
+            <p class="u-m-3 u-text-xl u-space-x-2">
+              <button @click="editPicks(pick)">
+                <q-icon name="edit" />
+              </button>
+              <button @click="deletePicks(pick)">
+                <q-icon name="delete" />
+              </button>
+            </p>
+          </div>
+        </div>
+        <q-btn v-show="!showPickTable" color="primary" class="u-my-4" @click="showPickTable = true">
+          Submit a new bracket
+        </q-btn>
+        <p v-show="showPickTable" class="u-mt-8 u-text-lg u-font-bold">
           {{ page === 0 ? `Remaining picks: ${remainingPicks}` : 'Picks in order' }}
         </p>
       </div>
     </div>
-    <div v-if="submittedPicks.length > 0">
-      <p class="u-text-xl u-font-bold">
-        Your picks
-      </p>
-      <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-2 u-flex u-items-center u-justify-between u-border-1 u-border-[rgba(255,255,255,0.28)] u-border-rounded">
-        <p class="u-m-3">
-          {{ poolWithTournamentAndPicks.event.players.filter(p => pick.playerIds.includes(p.id)).map(player => player.name).join(', ') }}
-        </p>
-        <p class="u-m-3 u-text-xl u-space-x-2">
-          <q-icon name="edit" class="u-cursor-pointer" @click="editPicks(pick)" />
-          <q-icon name="delete" class="u-cursor-pointer" @click="deletePicks(pick)" />
-        </p>
-      </div>
-    </div>
     <PlayerSelectionTable
-      v-show="page === 0"
+      v-show="page === 0 && showPickTable"
       :initial-selected="selectedPlayers"
       :rows="poolWithTournamentAndPicks.event.players"
       :number-of-picks="poolWithTournamentAndPicks.numberOfPicks"
     />
-    <q-markup-table v-show="page === 1">
+    <q-markup-table v-show="page === 1 && showPickTable">
       <thead>
         <tr>
           <th class="q-table--col-auto-width" />

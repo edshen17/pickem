@@ -4,6 +4,7 @@ import type { ICTTFTournament } from '~/view-models/tournament'
 
 export interface IPoolView {
   id: string
+  name: string | null
   currency: string
   entryFee: number
   isPrivateLeague: boolean
@@ -16,12 +17,11 @@ export interface IPoolView {
   tournamentId: string
   eventId: string
   entryStartDate: Date
-  pointsPerWin: number
-  name: string | null
 }
 
 export interface IPoolWithTournamentAndPicks {
   id: string
+  name: string | null
   currency: string
   entryFee: number
   numberOfPicks: number
