@@ -13,6 +13,7 @@ const submittedPicks = ref<IPickView[]>([])
 const page = ref(0)
 const isSubmittingPicks = ref(false)
 const showPickTable = ref(false)
+const isDragging = ref(false)
 
 onMounted(async () => {
   const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`) as unknown as IPoolWithTournamentAndPicks
@@ -85,8 +86,6 @@ async function deletePicks(pick: IPickView) {
     NotificationManager.error('Failed to delete pick')
   }
 }
-
-const isDragging = ref(false)
 </script>
 
 <template>
@@ -94,7 +93,7 @@ const isDragging = ref(false)
     <div class="u-flex u-items-center u-justify-between">
       <div>
         <p class="u-text-xl u-font-bold">
-          {{ poolWithTournamentAndPicks.tournament.title }} - {{ poolWithTournamentAndPicks.event.title }}
+          {{ `${poolWithTournamentAndPicks.name ?? `${poolWithTournamentAndPicks.tournament.title} - ${poolWithTournamentAndPicks.event.title}`}` }}
         </p>
         <div v-show="submittedPicks.length > 0 && !showPickTable">
           <p class="u-my-8 u-text-xl u-font-bold">
@@ -117,9 +116,12 @@ const isDragging = ref(false)
         <q-btn v-show="!showPickTable" color="primary" class="u-my-4" @click="showPickTable = true">
           Submit a new bracket
         </q-btn>
-        <p v-show="showPickTable" class="u-mt-8 u-text-lg u-font-bold">
-          {{ page === 0 ? `Remaining picks: ${remainingPicks}` : 'Picks in order' }}
-        </p>
+        <div class="u-mt-8 u-text-lg u-font-bold">
+          <q-input label="Bracket name" class="u-my-6" />
+          <p v-show="showPickTable">
+            {{ page === 0 ? `Remaining picks: ${remainingPicks}` : 'Picks in order' }}
+          </p>
+        </div>
       </div>
     </div>
     <PlayerSelectionTable
