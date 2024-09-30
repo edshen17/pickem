@@ -14,6 +14,7 @@ const page = ref(0)
 const isSubmittingPicks = ref(false)
 const showPickTable = ref(false)
 const isDragging = ref(false)
+const bracketName = ref('')
 
 onMounted(async () => {
   const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`) as unknown as IPoolWithTournamentAndPicks
@@ -25,6 +26,7 @@ onMounted(async () => {
       rank: index + 1,
     })) } }
   submittedPicks.value = poolWithTournamentAndPicks.value.picks
+  bracketName.value = `Bracket ${(poolWithTournamentAndPicks.value.numberOfPicks ?? 0) + 1}`
 })
 
 const remainingPicks = computed(() => {
@@ -117,7 +119,7 @@ async function deletePicks(pick: IPickView) {
           Submit a new bracket
         </q-btn>
         <div class="u-mt-8 u-text-lg u-font-bold">
-          <q-input label="Bracket name" class="u-my-6" />
+          <q-input v-show="showPickTable" v-model="bracketName" label="Bracket name" class="u-my-6" />
           <p v-show="showPickTable">
             {{ page === 0 ? `Remaining picks: ${remainingPicks}` : 'Picks in order' }}
           </p>
