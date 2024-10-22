@@ -7,13 +7,14 @@ import { authenticated } from '~/server/utils/middleware/auth'
 const validator = z.object({
   id: z.string().uuid().nullable().optional(),
   poolId: z.string().uuid(),
+  bracketName: z.string(),
   playerIds: z.array(z.string()),
 })
 
 export default authenticated(async ({ user, event }) => {
   AuthGuard.requireUser(user)
 
-  const { id, poolId, playerIds } = await readValidatedBody(event, body => validator.parse(body))
+  const { id, poolId, playerIds, bracketName } = await readValidatedBody(event, body => validator.parse(body))
 
   const [pool, existingPick] = await Promise.all([
     poolRepository.findById(poolId),
@@ -28,9 +29,11 @@ export default authenticated(async ({ user, event }) => {
 
   const formattedPlayerIds = JSON.stringify(playerIds)
 
+  const update = { player_ids: formattedPlayerIds, name: bracketName }
+
   const pick = existingPick
-    ? await pickRepository.updateById(existingPick.id, { player_ids: formattedPlayerIds }, user)
-    : await pickRepository.insert({ user_id: user.id, pool_id: poolId, player_ids: formattedPlayerIds }, user)
+    ? await pickRepository.updateById(existingPick.id, update, user)
+    : await pickRepository.insert({ user_id: user.id, pool_id: poolId, ...update }, user)
 
   return {
     id: pick.id,

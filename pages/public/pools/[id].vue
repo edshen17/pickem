@@ -26,7 +26,7 @@ onMounted(async () => {
       rank: index + 1,
     })) } }
   submittedPicks.value = poolWithTournamentAndPicks.value.picks
-  bracketName.value = `Bracket ${(poolWithTournamentAndPicks.value.numberOfPicks ?? 0) + 1}`
+  bracketName.value = `Bracket ${submittedPicks.value.length + 1}`
 })
 
 const remainingPicks = computed(() => {
@@ -53,6 +53,7 @@ async function onSubmit() {
         id: selectedPickId.value,
         poolId: (currentRoute.value.params as any).id,
         playerIds: selectedPlayers.value.map(p => p.id),
+        bracketName: bracketName.value,
       },
     }) as IPickView
     submittedPicks.value.push(response)
@@ -73,7 +74,8 @@ function editPicks(pick: IPickView) {
   selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => pick.playerIds.includes(p.id)) ?? []
   submittedPicks.value = submittedPicks.value.filter(p => p.id !== pick.id)
   selectedPickId.value = pick.id
-  page.value = 0
+  page.value = 1
+  showPickTable.value = true
 }
 
 async function deletePicks(pick: IPickView) {
@@ -82,10 +84,10 @@ async function deletePicks(pick: IPickView) {
       method: 'DELETE',
     })
     submittedPicks.value = submittedPicks.value.filter(p => p.id !== pick.id)
-    NotificationManager.success('Pick deleted')
+    NotificationManager.success('Bracket deleted')
   }
   catch {
-    NotificationManager.error('Failed to delete pick')
+    NotificationManager.error('Failed to delete bracket')
   }
 }
 </script>
