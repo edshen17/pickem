@@ -3,7 +3,7 @@ import type { Selectable } from 'kysely'
 import type { Picks, Pools } from 'kysely-codegen'
 import dayjs from 'dayjs'
 import { decrypt } from '~/utils/encrypt'
-import { getTournamentById } from '~/server/api/tournaments'
+import { getEloByPlayerId, getTournamentById } from '~/server/api/tournaments'
 import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournamentAndPicks, IPrizeAllocation } from '~/view-models/pool'
 import { PoolStatus } from '~/view-models/pool'
 import type { ICTTFPlayer } from '~/view-models/player'
@@ -74,7 +74,8 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
   }
 }
 
-function getRating({ elo_hardbat, elo_sandpaper, elo_wood }: ICTTFPlayer, eventType: EventType) {
+async function getRating({ id }: ICTTFPlayer, eventType: EventType) {
+  const { elo_hardbat, elo_sandpaper, elo_wood } = await getEloByPlayerId(id)
   switch (eventType) {
     case 'H':
       return elo_hardbat
@@ -100,10 +101,9 @@ export async function toPoolWithTournamentAndPicksView({ id, name, tournament_id
   const picks = user ? await pickRepository.findAllByPoolAndUser(id, user.id) : null
   const tournament = await getTournamentById(tournament_id)
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
-  const players = selectedEvent.players.map((p) => {
-    const { elo_hardbat, elo_sandpaper, elo_wood, ...rest } = p
-    return { ...rest, rating: getRating(p, selectedEvent.type) }
-  })
+  const players = await Promise.all(selectedEvent.players.map(async (p) => {
+    return { ...p, rating: await getRating(p, selectedEvent.type) }
+  }))
 
   return { id, name, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [] }
 }
