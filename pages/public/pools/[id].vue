@@ -58,10 +58,10 @@ async function onSubmit() {
     }) as IPickView
     submittedPicks.value.push(response)
     selectedPlayers.value = []
-    NotificationManager.success('Picks submitted')
+    NotificationManager.success('Bracket submitted')
   }
   catch {
-    NotificationManager.error('Failed to submit picks')
+    NotificationManager.error('Failed to submit bracket')
   }
   finally {
     page.value = 0
@@ -105,7 +105,7 @@ async function deletePicks(pick: IPickView) {
           </p>
           <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-2 u-flex u-items-center u-justify-between u-border-1 u-border-gray-200 u-border-rounded dark:u-border-[rgba(255,255,255,0.28)]">
             <p class="u-m-3">
-              {{ poolWithTournamentAndPicks.event.players.filter(p => pick.playerIds.includes(p.id)).map(player => player.name).join(', ') }}
+              {{ (pick as IPickView).playerIds.map((playerId) => poolWithTournamentAndPicks?.event.players.find((p) => p.id === playerId)).map(player => player?.name).join(', ') }}
             </p>
             <p class="u-m-3 u-text-xl u-space-x-2">
               <button @click="editPicks(pick)">
