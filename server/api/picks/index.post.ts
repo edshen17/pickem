@@ -40,5 +40,6 @@ export default authenticated(async ({ user, event }) => {
     playerIds,
     updatedAt: pick.updated_at,
     createdAt: pick.created_at,
+    name: bracketName,
   }
 })

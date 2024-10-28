@@ -26,7 +26,7 @@ onMounted(async () => {
       rank: index + 1,
     })) } }
   submittedPicks.value = poolWithTournamentAndPicks.value.picks
-  bracketName.value = `Bracket ${submittedPicks.value.length + 1}`
+  bracketName.value = ``
 })
 
 const remainingPicks = computed(() => {
@@ -42,6 +42,11 @@ async function onNext() {
 
 function onBack() {
   page.value -= 1
+}
+
+function onCancel() {
+  page.value = 0
+  showPickTable.value = false
 }
 
 async function onSubmit() {
@@ -76,6 +81,7 @@ function editPicks(pick: IPickView) {
   selectedPickId.value = pick.id
   page.value = 1
   showPickTable.value = true
+  bracketName.value = pick.name
 }
 
 async function deletePicks(pick: IPickView) {
@@ -96,17 +102,24 @@ async function deletePicks(pick: IPickView) {
   <div v-if="poolWithTournamentAndPicks" class="lg:py-8 u-mx-auto u-w-11/12 u-min-h-screen-md u-py-6 lg:u-w-10/12 u-space-y-6 md:u-pb-8">
     <div class="u-flex u-items-center u-justify-between">
       <div>
-        <p class="u-text-xl u-font-bold">
-          {{ `${poolWithTournamentAndPicks.name ?? `${poolWithTournamentAndPicks.tournament.title} - ${poolWithTournamentAndPicks.event.title}`}` }}
-        </p>
+        <div class="u-flex u-justify-between">
+          <p class="u-text-xl u-font-bold">
+            {{ `${poolWithTournamentAndPicks.name ?? `${poolWithTournamentAndPicks.tournament.title} - ${poolWithTournamentAndPicks.event.title}`}` }}
+          </p>
+        </div>
         <div v-show="submittedPicks.length > 0 && !showPickTable">
           <p class="u-my-8 u-text-xl u-font-bold">
             Your brackets
           </p>
           <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-2 u-flex u-items-center u-justify-between u-border-1 u-border-gray-200 u-border-rounded dark:u-border-[rgba(255,255,255,0.28)]">
-            <p class="u-m-3">
-              {{ (pick as IPickView).playerIds.map((playerId) => poolWithTournamentAndPicks?.event.players.find((p) => p.id === playerId)).map(player => player?.name).join(', ') }}
-            </p>
+            <div class="u-m-3 u-flex u-flex-col">
+              <p class="u-font-bold">
+                {{ pick.name }}
+              </p>
+              <p>
+                {{ (pick as IPickView).playerIds.map((playerId) => poolWithTournamentAndPicks?.event.players.find((p) => p.id === playerId)).map(player => player?.name).join(', ') }}
+              </p>
+            </div>
             <p class="u-m-3 u-text-xl u-space-x-2">
               <button @click="editPicks(pick)">
                 <q-icon name="edit" />
@@ -177,6 +190,7 @@ async function deletePicks(pick: IPickView) {
       <q-space />
       <q-btn v-show="page === 1" color="secondary" flat label="Back" @click="onBack" />
       <q-btn :class="{ invisible: poolWithTournamentAndPicks.numberOfPicks !== selectedPlayers.length }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" :loading="isSubmittingPicks" @click="onNext" />
+      <q-btn v-show="page >= 0 && showPickTable" color="secondary" label="Cancel" @click="onCancel" />
     </div>
   </div>
 </template>

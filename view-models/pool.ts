@@ -33,6 +33,7 @@ export interface IPoolWithTournamentAndPicks {
 
 export interface IPickView {
   id: string
+  name: string
   playerIds: string[]
   updatedAt: Date
   createdAt: Date

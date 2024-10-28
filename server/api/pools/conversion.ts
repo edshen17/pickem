@@ -88,12 +88,13 @@ async function getRating({ id }: ICTTFPlayer, eventType: EventType) {
   }
 }
 
-export function toPickView({ id, player_ids, created_at, updated_at }: Selectable<Picks>) {
+export function toPickView({ id, name, player_ids, created_at, updated_at }: Selectable<Picks>) {
   return {
     id,
     playerIds: player_ids as string[],
     createdAt: created_at,
     updatedAt: updated_at,
+    name: name ?? ``,
   }
 }
 
