@@ -32,15 +32,16 @@ export const hostClubManagementColumns: QTableProps['columns'] = [
 export const poolColumns: QTableProps['columns'] = [
   { name: 'status', required: true, label: 'Status', align: 'left', field: 'status' },
   { name: 'name', align: 'left', label: 'Pool Name', field: 'name' },
-  { name: 'date', required: true, label: 'Date', align: 'left', field: 'openDate', format: v => formatDate(v) },
   { name: 'tournament', align: 'left', label: 'Tournament', field: 'tournament' },
   { name: 'event', align: 'left', label: 'Event', field: 'event' },
   { name: 'owner', align: 'left', label: 'Owner', field: 'owner' },
   { name: 'director', align: 'left', label: 'Director', field: 'director' },
-  { name: 'openDate', align: 'left', label: 'Deadline', field: 'openDate', format: v => formatDate(v, 'h:mm A') },
   { name: 'numberOfEntries', align: 'left', label: 'Entries', field: 'numberOfEntries' },
   { name: 'donationAmount', align: 'left', label: 'Donations', field: 'donationAmount' },
   { name: 'numberOfWinners', align: 'left', label: '# Winners', field: 'numberOfWinners' },
+  { name: 'openDate', required: true, label: 'Entry Start Date', align: 'left', field: 'openDate', format: v => formatDate(v) },
+  { name: 'closeDate', align: 'left', label: 'Entry Close Date', field: 'closeDate', format: v => formatDate(v, 'MM/DD/YY @ h:mm A') },
+
 ]
 
 export const playerColumns: QTableProps['columns'] = [

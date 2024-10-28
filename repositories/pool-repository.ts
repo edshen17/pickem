@@ -9,9 +9,8 @@ export class PoolRepository extends BaseRepository<Pools> {
     super('pools')
   }
 
-  // TODO: add pagination or filter
-  async getPoolsWithEntryCount() {
-    const result = await this.db
+  private getBasePoolQuery() {
+    return this.db
       .selectFrom('pools')
       .leftJoin('picks', 'pools.id', 'picks.pool_id')
       .leftJoin('users', 'pools.created_by', 'users.id')
@@ -23,13 +22,30 @@ export class PoolRepository extends BaseRepository<Pools> {
         eb.fn.count('picks.id').as('number_of_entries'),
       ])
       .groupBy(['pools.id', 'users.name'])
-      .execute()
+  }
 
-    return result.map(row => ({
-      ...row.pool,
-      director: row.director,
-      number_of_entries: Number(row.number_of_entries),
-    }))
+  private formatPoolResult({ pool, director, number_of_entries }: { pool: Selectable<Pools>, director: string | null, number_of_entries: string | number | bigint }) {
+    return {
+      ...pool,
+      director,
+      number_of_entries: Number(number_of_entries),
+    }
+  }
+
+  // TODO: add pagination or filter
+  async getPoolsWithEntryCount() {
+    const result = await this.getBasePoolQuery().execute()
+    return result.map(this.formatPoolResult)
+  }
+
+  async findByIdWithEntryCount(poolId: string) {
+    const result = await this.getBasePoolQuery()
+      .where('pools.id', '=', poolId)
+      .executeTakeFirst()
+
+    if (!result)
+      return null
+    return this.formatPoolResult(result)
   }
 }
 

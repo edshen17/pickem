@@ -70,7 +70,8 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
     numberOfEntries: number_of_entries,
     donationAmount: 0, // TODO: fill out
-    openDate: dayjs(selectedEvent.start_date).toDate(),
+    openDate: entry_start_date,
+    closeDate: dayjs(selectedEvent.start_date).toDate(),
   }
 }
 

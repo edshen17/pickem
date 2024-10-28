@@ -85,4 +85,5 @@ export interface IPoolListView {
   donationAmount: number
   numberOfWinners: number
   openDate: Date
+  closeDate: Date
 }
