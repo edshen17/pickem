@@ -11,6 +11,7 @@ export class UserRepository extends BaseRepository<Users> {
     super('users')
   }
 
+  // TODO: rename to findById
   async findByIdWithHostClub(userId: string, hostClubId?: string): Promise<IUser | null> {
     const result = await this.query
       .where('users.id', '=', userId)

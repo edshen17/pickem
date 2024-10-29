@@ -11,7 +11,9 @@ import type { EventType, ICTTFEvent } from '~/view-models/event'
 import { pickRepository } from '~/repositories/pick-repository'
 import type { IUser } from '~/view-models/user'
 
-export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id, entry_start_date, name }: Selectable<Pools>): IPoolView {
+export type Pool = Selectable<Pools & { number_of_entries: number, pool_manager: string | null }>
+
+export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_watchable, max_players, number_of_picks, password, pool_allocation, prize_allocation, tournament_id, event_id, entry_start_date, name, number_of_entries }: Pool): IPoolView {
   return {
     id,
     currency,
@@ -30,6 +32,7 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
     eventId: event_id,
     entryStartDate: entry_start_date,
     name,
+    numberOfEntries: number_of_entries,
   }
 }
 
@@ -55,10 +58,11 @@ function getPoolStatus({ start_date, end_date }: ICTTFEvent, entryStartDate: Dat
 }
 
 // TODO: maybe join pool with player entries?
-export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries, entry_start_date, name, director }: Selectable<Pools & { number_of_entries: number, director: string | null }>): Promise<IPoolListView> {
+export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries, entry_start_date, name, pool_manager }: Pool): Promise<IPoolListView> {
   const tournament = await getTournamentById(tournament_id)
   const { title, contact_name } = tournament
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
+
   return {
     id,
     status: getPoolStatus(selectedEvent, entry_start_date),
@@ -66,7 +70,7 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
     event: selectedEvent.title,
     owner: contact_name,
     tournament: title,
-    director: director ?? ``,
+    poolManager: pool_manager ?? ``,
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
     numberOfEntries: number_of_entries,
     donationAmount: 0, // TODO: fill out
@@ -99,7 +103,7 @@ export function toPickView({ id, name, player_ids, created_at, updated_at }: Sel
   }
 }
 
-export async function toPoolWithTournamentAndPicksView({ id, name, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Selectable<Pools>, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
+export async function toPoolWithTournamentAndPicksView({ id, name, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Pool, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
   const picks = user ? await pickRepository.findAllByPoolAndUser(id, user.id) : null
   const tournament = await getTournamentById(tournament_id)
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')

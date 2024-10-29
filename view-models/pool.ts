@@ -17,6 +17,7 @@ export interface IPoolView {
   tournamentId: string
   eventId: string
   entryStartDate: Date
+  numberOfEntries: number
 }
 
 export interface IPoolWithTournamentAndPicks {
@@ -80,7 +81,7 @@ export interface IPoolListView {
   event: string
   owner: string
   name: string
-  director: string
+  poolManager: string
   numberOfEntries: number
   donationAmount: number
   numberOfWinners: number

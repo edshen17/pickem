@@ -17,7 +17,7 @@ export default authenticated(async ({ user, event }) => {
     = await readValidatedBody(event, body => poolValidator.parse(body))
 
   if (!isNewPool) {
-    const { entry_start_date, number_of_entries } = await poolRepository.findByIdWithEntryCount(poolId) ?? throwError('Pool not found')
+    const { entry_start_date, number_of_entries } = await poolRepository.findById(poolId) ?? throwError('Pool not found')
     if (isDateBeforeToday(entry_start_date) || number_of_entries > 0) {
       throwError('Cannot modify pool after entries have started or have been submitted')
     }

@@ -1,6 +1,7 @@
 import { type SelectQueryBuilder, type Selectable, sql } from 'kysely'
 import type { DB, Pools } from 'kysely-codegen'
 import { BaseRepository } from '~/repositories/base-repository'
+import type { Pool } from '~/server/api/pools/conversion'
 
 export class PoolRepository extends BaseRepository<Pools> {
   declare query: SelectQueryBuilder<DB, 'pools', Pools>
@@ -17,17 +18,17 @@ export class PoolRepository extends BaseRepository<Pools> {
       .select([
         sql<Selectable<Pools>>`to_jsonb(pools.*)`.as('pool'),
       ])
-      .select('users.name as director')
+      .select('users.name as pool_manager')
       .select(eb => [
         eb.fn.count('picks.id').as('number_of_entries'),
       ])
       .groupBy(['pools.id', 'users.name'])
   }
 
-  private formatPoolResult({ pool, director, number_of_entries }: { pool: Selectable<Pools>, director: string | null, number_of_entries: string | number | bigint }) {
+  private formatPoolResult({ pool, pool_manager, number_of_entries }: { pool: Selectable<Pools>, pool_manager: string | null, number_of_entries: string | number | bigint }) {
     return {
       ...pool,
-      director,
+      pool_manager,
       number_of_entries: Number(number_of_entries),
     }
   }
@@ -38,14 +39,12 @@ export class PoolRepository extends BaseRepository<Pools> {
     return result.map(this.formatPoolResult)
   }
 
-  async findByIdWithEntryCount(poolId: string) {
+  async findById(poolId: string): Promise<Pool> {
     const result = await this.getBasePoolQuery()
       .where('pools.id', '=', poolId)
       .executeTakeFirst()
 
-    if (!result)
-      return null
-    return this.formatPoolResult(result)
+    return this.formatPoolResult(result ?? throwError('Pool not found'))
   }
 }
 
