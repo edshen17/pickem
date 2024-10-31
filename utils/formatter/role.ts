@@ -7,7 +7,7 @@ export function formatRole(role: Role): string {
     case Role.ADMIN:
       return 'Admin'
     case Role.MEMBER:
-      return 'Member'
+      return 'Member (Player)'
     case Role.NATION:
       return 'Nation'
     case Role.CLUB_DIRECTOR:
