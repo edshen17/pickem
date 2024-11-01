@@ -20,7 +20,7 @@ export const poolValidator = z.object({
   maxNumberOfPlayers: z.coerce.number().int().positive().max(1000).default(1000),
   numberOfPicks: z.coerce.number().int().positive().max(100).default(5),
   entryFee: z.coerce.number().nonnegative().default(0),
-  entryStartDate: z.string().min(1, 'Please input a date').default(() => formatDate(new Date(), 'YYYY/MM/DD')),
+  entryStartDate: z.string().min(1, 'Please input a date').default(() => formatDate(new Date())),
   currency: z.string().min(3).max(3).default('USD'),
   numberOfWinners: z.coerce.number().int().positive().max(100).default(3),
   prizeAllocation: z.object({}).catchall(z.coerce.number().positive().optional()).refine(

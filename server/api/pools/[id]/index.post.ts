@@ -13,6 +13,7 @@ export default authenticated(async ({ user, event }) => {
   const poolId = event.context.params?.id ?? throwError('Pool id required')
   const isNewPool = poolId === 'new'
 
+  // TODO: validate entryStartDate relative to entry close date
   const { currency, entryFee, auth, isPubliclyWatchable, maxNumberOfPlayers, numberOfPicks, poolAllocation, prizeAllocation, tournamentId, eventId, entryStartDate, name }
     = await readValidatedBody(event, body => poolValidator.parse(body))
 

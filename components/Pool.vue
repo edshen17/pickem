@@ -71,7 +71,7 @@ const selectedEvent = computed(() => {
 })
 
 const entryEndDate = computed(() => {
-  return formatDate(selectedEvent.value?.start_date, 'YYYY/MM/DD')
+  return formatDate(selectedEvent.value?.start_date)
 })
 
 const winnerRange = computed(() => {
@@ -250,19 +250,7 @@ watch(tournamentId, () => {
           <div :class="textClass">
             Entry start date
           </div>
-          <q-input v-model="entryStartDate" filled mask="date" :rules="['date']" v-bind="entryStartDateProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly">
-            <template #append>
-              <q-icon name="event" class="cursor-pointer">
-                <q-popup-proxy cover transition-show="scale" transition-hide="scale">
-                  <q-date v-model="entryStartDate">
-                    <div class="row items-center justify-end">
-                      <q-btn v-close-popup label="Close" color="primary" flat />
-                    </div>
-                  </q-date>
-                </q-popup-proxy>
-              </q-icon>
-            </template>
-          </q-input>
+          <date-input v-model="entryStartDate" :rules="[value => isDateBefore(value, entryEndDate) || 'Entry start date must be before entry close date']" filled v-bind="entryStartDateProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
