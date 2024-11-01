@@ -79,13 +79,7 @@ const winnerRange = computed(() => {
 })
 
 const readOnly = computed(() => {
-  if (pool) {
-    const startDate = pool.entryStartDate
-    return isDateBeforeToday(startDate) && pool.numberOfEntries > 0
-  }
-  else {
-    return false
-  }
+  return pool ? pool.numberOfEntries > 0 : false
 })
 
 function getOrdinal(n: number) {
@@ -130,7 +124,7 @@ watch(tournamentId, () => {
   <div class="u-mx-auto u-w-11/12 u-pb-6">
     <div v-if="readOnly" class="q-pa-md q-gutter-sm">
       <q-banner inline-actions class="text-white bg-yellow-9">
-        You can't make changes to a pool after entries have started or have been submitted
+        You can't make changes to a pool after entries have been submitted
       </q-banner>
     </div>
     <div class="u-mx-auto u-px-4 u-pt-4 u-container">
