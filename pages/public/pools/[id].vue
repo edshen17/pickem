@@ -49,6 +49,21 @@ function onCancel() {
   showPickTable.value = false
 }
 
+function updateSubmittedPicks(submittedPicks: Ref<IPickView[]>, newPick: IPickView): void {
+  const existingPick = submittedPicks.value.find(
+    pick => pick.id === newPick.id,
+  )
+
+  if (existingPick) {
+    submittedPicks.value = submittedPicks.value.map(pick =>
+      pick.id === newPick.id ? newPick : pick,
+    )
+  }
+  else {
+    submittedPicks.value.push(newPick)
+  }
+}
+
 async function onSubmit() {
   isSubmittingPicks.value = true
   try {
@@ -61,12 +76,12 @@ async function onSubmit() {
         bracketName: bracketName.value,
       },
     }) as IPickView
-    submittedPicks.value.push(response)
+    updateSubmittedPicks(submittedPicks, response)
     selectedPlayers.value = []
     NotificationManager.success('Bracket submitted')
   }
-  catch {
-    NotificationManager.error('Failed to submit bracket')
+  catch (err: any) {
+    NotificationManager.error(err.data.message)
   }
   finally {
     page.value = 0
@@ -77,7 +92,6 @@ async function onSubmit() {
 
 function editPicks(pick: IPickView) {
   selectedPlayers.value = poolWithTournamentAndPicks.value?.event.players.filter(p => pick.playerIds.includes(p.id)) ?? []
-  submittedPicks.value = submittedPicks.value.filter(p => p.id !== pick.id)
   selectedPickId.value = pick.id
   page.value = 1
   showPickTable.value = true
@@ -189,8 +203,8 @@ async function deletePicks(pick: IPickView) {
     <div class="flex u-my-5 u-space-x-3">
       <q-space />
       <q-btn v-show="page === 1" color="secondary" flat label="Back" @click="onBack" />
-      <q-btn :class="{ invisible: poolWithTournamentAndPicks.numberOfPicks !== selectedPlayers.length }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" :loading="isSubmittingPicks" @click="onNext" />
       <q-btn v-show="page >= 0 && showPickTable" color="secondary" label="Cancel" @click="onCancel" />
+      <q-btn :class="{ invisible: poolWithTournamentAndPicks.numberOfPicks !== selectedPlayers.length && !showPickTable }" color="primary" :label="page === 0 ? 'Next' : 'Submit'" :loading="isSubmittingPicks" @click="onNext" />
     </div>
   </div>
 </template>

@@ -1,8 +1,12 @@
+import dayjs from 'dayjs'
 import { z } from 'zod'
 import { pickRepository } from '~/repositories/pick-repository'
 import { poolRepository } from '~/repositories/pool-repository'
+import { toPoolWithTournamentAndPicksView } from '~/server/api/pools/conversion'
+import { getTournamentById } from '~/server/api/tournaments'
 import { AuthGuard } from '~/server/utils/auth-guards'
 import { authenticated } from '~/server/utils/middleware/auth'
+import { isDateBeforeToday } from '~/utils/date'
 
 const validator = z.object({
   id: z.string().uuid().nullable().optional(),
@@ -20,6 +24,13 @@ export default authenticated(async ({ user, event }) => {
     poolRepository.findById(poolId),
     ...(id ? [pickRepository.findById(id)] : []),
   ])
+
+  const tournament = await getTournamentById(pool.tournament_id)
+  const selectedEvent = tournament.events.find(e => e.id === pool.event_id) ?? throwError('ICTTF event not found')
+  const closeDate = dayjs(selectedEvent.start_date).toDate()
+
+  if (isDateBeforeToday(closeDate))
+    throwError(`Cannot edit or submit bracket after deadline`)
 
   if (!pool)
     throwNotFoundError('Pool not found')
