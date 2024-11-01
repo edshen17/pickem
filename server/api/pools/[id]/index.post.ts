@@ -18,8 +18,8 @@ export default authenticated(async ({ user, event }) => {
 
   if (!isNewPool) {
     const { entry_start_date, number_of_entries } = await poolRepository.findById(poolId) ?? throwError('Pool not found')
-    if (isDateBeforeToday(entry_start_date) || number_of_entries > 0) {
-      throwError('Cannot modify pool after entries have started or have been submitted')
+    if (isDateBeforeToday(entry_start_date) && number_of_entries > 0) {
+      throwError('Cannot modify pool after entries have started and have been submitted')
     }
   }
 

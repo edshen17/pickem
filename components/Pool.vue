@@ -81,7 +81,7 @@ const winnerRange = computed(() => {
 const readOnly = computed(() => {
   if (pool) {
     const startDate = pool.entryStartDate
-    return isDateBeforeToday(startDate) || pool.numberOfEntries > 0
+    return isDateBeforeToday(startDate) && pool.numberOfEntries > 0
   }
   else {
     return false
