@@ -67,4 +67,11 @@ export const playerColumns: QTableProps['columns'] = [
     field: 'rank',
     sortable: true,
   },
+  {
+    name: 'points',
+    label: 'Weight (points earned per win)',
+    align: 'left',
+    field: 'points', // isn't used directly, just a computed prop
+    sortable: false,
+  },
 ]

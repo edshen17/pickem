@@ -194,7 +194,12 @@ async function deletePicks(pick: IPickView) {
               :key="column.name"
               class="text-left"
             >
-              {{ (row as any)[column.field as string] }}
+              <template v-if="column.name === 'points'">
+                {{ selectedPlayers.length - selectedPlayers.indexOf(row) }}
+              </template>
+              <template v-else>
+                {{ (row as any)[column.field as string] }}
+              </template>
             </td>
           </tr>
         </transition-group>

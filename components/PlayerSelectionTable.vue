@@ -51,7 +51,7 @@ function toggleSelection(row: IPoolPlayer) {
     :dense="$q.screen.lt.md"
     :pagination="initialPagination"
     :rows="rows"
-    :columns="columns"
+    :columns="columns?.filter((c) => c.field !== 'points')"
     row-key="id"
     :selected="selected"
     selection="multiple"

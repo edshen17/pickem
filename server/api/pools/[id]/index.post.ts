@@ -5,7 +5,6 @@ import { adminRoles } from '~/view-models/role'
 import { poolValidator } from '~/validators/pool'
 import { poolRepository } from '~/repositories/pool-repository'
 import { encrypt } from '~/utils/encrypt'
-import { isDateBeforeToday } from '~/utils/date'
 
 export default authenticated(async ({ user, event }) => {
   AuthGuard.availableFor(user, adminRoles)
