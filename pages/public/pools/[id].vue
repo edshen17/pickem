@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { playerColumns as columns } from '~/components/data-table/columns'
+import { playerColumns as columns, resultColumns } from '~/components/data-table/columns'
 import type { IPickView, IPoolPlayer, IPoolWithTournamentAndPicks } from '~/view-models/pool'
 
 const currentRoute = useCurrentRoute()
@@ -110,12 +110,39 @@ async function deletePicks(pick: IPickView) {
     NotificationManager.error('Failed to delete bracket')
   }
 }
+
+function getPlayerStandings(pick: IPickView) {
+  const players = pick.playerIds
+    .map(playerId =>
+      poolWithTournamentAndPicks.value?.event.players.find(p => p.id === playerId),
+    )
+    .filter((player): player is IPoolPlayer => player !== undefined)
+
+  return players.map((player, index) => {
+    const pointsPerWin = players.length - index
+    const total = pointsPerWin * 1
+
+    return {
+      name: player.name,
+      wins: 1,
+      total,
+    }
+  })
+}
+
+function getTotalWins(pick: IPickView) {
+  return getPlayerStandings(pick).reduce((sum, player) => sum + player.wins, 0)
+}
+
+function getTotalPoints(pick: IPickView) {
+  return getPlayerStandings(pick).reduce((sum, player) => sum + player.total, 0)
+}
 </script>
 
 <template>
   <div v-if="poolWithTournamentAndPicks" class="lg:py-8 u-mx-auto u-w-11/12 u-min-h-screen-md u-py-6 lg:u-w-10/12 u-space-y-6 md:u-pb-8">
     <div class="u-flex u-items-center u-justify-between">
-      <div>
+      <div class="u-w-full">
         <div class="u-flex u-justify-between">
           <p class="u-text-xl u-font-bold">
             {{ `${poolWithTournamentAndPicks.name ?? `${poolWithTournamentAndPicks.tournament.title} - ${poolWithTournamentAndPicks.event.title}`}` }}
@@ -125,23 +152,42 @@ async function deletePicks(pick: IPickView) {
           <p class="u-my-8 u-text-xl u-font-bold">
             Your brackets
           </p>
-          <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-2 u-flex u-items-center u-justify-between u-border-1 u-border-gray-200 u-border-rounded dark:u-border-[rgba(255,255,255,0.28)]">
-            <div class="u-m-3 u-flex u-flex-col">
-              <p class="u-font-bold">
-                {{ pick.name }}
-              </p>
-              <p>
-                {{ (pick as IPickView).playerIds.map((playerId) => poolWithTournamentAndPicks?.event.players.find((p) => p.id === playerId)).map(player => player?.name).join(', ') }}
-              </p>
+          <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-4 lg:u-w-150">
+            <div class="u-mb-4 u-w-full">
+              <div class="u-flex u-items-center u-justify-between">
+                <p class="u-text-gray-600 u-font-bold dark:u-text-gray-300">
+                  {{ pick.name }}
+                </p>
+                <div class="u-mb-3 u-flex u-justify-end">
+                  <q-btn flat icon="edit" @click="editPicks(pick)" />
+                  <q-btn flat icon="delete" @click="deletePicks(pick)" />
+                </div>
+              </div>
+
+              <q-table
+                :dense="true"
+                :rows="getPlayerStandings(pick)"
+                :columns="resultColumns"
+                row-key="name"
+                :pagination="{ rowsPerPage: 0 }"
+                flat
+                bordered
+              >
+                <template #bottom-row>
+                  <q-tr>
+                    <q-td class="text-weight-bold">
+                      Total
+                    </q-td>
+                    <q-td class="text-weight-bold">
+                      {{ getTotalWins(pick) }}
+                    </q-td>
+                    <q-td class="text-weight-bold">
+                      {{ getTotalPoints(pick) }}
+                    </q-td>
+                  </q-tr>
+                </template>
+              </q-table>
             </div>
-            <p class="u-m-3 u-text-xl u-space-x-2">
-              <button @click="editPicks(pick)">
-                <q-icon name="edit" />
-              </button>
-              <button @click="deletePicks(pick)">
-                <q-icon name="delete" />
-              </button>
-            </p>
           </div>
         </div>
         <q-btn v-show="!showPickTable" color="primary" class="u-my-4" @click="showPickTable = true">

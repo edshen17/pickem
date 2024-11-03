@@ -75,3 +75,28 @@ export const playerColumns: QTableProps['columns'] = [
     sortable: false,
   },
 ]
+
+export const resultColumns: QTableProps['columns'] = [
+  {
+    name: 'name',
+    required: true,
+    label: 'Name',
+    align: 'left',
+    field: 'name',
+    sortable: true,
+  },
+  {
+    name: 'wins',
+    label: 'Wins',
+    align: 'left',
+    field: 'wins',
+    sortable: true,
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    align: 'left',
+    field: 'total',
+    sortable: true,
+  },
+]
