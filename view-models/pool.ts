@@ -49,7 +49,6 @@ export interface IPoolPlayer extends Omit<ICTTFPlayer, 'elo_hardbat' | 'elo_sand
 }
 
 export interface IPoolAllocation {
-  admin: number
   owner: number
 }
 

@@ -52,7 +52,6 @@ const [currency, currencyProps] = defineField('currency', quasarConfig)
 const [numberOfWinners, numberOfWinnersProps] = defineField('numberOfWinners', quasarConfig)
 const [prizeAllocation, prizeAllocationProps] = defineField('prizeAllocation', quasarConfig)
 const [ownerAllocation, ownerAllocationProps] = defineField('poolAllocation.owner', quasarConfig)
-const [adminAllocation, adminAllocationProps] = defineField('poolAllocation.admin', quasarConfig)
 const [tournamentId, tournamentIdProps] = defineField('tournamentId', quasarConfig)
 const [eventId, eventIdProps] = defineField('eventId', quasarConfig)
 const [entryStartDate, entryStartDateProps] = defineField('entryStartDate', quasarConfig)
@@ -269,15 +268,9 @@ watch(tournamentId, () => {
         </div>
         <div :class="parentClass">
           <div :class="textClass">
-            Owner allocation to prizes (%)
+            Manager allocation to prizes (%)
           </div>
           <q-input v-model="ownerAllocation" :class="inputWidth" v-bind="ownerAllocationProps" :disable="readOnly" :readonly="readOnly" />
-        </div>
-        <div :class="parentClass">
-          <div :class="textClass">
-            Admin allocation to prizes (%)
-          </div>
-          <q-input v-model="adminAllocation" :class="inputWidth" v-bind="adminAllocationProps" :rules="[val => val <= 7.5 && val >= 0 || 'Must be less than or equal to 7.5%', val => val >= 0 || 'Must be greater than or equal to 0%']" :disable="readOnly" :readonly="readOnly" />
         </div>
         <!-- TODO: make sticky and float right -->
         <div>
