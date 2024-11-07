@@ -51,7 +51,7 @@ const [entryFee, entryFeeProps] = defineField('entryFee', quasarConfig)
 const [currency, currencyProps] = defineField('currency', quasarConfig)
 const [numberOfWinners, numberOfWinnersProps] = defineField('numberOfWinners', quasarConfig)
 const [prizeAllocation, prizeAllocationProps] = defineField('prizeAllocation', quasarConfig)
-const [ownerAllocation, ownerAllocationProps] = defineField('poolAllocation.owner', quasarConfig)
+const [poolManagerAllocation, poolManagerAllocationProps] = defineField('poolAllocation.poolManager', quasarConfig)
 const [tournamentId, tournamentIdProps] = defineField('tournamentId', quasarConfig)
 const [eventId, eventIdProps] = defineField('eventId', quasarConfig)
 const [entryStartDate, entryStartDateProps] = defineField('entryStartDate', quasarConfig)
@@ -270,8 +270,19 @@ watch(tournamentId, () => {
           <div :class="textClass">
             Manager allocation to prizes (%)
           </div>
-          <q-input v-model="ownerAllocation" :class="inputWidth" v-bind="ownerAllocationProps" :disable="readOnly" :readonly="readOnly" />
+          <q-input v-model="poolManagerAllocation" :class="inputWidth" v-bind="poolManagerAllocationProps" :disable="readOnly" :readonly="readOnly" />
         </div>
+        <p :class="titleClass">
+          Fee breakdown
+        </p>
+        <pool-allocation-table
+          :max-number-of-players="maxNumberOfPlayers"
+          :entry-fee="entryFee"
+          :number-of-winners="numberOfWinners"
+          :prize-allocation="prizeAllocation"
+          :currency="currency"
+          :pool-manager-allocation="poolManagerAllocation"
+        />
         <!-- TODO: make sticky and float right -->
         <div>
           <q-btn v-if="!readOnly" label="Save" type="submit" color="primary" />

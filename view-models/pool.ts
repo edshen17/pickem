@@ -49,7 +49,7 @@ export interface IPoolPlayer extends Omit<ICTTFPlayer, 'elo_hardbat' | 'elo_sand
 }
 
 export interface IPoolAllocation {
-  owner: number
+  poolManager: number
 }
 
 export interface IPrizeAllocation { [key: string]: number }

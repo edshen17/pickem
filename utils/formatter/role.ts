@@ -5,7 +5,7 @@ export function formatRole(role: Role): string {
     case Role.OWNER:
       return 'Club Owner'
     case Role.ADMIN:
-      return 'Admin'
+      return 'Pool Manager (Admin)'
     case Role.MEMBER:
       return 'Member (Player)'
     case Role.NATION:

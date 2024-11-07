@@ -28,9 +28,9 @@ export const poolValidator = z.object({
     { message: 'Prize allocation must sum up to 100%' },
   ).default({ 1: 50, 2: 30, 3: 20 } as IPrizeAllocation),
   poolAllocation: z.object({
-    owner: z.coerce.number().nonnegative().max(10, 'Must be less than or equal to 10%'),
+    poolManager: z.coerce.number().nonnegative().max(10, 'Must be less than or equal to 10%'),
   }).default({
-    owner: 0,
+    poolManager: 10,
   }),
   tournamentId: z.string().max(100),
   eventId: z.string().max(100),
