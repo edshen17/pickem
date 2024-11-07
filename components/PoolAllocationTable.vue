@@ -8,6 +8,7 @@ const props = defineProps<{
   prizeAllocation: IPrizeAllocation
   poolManagerAllocation: number
   currency: string
+  numberOfEntries: number
 }>()
 
 const currencySymbols: { [key: string]: string } = {
@@ -15,7 +16,9 @@ const currencySymbols: { [key: string]: string } = {
   CNY: '¥',
 }
 
-const totalPool = computed(() => props.maxNumberOfPlayers * props.entryFee)
+const numberOfPlayers = props.numberOfEntries > 0 ? props.numberOfEntries : props.maxNumberOfPlayers
+
+const totalPool = computed(() => numberOfPlayers * props.entryFee)
 
 const totalManagementPercentage = computed(() => {
   const fixedFeesPercentage = Object.values(fees).reduce((sum, fee) => sum + fee, 0) + props.poolManagerAllocation / 100
@@ -52,7 +55,7 @@ function formatMoney(amount: number): string {
   const symbol = currencySymbols[props.currency]
   // Round to 2 decimal places without toFixed
   const roundedAmount = Math.round(amount * 100) / 100
-  return `${symbol}${roundedAmount}`
+  return `${symbol}${roundedAmount.toLocaleString('en-US')}`
 }
 
 function calculatePrizeAmount(percentage: number): number {
@@ -83,7 +86,7 @@ function calculatePoolManagerAmount(): number {
             Players
           </td>
           <td class="u-w-[40%] u-p-2 u-text-right">
-            {{ maxNumberOfPlayers }}
+            {{ numberOfPlayers }}
           </td>
         </tr>
         <tr class="u-border">

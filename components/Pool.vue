@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import type { IPoolView } from '~/view-models/pool'
+import type { IPoolView, IPrizeAllocation } from '~/view-models/pool'
 
 import type { PoolValidator } from '~/validators/pool'
 import { poolValidator } from '~/validators/pool'
@@ -279,9 +279,10 @@ watch(tournamentId, () => {
           :max-number-of-players="maxNumberOfPlayers"
           :entry-fee="entryFee"
           :number-of-winners="numberOfWinners"
-          :prize-allocation="prizeAllocation"
+          :prize-allocation="(prizeAllocation as IPrizeAllocation)"
           :currency="currency"
           :pool-manager-allocation="poolManagerAllocation"
+          :number-of-entries="pool?.numberOfEntries ?? 0"
         />
         <!-- TODO: make sticky and float right -->
         <div>
