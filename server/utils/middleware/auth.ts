@@ -51,7 +51,7 @@ export function apiMiddleware<T>(apiMethod: ApiMethod<T>, requireAuthentication:
       throw createError({
         statusCode: 400,
         statusMessage: 'Bad Request',
-        message: 'Something went wrong. Please try again.',
+        message: e.message ?? 'Something went wrong. Please try again.',
       })
     }
   }

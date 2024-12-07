@@ -31,14 +31,17 @@ export const hostClubManagementColumns: QTableProps['columns'] = [
 
 export const poolColumns: QTableProps['columns'] = [
   { name: 'status', required: true, label: 'Status', align: 'left', field: 'status' },
-  { name: 'name', align: 'left', label: 'Name', field: 'name' },
-  { name: 'host', align: 'left', label: 'Host', field: 'host' },
-  { name: 'admin', align: 'left', label: 'Admin', field: 'admin' },
+  { name: 'name', align: 'left', label: 'Pool Name', field: 'name' },
+  { name: 'tournament', align: 'left', label: 'Tournament', field: 'tournament' },
+  { name: 'event', align: 'left', label: 'Event', field: 'event' },
+  { name: 'owner', align: 'left', label: 'Club Owner', field: 'owner' },
+  { name: 'poolManager', align: 'left', label: 'Pool Manager', field: 'poolManager' },
   { name: 'numberOfEntries', align: 'left', label: 'Entries', field: 'numberOfEntries' },
   { name: 'donationAmount', align: 'left', label: 'Donations', field: 'donationAmount' },
   { name: 'numberOfWinners', align: 'left', label: '# Winners', field: 'numberOfWinners' },
-  { name: 'openDate', align: 'left', label: 'Opens', field: 'openDate', format: (v) => { return formatDate(v) } },
-  { name: 'closeDate', align: 'left', label: 'Closes', field: 'closeDate', format: (v) => { return formatDate(v) } },
+  { name: 'openDate', required: true, label: 'Entry Start Date', align: 'left', field: 'openDate', format: v => formatDate(v) },
+  { name: 'closeDate', align: 'left', label: 'Entry Close Date', field: 'closeDate', format: v => formatDate(v, 'MM/DD/YY @ h:mm A') },
+
 ]
 
 export const playerColumns: QTableProps['columns'] = [
@@ -62,6 +65,38 @@ export const playerColumns: QTableProps['columns'] = [
     label: 'Rank',
     align: 'left',
     field: 'rank',
+    sortable: true,
+  },
+  {
+    name: 'points',
+    label: 'Weight (points earned per win)',
+    align: 'left',
+    field: 'points', // isn't used directly, just a computed prop
+    sortable: false,
+  },
+]
+
+export const resultColumns: QTableProps['columns'] = [
+  {
+    name: 'name',
+    required: true,
+    label: 'Name',
+    align: 'left',
+    field: 'name',
+    sortable: true,
+  },
+  {
+    name: 'wins',
+    label: 'Wins',
+    align: 'left',
+    field: 'wins',
+    sortable: true,
+  },
+  {
+    name: 'total',
+    label: 'Total',
+    align: 'left',
+    field: 'total',
     sortable: true,
   },
 ]

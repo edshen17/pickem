@@ -4,6 +4,7 @@ import type { ICTTFTournament } from '~/view-models/tournament'
 
 export interface IPoolView {
   id: string
+  name: string | null
   currency: string
   entryFee: number
   isPrivateLeague: boolean
@@ -15,17 +16,28 @@ export interface IPoolView {
   prizeAllocation: IPrizeAllocation
   tournamentId: string
   eventId: string
+  entryStartDate: Date
+  numberOfEntries: number
 }
 
 export interface IPoolWithTournamentAndPicks {
   id: string
+  name: string | null
   currency: string
   entryFee: number
   numberOfPicks: number
   prizeAllocation: IPrizeAllocation
   tournament: ICTTFTournament
   event: IPoolEvent
-  picks: string[] | null
+  picks: IPickView[]
+}
+
+export interface IPickView {
+  id: string
+  name: string
+  playerIds: string[]
+  updatedAt: Date
+  createdAt: Date
 }
 
 export interface IPoolEvent extends Omit<ICTTFEvent, 'players'> {
@@ -37,8 +49,7 @@ export interface IPoolPlayer extends Omit<ICTTFPlayer, 'elo_hardbat' | 'elo_sand
 }
 
 export interface IPoolAllocation {
-  admin: number
-  owner: number
+  poolManager: number
 }
 
 export interface IPrizeAllocation { [key: string]: number }
@@ -65,12 +76,14 @@ export enum PoolStatus {
 export interface IPoolListView {
   id: string
   status: PoolStatus
+  tournament: string
+  event: string
+  owner: string
   name: string
-  host: string
-  admin: string
+  poolManager: string
   numberOfEntries: number
   donationAmount: number
   numberOfWinners: number
-  openDate: string
-  closeDate: string
+  openDate: Date
+  closeDate: Date
 }

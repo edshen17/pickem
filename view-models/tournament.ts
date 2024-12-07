@@ -5,8 +5,6 @@ export interface ICTTFTournament {
   director_id: string
   title: string
   venue: string
-  start_date: string
-  end_date: string
   contact_name: string
   contact_phone: string
   contact_email: string

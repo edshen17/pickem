@@ -7,6 +7,8 @@ const props = defineProps<{
   currency: string
   error?: boolean
   errorMessage?: string
+  disable?: boolean
+  readonly?: boolean
 }>()
 
 const emit = defineEmits(['update:modelValue'])
@@ -38,5 +40,7 @@ watch(numberValue, (value) => {
     v-model="formattedValue"
     :error-message="errorMessage"
     :error="error"
+    :disable="disable"
+    :readonly="readonly"
   />
 </template>

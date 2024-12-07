@@ -3,11 +3,11 @@ import { Role } from '~/view-models/role'
 export function formatRole(role: Role): string {
   switch (role) {
     case Role.OWNER:
-      return 'Owner'
+      return 'Club Owner'
     case Role.ADMIN:
-      return 'Admin'
+      return 'Pool Manager (Admin)'
     case Role.MEMBER:
-      return 'Member'
+      return 'Member (Player)'
     case Role.NATION:
       return 'Nation'
     case Role.CLUB_DIRECTOR:

@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
-import type { IPoolView } from '~/view-models/pool'
+import type { IPoolView, IPrizeAllocation } from '~/view-models/pool'
 
 import type { PoolValidator } from '~/validators/pool'
 import { poolValidator } from '~/validators/pool'
-import type { ICTTFTournament } from '~/view-models/tournament'
+import { supportedCurrencies } from '~/utils/currency'
+import { formatDate } from '~/utils/formatter/date'
 
 const { pool } = defineProps<{
   pool?: IPoolView
@@ -31,8 +32,8 @@ const { handleSubmit, values, setFieldValue, defineField, setValues } = useForm<
 
 onMounted(async () => {
   if (pool) {
-    const { isPrivateLeague, prizeAllocation, password, ...rest } = pool
-    setValues({ ...rest, auth: { isPrivateLeague, password: password ?? `` }, numberOfWinners: getObjectLength(prizeAllocation), prizeAllocation })
+    const { isPrivateLeague, prizeAllocation, password, entryStartDate, ...rest } = pool
+    setValues({ ...rest, auth: { isPrivateLeague, password: password ?? `` }, numberOfWinners: getObjectLength(prizeAllocation), prizeAllocation, entryStartDate: formatDate(entryStartDate, 'YYYY/MM/DD') })
   }
 })
 
@@ -50,17 +51,34 @@ const [entryFee, entryFeeProps] = defineField('entryFee', quasarConfig)
 const [currency, currencyProps] = defineField('currency', quasarConfig)
 const [numberOfWinners, numberOfWinnersProps] = defineField('numberOfWinners', quasarConfig)
 const [prizeAllocation, prizeAllocationProps] = defineField('prizeAllocation', quasarConfig)
-const [ownerAllocation, ownerAllocationProps] = defineField('poolAllocation.owner', quasarConfig)
-const [adminAllocation, adminAllocationProps] = defineField('poolAllocation.admin', quasarConfig)
+const [poolManagerAllocation, poolManagerAllocationProps] = defineField('poolAllocation.poolManager', quasarConfig)
 const [tournamentId, tournamentIdProps] = defineField('tournamentId', quasarConfig)
 const [eventId, eventIdProps] = defineField('eventId', quasarConfig)
+const [entryStartDate, entryStartDateProps] = defineField('entryStartDate', quasarConfig)
+const [name, nameProps] = defineField('name', quasarConfig)
+
+const selectedTournament = computed(() => {
+  return tournaments.value?.find(t => t.id === tournamentId.value)
+})
 
 const events = computed(() => {
-  return tournaments.value?.find(t => t.id === tournamentId.value)?.events ?? []
+  return selectedTournament.value?.events ?? []
+})
+
+const selectedEvent = computed(() => {
+  return events.value.find(e => e.id === eventId.value)!
+})
+
+const entryEndDate = computed(() => {
+  return formatDate(selectedEvent.value?.start_date)
 })
 
 const winnerRange = computed(() => {
   return Array.from({ length: numberOfWinners.value }, (_, i) => i + 1)
+})
+
+const readOnly = computed(() => {
+  return pool ? pool.numberOfEntries > 0 : false
 })
 
 function getOrdinal(n: number) {
@@ -93,11 +111,21 @@ watch(numberOfWinners, (newValue) => {
   )
   setFieldValue('prizeAllocation', newAllocation)
 })
+
+watch(tournamentId, () => {
+  const newEvent = events.value?.[0]
+  setFieldValue('eventId', newEvent.id)
+})
 </script>
 
 <template>
   <!-- TODO: add loading state? -->
   <div class="u-mx-auto u-w-11/12 u-pb-6">
+    <div v-if="readOnly" class="q-pa-md q-gutter-sm">
+      <q-banner inline-actions class="text-white bg-yellow-9">
+        You can't make changes to a pool after entries have been submitted
+      </q-banner>
+    </div>
     <div class="u-mx-auto u-px-4 u-pt-4 u-container">
       <q-form class="u-w-full u-space-y-4" @submit="onSubmit">
         <p :class="titleClass">
@@ -105,7 +133,7 @@ watch(numberOfWinners, (newValue) => {
         </p>
         <div :class="parentClass">
           <div :class="textClass">
-            Tournament
+            ICTTF tournament
           </div>
           <q-select
             v-model="tournamentId"
@@ -114,14 +142,16 @@ watch(numberOfWinners, (newValue) => {
             emit-value
             map-options
             :class="inputWidth"
-            :options="tournaments as ICTTFTournament[]"
+            :options="tournaments ?? []"
             :loading="loadingTournaments"
             v-bind="tournamentIdProps"
+            :disable="readOnly"
+            :readonly="readOnly"
           />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
-            Event
+            ICTTF event
           </div>
           <q-select
             v-model="eventId"
@@ -132,6 +162,8 @@ watch(numberOfWinners, (newValue) => {
             :class="inputWidth"
             :options="events"
             v-bind="eventIdProps"
+            :disable="readOnly"
+            :readonly="readOnly"
           />
         </div>
         <p :class="titleClass">
@@ -139,65 +171,85 @@ watch(numberOfWinners, (newValue) => {
         </p>
         <div :class="parentClass">
           <div :class="textClass">
+            Name
+          </div>
+          <q-input
+            v-model="name" v-bind="nameProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly"
+          />
+        </div>
+        <div :class="parentClass">
+          <div :class="textClass">
             Private League
           </div>
           <div class="q-gutter-x-lg lg:u-w-56">
-            <q-radio v-model="isPrivateLeague" :val="true" label="Yes" v-bind="isPrivateLeagueProps" />
-            <q-radio v-model="isPrivateLeague" :val="false" label="No" v-bind="isPrivateLeagueProps" />
+            <q-radio v-model="isPrivateLeague" :val="true" label="Yes" v-bind="isPrivateLeagueProps" :disable="readOnly" :readonly="readOnly" />
+            <q-radio v-model="isPrivateLeague" :val="false" label="No" v-bind="isPrivateLeagueProps" :disable="readOnly" :readonly="readOnly" />
           </div>
           <div v-if="isPrivateLeague" :class="inlineParentClass">
             <div :class="inlineChildClass">
               Password
             </div>
-            <q-input v-model="password" v-bind="passwordProps" :class="inputWidth" />
+            <q-input v-model="password" v-bind="passwordProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly" />
           </div>
         </div>
         <div v-if="isPrivateLeague" :class="`${parentClass} lg:u-hidden!`">
           <div :class="textClass">
             Password
           </div>
-          <q-input v-model="password" v-bind="passwordProps" />
+          <q-input v-model="password" v-bind="passwordProps" :disable="readOnly" :readonly="readOnly" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Publicly watchable
           </div>
           <div class="q-gutter-x-lg">
-            <q-radio v-model="isPubliclyWatchable" :val="true" label="Yes" v-bind="isPubliclyWatchableProps" />
-            <q-radio v-model="isPubliclyWatchable" :val="false" label="No" v-bind="isPubliclyWatchableProps" />
+            <q-radio v-model="isPubliclyWatchable" :val="true" label="Yes" v-bind="isPubliclyWatchableProps" :disable="readOnly" :readonly="readOnly" />
+            <q-radio v-model="isPubliclyWatchable" :val="false" label="No" v-bind="isPubliclyWatchableProps" :disable="readOnly" :readonly="readOnly" />
           </div>
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Max number of players
           </div>
-          <q-input v-model="maxNumberOfPlayers" v-bind="maxNumberOfPlayersProps" :class="inputWidth" />
+          <q-input v-model="maxNumberOfPlayers" v-bind="maxNumberOfPlayersProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Number of picks
           </div>
-          <q-input v-model="numberOfPicks" v-bind="numberOfPicksProps" :class="inputWidth" />
+          <q-input v-model="numberOfPicks" v-bind="numberOfPicksProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
             Entry fee
           </div>
           <div :class="parentClass">
-            <currency-input :class="inputWidth" :model-value="entryFee" :currency="values.currency" v-bind="entryFeeProps" @update:model-value="(v) => { setFieldValue('entryFee', v) }" />
+            <currency-input :disable="readOnly" :readonly="readOnly" :class="inputWidth" :model-value="entryFee" :currency="values.currency" v-bind="entryFeeProps" @update:model-value="(v) => { setFieldValue('entryFee', v) }" />
           </div>
           <div :class="inlineParentClass">
             <div :class="inlineChildClass">
               Currency
             </div>
-            <q-select v-model="currency" class="u-w-50" :options="supportedCurrencies" v-bind="currencyProps" />
+            <q-select v-model="currency" class="u-w-50" :options="supportedCurrencies" v-bind="currencyProps" :disable="readOnly" :readonly="readOnly" />
           </div>
         </div>
         <div :class="`${parentClass} lg:u-hidden!`">
           <div :class="textClass">
             Currency
           </div>
-          <q-select v-model="currency" :class="inputWidth" :options="supportedCurrencies" v-bind="currencyProps" />
+          <q-select v-model="currency" :class="inputWidth" :options="supportedCurrencies" v-bind="currencyProps" :disable="readOnly" :readonly="readOnly" />
+        </div>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Entry start date
+          </div>
+          <date-input v-model="entryStartDate" :rules="[value => isDateBefore(value, entryEndDate) || 'Entry start date must be before entry close date']" filled v-bind="entryStartDateProps" :class="inputWidth" :disable="readOnly" :readonly="readOnly" />
+        </div>
+        <div :class="parentClass">
+          <div :class="textClass">
+            Entry close date
+          </div>
+          <q-input v-model="entryEndDate" :class="inputWidth" disable readonly />
         </div>
         <p :class="titleClass">
           Prize settings
@@ -206,29 +258,35 @@ watch(numberOfWinners, (newValue) => {
           <div :class="textClass">
             Number of winners
           </div>
-          <q-input v-model="numberOfWinners" :class="inputWidth" v-bind="numberOfWinnersProps" type="number" />
+          <q-input v-model="numberOfWinners" :class="inputWidth" v-bind="numberOfWinnersProps" type="number" :disable="readOnly" :readonly="readOnly" />
         </div>
         <div v-for="n in winnerRange" :key="n" :class="parentClass">
           <div :class="textClass">
             Prize {{ n }}{{ getOrdinal(n) }} Place (%)
           </div>
-          <q-input v-model="prizeAllocation[n]" :class="inputWidth" type="number" v-bind="prizeAllocationProps" />
+          <q-input v-model="prizeAllocation[n]" :class="inputWidth" type="number" v-bind="prizeAllocationProps" :disable="readOnly" :readonly="readOnly" />
         </div>
         <div :class="parentClass">
           <div :class="textClass">
-            Owner allocation to prizes (%)
+            Manager allocation to prizes (%)
           </div>
-          <q-input v-model="ownerAllocation" :class="inputWidth" v-bind="ownerAllocationProps" />
+          <q-input v-model="poolManagerAllocation" :class="inputWidth" v-bind="poolManagerAllocationProps" :disable="readOnly" :readonly="readOnly" />
         </div>
-        <div :class="parentClass">
-          <div :class="textClass">
-            Admin allocation to prizes (%)
-          </div>
-          <q-input v-model="adminAllocation" :class="inputWidth" v-bind="adminAllocationProps" :rules="[val => val <= 7.5 && val >= 0 || 'Must be less than or equal to 7.5%', val => val >= 0 || 'Must be greater than or equal to 0%']" />
-        </div>
+        <p :class="titleClass">
+          Fee breakdown
+        </p>
+        <pool-allocation-table
+          :max-number-of-players="maxNumberOfPlayers"
+          :entry-fee="entryFee"
+          :number-of-winners="numberOfWinners"
+          :prize-allocation="(prizeAllocation as IPrizeAllocation)"
+          :currency="currency"
+          :pool-manager-allocation="poolManagerAllocation"
+          :number-of-entries="pool?.numberOfEntries ?? 0"
+        />
         <!-- TODO: make sticky and float right -->
         <div>
-          <q-btn label="Save" type="submit" color="primary" />
+          <q-btn v-if="!readOnly" label="Save" type="submit" color="primary" />
         </div>
       </q-form>
     </div>

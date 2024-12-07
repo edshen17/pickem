@@ -3,7 +3,7 @@ import { z } from 'zod'
 export const emailValidator = z.string().min(1, 'Please enter an email').email('Please enter a valid email')
 
 export const userValidator = z.object({
-  name: z.string().min(1, 'Please enter a name').max(1000),
+  name: z.string().min(1, 'Please enter a name').max(100),
   email: emailValidator,
   password: z.string().min(8, 'Please enter a password with at least 8 characters'),
 })
