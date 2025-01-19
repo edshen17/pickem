@@ -36,7 +36,29 @@ export function toPoolView({ id, currency, entry_fee, is_private, is_publicly_wa
   }
 }
 
-function getPoolStatus({ start_date, end_date }: ICTTFEvent, entryStartDate: Date): PoolStatus {
+function assignRandomWins(players: ICTTFPlayer[]): Record<string, number> {
+  const totalPlayers = players.length
+  let remainingWins = totalPlayers
+  const wins: Record<string, number> = {}
+
+  players.forEach(player => wins[player.id] = 0)
+
+  while (remainingWins > 0) {
+    const randomIndex = Math.floor(Math.random() * players.length)
+    wins[players[randomIndex].id]++
+    remainingWins--
+  }
+
+  return wins
+}
+
+async function getResults(event: ICTTFEvent) {
+  return assignRandomWins(event.players)
+}
+
+async function getPoolStatus(event: ICTTFEvent, entryStartDate: Date): Promise<PoolStatus> {
+  const { start_date, end_date } = event
+
   const startDate = dayjs(entryStartDate)
   const currentDate = dayjs()
   const tournamentStartDate = dayjs(start_date)
@@ -53,6 +75,9 @@ function getPoolStatus({ start_date, end_date }: ICTTFEvent, entryStartDate: Dat
   if (currentDate.isAfter(tournamentStartDate) && currentDate.isBefore(tournamentEndDate)) {
     return PoolStatus.LIVE
   }
+
+  const results = await getResults(event)
+  console.log(event)
   // TODO: check if results are in or not
   return PoolStatus.FINISHED
 }
@@ -65,7 +90,7 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
 
   return {
     id,
-    status: getPoolStatus(selectedEvent, entry_start_date),
+    status: await getPoolStatus(selectedEvent, entry_start_date),
     name: name ?? `${title} - ${selectedEvent.title}`,
     event: selectedEvent.title,
     owner: contact_name,
