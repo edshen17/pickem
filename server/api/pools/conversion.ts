@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { decrypt } from '~/utils/encrypt'
 import { getEloByPlayerId, getTournamentById } from '~/server/api/tournaments'
 import type { IPoolAllocation, IPoolListView, IPoolView, IPoolWithTournamentAndPicks, IPrizeAllocation } from '~/view-models/pool'
-import { PoolStatus } from '~/view-models/pool'
+import { PoolStatus, ResultStatus } from '~/view-models/pool'
 import type { ICTTFPlayer } from '~/view-models/player'
 import type { EventType, ICTTFEvent } from '~/view-models/event'
 import { pickRepository } from '~/repositories/pick-repository'
@@ -52,13 +52,12 @@ function assignRandomWins(players: ICTTFPlayer[]): Record<string, number> {
   return wins
 }
 
+// TODO: check if results are in or not, from separate API?
 async function getResults(event: ICTTFEvent) {
   return assignRandomWins(event.players)
 }
 
-async function getPoolStatus(event: ICTTFEvent, entryStartDate: Date): Promise<PoolStatus> {
-  const { start_date, end_date } = event
-
+async function getPoolStatus({ start_date, end_date }: ICTTFEvent, entryStartDate: Date): Promise<PoolStatus> {
   const startDate = dayjs(entryStartDate)
   const currentDate = dayjs()
   const tournamentStartDate = dayjs(start_date)
@@ -76,10 +75,13 @@ async function getPoolStatus(event: ICTTFEvent, entryStartDate: Date): Promise<P
     return PoolStatus.LIVE
   }
 
-  const results = await getResults(event)
-  console.log(event)
-  // TODO: check if results are in or not
   return PoolStatus.FINISHED
+}
+
+async function getResultStatus(event: ICTTFEvent): Promise<ResultStatus> {
+  // TODO: results based on time, or some other status to know exact result status
+  const results = await getResults(event)
+  return results ? ResultStatus.FINALIZED : ResultStatus.NOT_AVAILABLE
 }
 
 // TODO: maybe join pool with player entries?
@@ -88,9 +90,12 @@ export async function toPoolListView({ id, prize_allocation, tournament_id, even
   const { title, contact_name } = tournament
   const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
 
+  const resultStatus = await getResultStatus(selectedEvent)
+
   return {
     id,
     status: await getPoolStatus(selectedEvent, entry_start_date),
+    resultStatus,
     name: name ?? `${title} - ${selectedEvent.title}`,
     event: selectedEvent.title,
     owner: contact_name,

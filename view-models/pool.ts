@@ -73,9 +73,17 @@ export enum PoolStatus {
   FINISHED = 'FINISHED',
 }
 
+export enum ResultStatus {
+  NOT_AVAILABLE = 'NOT_AVAILABLE',
+  NOT_STARTED = 'NOT_STARTED',
+  IN_PROGRESS = 'IN_PROGRESS',
+  FINALIZED = 'FINALIZED',
+}
+
 export interface IPoolListView {
   id: string
   status: PoolStatus
+  resultStatus: ResultStatus
   tournament: string
   event: string
   owner: string

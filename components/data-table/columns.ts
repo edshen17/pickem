@@ -1,6 +1,7 @@
 import type { QTableProps } from 'quasar'
 import { formatDate } from '~/utils/formatter/date'
 import { formatRole } from '~/utils/formatter/role'
+import { formatResultStatus } from '~/utils/formatter/status'
 
 // TODO: make a formatting function that always applies align left to array
 export const hostClubManagementColumns: QTableProps['columns'] = [
@@ -41,7 +42,7 @@ export const poolColumns: QTableProps['columns'] = [
   { name: 'numberOfWinners', align: 'left', label: '# Winners', field: 'numberOfWinners' },
   { name: 'openDate', required: true, label: 'Entry Start Date', align: 'left', field: 'openDate', format: v => formatDate(v) },
   { name: 'closeDate', align: 'left', label: 'Entry Close Date', field: 'closeDate', format: v => formatDate(v, 'MM/DD/YY @ h:mm A') },
-
+  { name: 'resultStatus', align: 'left', label: 'Result Status', field: 'resultStatus', format: v => formatResultStatus(v) },
 ]
 
 export const playerColumns: QTableProps['columns'] = [
