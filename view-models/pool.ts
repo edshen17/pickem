@@ -30,6 +30,7 @@ export interface IPoolWithTournamentAndPicks {
   tournament: ICTTFTournament
   event: IPoolEvent
   picks: IPickView[]
+  results?: Record<string, number>
 }
 
 export interface IPickView {

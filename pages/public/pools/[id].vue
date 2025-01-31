@@ -15,6 +15,7 @@ const isSubmittingPicks = ref(false)
 const showPickTable = ref(false)
 const isDragging = ref(false)
 const bracketName = ref('')
+const hasResults = ref(true)
 
 onMounted(async () => {
   const data = await $fetch(`/api/pools/${(currentRoute.value.params as any).id}/tournament`) as unknown as IPoolWithTournamentAndPicks
@@ -111,6 +112,10 @@ async function deletePicks(pick: IPickView) {
   }
 }
 
+function getNumberOfMatches(players: number): number {
+  return Math.ceil(Math.log2(players)) + 1
+}
+
 function getPlayerStandings(pick: IPickView) {
   const players = pick.playerIds
     .map(playerId =>
@@ -118,14 +123,20 @@ function getPlayerStandings(pick: IPickView) {
     )
     .filter((player): player is IPoolPlayer => player !== undefined)
 
-  return players.map((player, index) => {
-    const pointsPerWin = players.length - index
-    const total = pointsPerWin * 1
+  const maxPossibleWins = getNumberOfMatches(players.length)
 
+  return players.map((player, index) => {
+    const placement = index + 1
+    const wins = maxPossibleWins - Math.ceil(Math.log2(placement))
+    const pointsPerWin = players.length - index
+    const total = pointsPerWin * wins
+    const actualWins = poolWithTournamentAndPicks.value?.results?.[player.id] ?? 0
+    const actualTotal = actualWins * pointsPerWin
     return {
       name: player.name,
-      wins: 1,
+      wins,
       total,
+      actualTotal,
     }
   })
 }
@@ -163,11 +174,10 @@ function getTotalPoints(pick: IPickView) {
                   <q-btn flat icon="delete" @click="deletePicks(pick)" />
                 </div>
               </div>
-
               <q-table
                 :dense="true"
                 :rows="getPlayerStandings(pick)"
-                :columns="resultColumns"
+                :columns="hasResults ? resultColumnsWithActual : resultColumns"
                 row-key="name"
                 :pagination="{ rowsPerPage: 0 }"
                 flat
@@ -181,8 +191,14 @@ function getTotalPoints(pick: IPickView) {
                     <q-td class="text-weight-bold">
                       {{ getTotalWins(pick) }}
                     </q-td>
+                    <q-td v-if="hasResults" class="text-weight-bold">
+                      {{ getPlayerStandings(pick).reduce((sum, player) => sum + (player.actualWins ?? 0), 0) }}
+                    </q-td>
                     <q-td class="text-weight-bold">
                       {{ getTotalPoints(pick) }}
+                    </q-td>
+                    <q-td v-if="hasResults" class="text-weight-bold">
+                      {{ getPlayerStandings(pick).reduce((sum, player) => sum + (player.actualTotal ?? 0), 0) }}
                     </q-td>
                   </q-tr>
                 </template>

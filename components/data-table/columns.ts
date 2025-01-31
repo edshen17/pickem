@@ -100,4 +100,14 @@ export const resultColumns: QTableProps['columns'] = [
     field: 'total',
     sortable: true,
   },
+  {
+    name: 'actualWins',
+    label: 'Actual Wins',
+    field: 'actualWins',
+  },
+  {
+    name: 'actualTotal',
+    label: 'Actual Points',
+    field: 'actualTotal',
+  },
 ]

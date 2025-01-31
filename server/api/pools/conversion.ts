@@ -140,6 +140,7 @@ export async function toPoolWithTournamentAndPicksView({ id, name, tournament_id
   const players = await Promise.all(selectedEvent.players.map(async (p) => {
     return { ...p, rating: await getRating(p, selectedEvent.type) }
   }))
+  const results = await getResults(selectedEvent)
 
-  return { id, name, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [] }
+  return { id, name, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [], results }
 }
