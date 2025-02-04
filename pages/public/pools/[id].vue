@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { playerColumns as columns, resultColumns } from '~/components/data-table/columns'
+import { playerColumns as columns, resultColumns, resultColumnsWithActual } from '~/components/data-table/columns'
 import type { IPickView, IPoolPlayer, IPoolWithTournamentAndPicks } from '~/view-models/pool'
 
 const currentRoute = useCurrentRoute()
@@ -137,6 +137,7 @@ function getPlayerStandings(pick: IPickView) {
       wins,
       total,
       actualTotal,
+      actualWins,
     }
   })
 }

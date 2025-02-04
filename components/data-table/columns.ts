@@ -88,26 +88,34 @@ export const resultColumns: QTableProps['columns'] = [
   },
   {
     name: 'wins',
-    label: 'Wins',
+    label: 'Predicted Wins',
     align: 'left',
     field: 'wins',
     sortable: true,
   },
   {
     name: 'total',
-    label: 'Total',
+    label: 'Possible Points',
     align: 'left',
     field: 'total',
     sortable: true,
   },
+]
+
+export const resultColumnsWithActual: QTableProps['columns'] = [
+  ...resultColumns,
   {
     name: 'actualWins',
     label: 'Actual Wins',
     field: 'actualWins',
+    sortable: true,
+    align: 'left',
   },
   {
     name: 'actualTotal',
     label: 'Actual Points',
     field: 'actualTotal',
+    sortable: true,
+    align: 'left',
   },
 ]
