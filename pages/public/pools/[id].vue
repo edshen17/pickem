@@ -127,27 +127,26 @@ function getPlayerStandings(pick: IPickView) {
 
   return players.map((player, index) => {
     const placement = index + 1
-    const wins = maxPossibleWins - Math.ceil(Math.log2(placement))
+    const assignedPoints = players.length - placement + 1
+    const predictedWins = maxPossibleWins - Math.ceil(Math.log2(placement))
     const pointsPerWin = players.length - index
-    const total = pointsPerWin * wins
+    const predictedPoints = pointsPerWin * predictedWins
     const actualWins = poolWithTournamentAndPicks.value?.results?.[player.id] ?? 0
-    const actualTotal = actualWins * pointsPerWin
+    const actualPoints = actualWins * pointsPerWin
     return {
       name: player.name,
-      wins,
-      total,
-      actualTotal,
+      predictedWins,
+      predictedPoints,
+      actualPoints,
       actualWins,
+      assignedPoints,
     }
   })
 }
 
-function getTotalWins(pick: IPickView) {
-  return getPlayerStandings(pick).reduce((sum, player) => sum + player.wins, 0)
-}
-
-function getTotalPoints(pick: IPickView) {
-  return getPlayerStandings(pick).reduce((sum, player) => sum + player.total, 0)
+function getTableTotal(selector: (row: ReturnType<typeof getPlayerStandings>[0]) => number) {
+  return (pick: IPickView) =>
+    getPlayerStandings(pick).reduce((sum, row) => sum + selector(row), 0)
 }
 </script>
 
@@ -164,7 +163,7 @@ function getTotalPoints(pick: IPickView) {
           <p class="u-my-8 u-text-xl u-font-bold">
             Your brackets
           </p>
-          <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-4 lg:u-w-150">
+          <div v-for="pick in submittedPicks" :key="pick.id" class="u-mb-4 lg:u-w-200">
             <div class="u-mb-4 u-w-full">
               <div class="u-flex u-items-center u-justify-between">
                 <p class="u-text-gray-600 u-font-bold dark:u-text-gray-300">
@@ -190,16 +189,19 @@ function getTotalPoints(pick: IPickView) {
                       Total
                     </q-td>
                     <q-td class="text-weight-bold">
-                      {{ getTotalWins(pick) }}
+                      {{ getTableTotal(row => row.assignedPoints)(pick) }}
                     </q-td>
                     <q-td v-if="hasResults" class="text-weight-bold">
-                      {{ getPlayerStandings(pick).reduce((sum, player) => sum + (player.actualWins ?? 0), 0) }}
+                      {{ getTableTotal(row => row.predictedWins)(pick) }}
                     </q-td>
                     <q-td class="text-weight-bold">
-                      {{ getTotalPoints(pick) }}
+                      {{ getTableTotal(row => row.predictedPoints)(pick) }}
                     </q-td>
                     <q-td v-if="hasResults" class="text-weight-bold">
-                      {{ getPlayerStandings(pick).reduce((sum, player) => sum + (player.actualTotal ?? 0), 0) }}
+                      {{ getTableTotal(row => row.actualWins)(pick) }}
+                    </q-td>
+                    <q-td v-if="hasResults" class="text-weight-bold">
+                      {{ getTableTotal(row => row.actualPoints)(pick) }}
                     </q-td>
                   </q-tr>
                 </template>
