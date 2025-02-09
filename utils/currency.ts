@@ -1,1 +1,1 @@
-export const supportedCurrencies = ['USD', 'CNY']
+export const supportedCurrencies = ['ICTTF Token', 'USD']
