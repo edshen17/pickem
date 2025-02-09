@@ -188,21 +188,17 @@ function getTableTotal(selector: (row: ReturnType<typeof getPlayerStandings>[0])
                     <q-td class="text-weight-bold">
                       Total
                     </q-td>
-                    <q-td class="text-weight-bold">
-                      {{ getTableTotal(row => row.assignedPoints)(pick) }}
-                    </q-td>
-                    <q-td v-if="hasResults" class="text-weight-bold">
-                      {{ getTableTotal(row => row.predictedWins)(pick) }}
-                    </q-td>
+                    <q-td class="text-weight-bold" />
+                    <q-td class="text-weight-bold" />
                     <q-td class="text-weight-bold">
                       {{ getTableTotal(row => row.predictedPoints)(pick) }}
                     </q-td>
-                    <q-td v-if="hasResults" class="text-weight-bold">
-                      {{ getTableTotal(row => row.actualWins)(pick) }}
-                    </q-td>
-                    <q-td v-if="hasResults" class="text-weight-bold">
-                      {{ getTableTotal(row => row.actualPoints)(pick) }}
-                    </q-td>
+                    <template v-if="hasResults">
+                      <q-td class="text-weight-bold" />
+                      <q-td class="text-weight-bold">
+                        {{ getTableTotal(row => row.actualPoints)(pick) }}
+                      </q-td>
+                    </template>
                   </q-tr>
                 </template>
               </q-table>
