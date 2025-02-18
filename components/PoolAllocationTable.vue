@@ -11,6 +11,8 @@ const props = defineProps<{
   numberOfEntries: number
 }>()
 
+console.log(props)
+
 const currencySymbols: { [key: string]: string } = {
   USD: '$',
   CNY: '¥',
@@ -26,9 +28,7 @@ const totalManagementPercentage = computed(() => {
 })
 
 const totalManagementAmount = computed(() => {
-  // Calculate fixed fees amount using decimal form
   const fixedFeesAmount = Object.values(fees).reduce((sum, fee) => sum + calculateFeeAmount(fee), 0)
-  // Calculate pool manager amount using percentage form
   return fixedFeesAmount + calculatePoolManagerAmount()
 })
 
@@ -53,7 +53,6 @@ function formatFeeLabel(key: string): string {
 
 function formatMoney(amount: number): string {
   const symbol = currencySymbols[props.currency]
-  // Round to 2 decimal places without toFixed
   const roundedAmount = Math.round(amount * 100) / 100
   return `${symbol}${roundedAmount.toLocaleString('en-US')}`
 }
@@ -67,12 +66,10 @@ function formatPercentage(value: number): string {
 }
 
 function calculateFeeAmount(feePercentage: number): number {
-  // feePercentage is in decimal form (0.025 for 2.5%)
   return totalPool.value * feePercentage
 }
 
 function calculatePoolManagerAmount(): number {
-  // poolManagerAllocation is in percentage form (5 for 5%)
   return (totalPool.value * props.poolManagerAllocation) / 100
 }
 </script>

@@ -23,18 +23,15 @@ export async function getElos() {
 
 export async function getTournamentById(id: string) {
   const tournaments = await getTournaments()
-  const tournament = tournaments.find(t => t.id === id)
-  return tournament ?? throwNotFoundError('Tournament not found')
+  return tournaments.find(t => t.id === id) ?? null
 }
 
 export async function getEloByPlayerId(id: string) {
   const elos = await getElos()
-  const elo = elos.find(e => e.id === id)
-  return elo ?? throwNotFoundError('Tournament not found')
+  return elos.find(e => e.id === id) ?? null
 }
 
 export default authenticated(async () => {
-  // TODO: use { user } to get tournaments, get rid of json.parse?
   const tournaments = await getTournaments()
   return tournaments
 })

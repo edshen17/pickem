@@ -87,39 +87,75 @@ async function getResultStatus(event: ICTTFEvent): Promise<ResultStatus> {
 // TODO: maybe join pool with player entries?
 export async function toPoolListView({ id, prize_allocation, tournament_id, event_id, number_of_entries, entry_start_date, name, pool_manager }: Pool): Promise<IPoolListView> {
   const tournament = await getTournamentById(tournament_id)
-  const { title, contact_name } = tournament
-  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
+  if (!tournament) {
+    return {
+      id,
+      status: PoolStatus.FINISHED,
+      resultStatus: ResultStatus.NOT_AVAILABLE,
+      name: name ?? 'N/A',
+      event: 'N/A',
+      owner: 'N/A',
+      tournament: 'N/A',
+      poolManager: pool_manager ?? '',
+      numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
+      numberOfEntries: number_of_entries,
+      donationAmount: 0,
+      openDate: entry_start_date,
+      closeDate: new Date(),
+    }
+  }
 
-  const resultStatus = await getResultStatus(selectedEvent)
+  const selectedEvent = tournament.events.find(e => e.id === event_id)
+  if (!selectedEvent) {
+    return {
+      id,
+      status: PoolStatus.FINISHED,
+      resultStatus: ResultStatus.NOT_AVAILABLE,
+      name: name ?? tournament.title,
+      event: 'Event Unavailable',
+      owner: tournament.contact_name,
+      tournament: tournament.title,
+      poolManager: pool_manager ?? '',
+      numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
+      numberOfEntries: number_of_entries,
+      donationAmount: 0,
+      openDate: entry_start_date,
+      closeDate: new Date(),
+    }
+  }
 
   return {
     id,
     status: await getPoolStatus(selectedEvent, entry_start_date),
-    resultStatus,
-    name: name ?? `${title} - ${selectedEvent.title}`,
+    resultStatus: await getResultStatus(selectedEvent),
+    name: name ?? `${tournament.title} - ${selectedEvent.title}`,
     event: selectedEvent.title,
-    owner: contact_name,
-    tournament: title,
-    poolManager: pool_manager ?? ``,
+    owner: tournament.contact_name,
+    tournament: tournament.title,
+    poolManager: pool_manager ?? '',
     numberOfWinners: Object.keys(prize_allocation as { [key: string]: number }).length,
     numberOfEntries: number_of_entries,
-    donationAmount: 0, // TODO: fill out
+    donationAmount: 0,
     openDate: entry_start_date,
     closeDate: dayjs(selectedEvent.start_date).toDate(),
   }
 }
 
 async function getRating({ id }: ICTTFPlayer, eventType: EventType) {
-  const { elo_hardbat, elo_sandpaper, elo_wood } = await getEloByPlayerId(id)
+  const elo = await getEloByPlayerId(id)
+  const defaultElo = '0'
+  if (!elo)
+    return defaultElo
+
   switch (eventType) {
     case 'H':
-      return elo_hardbat
+      return elo.elo_hardbat
     case 'S':
-      return elo_sandpaper
+      return elo.elo_sandpaper
     case 'W':
-      return elo_wood
+      return elo.elo_wood
     default:
-      return null
+      return defaultElo
   }
 }
 
@@ -136,11 +172,25 @@ export function toPickView({ id, name, player_ids, created_at, updated_at }: Sel
 export async function toPoolWithTournamentAndPicksView({ id, name, tournament_id, event_id, currency, entry_fee, number_of_picks, prize_allocation }: Pool, user: IUser | null): Promise<IPoolWithTournamentAndPicks> {
   const picks = user ? await pickRepository.findAllByPoolAndUser(id, user.id) : null
   const tournament = await getTournamentById(tournament_id)
-  const selectedEvent = tournament.events.find(e => e.id === event_id) ?? throwError('Event not found')
+  const selectedEvent = tournament?.events.find(e => e.id === event_id) ?? throwError('Event not found')
   const players = await Promise.all(selectedEvent.players.map(async (p) => {
     return { ...p, rating: await getRating(p, selectedEvent.type) }
   }))
   const results = await getResults(selectedEvent)
 
-  return { id, name, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [], results }
+  return { id, name, currency, entryFee: Number(entry_fee), numberOfPicks: Number(number_of_picks), prizeAllocation: prize_allocation as unknown as IPrizeAllocation, tournament: tournament ?? {
+    id: '',
+    director_id: '',
+    title: 'Tournament Unavailable',
+    venue: 'Venue Unavailable',
+    contact_name: 'Unknown',
+    contact_phone: '',
+    contact_email: '',
+    table_count: '0',
+    website: '',
+    description: '',
+    visible: '0',
+    online_payment: '0',
+    events: [],
+  }, event: { ...selectedEvent, players }, picks: picks?.map(toPickView) ?? [], results }
 }
