@@ -11,8 +11,6 @@ const props = defineProps<{
   numberOfEntries: number
 }>()
 
-console.log(props)
-
 const currencySymbols: { [key: string]: string } = {
   USD: '$',
   CNY: '¥',
